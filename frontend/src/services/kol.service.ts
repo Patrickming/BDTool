@@ -2,7 +2,7 @@
  * KOL API 服务
  */
 
-import apiClient from './api';
+import { api } from '../lib/axios';
 import type {
   KOL,
   CreateKOLDto,
@@ -21,7 +21,7 @@ class KOLService {
    * 创建单个 KOL
    */
   async createKOL(data: CreateKOLDto): Promise<KOL> {
-    const response = await apiClient.post<{ success: boolean; message: string; data: KOL }>(
+    const response = await api.post<{ success: boolean; message: string; data: KOL }>(
       '/kols',
       data
     );
@@ -32,7 +32,7 @@ class KOLService {
    * 批量导入 KOL
    */
   async batchImportKOLs(data: BatchImportDto): Promise<BatchImportResult> {
-    const response = await apiClient.post<{
+    const response = await api.post<{
       success: boolean;
       message: string;
       data: BatchImportResult;
@@ -44,7 +44,7 @@ class KOLService {
    * 获取 KOL 列表
    */
   async getKOLList(params?: KOLQueryParams): Promise<KOLListResponse> {
-    const response = await apiClient.get<{
+    const response = await api.get<{
       success: boolean;
       message: string;
       data: KOLListResponse;
@@ -56,7 +56,7 @@ class KOLService {
    * 获取 KOL 详情
    */
   async getKOLById(id: number): Promise<KOL> {
-    const response = await apiClient.get<{ success: boolean; message: string; data: KOL }>(
+    const response = await api.get<{ success: boolean; message: string; data: KOL }>(
       `/kols/${id}`
     );
     return response.data.data;
@@ -66,7 +66,7 @@ class KOLService {
    * 更新 KOL 信息
    */
   async updateKOL(id: number, data: UpdateKOLDto): Promise<KOL> {
-    const response = await apiClient.put<{ success: boolean; message: string; data: KOL }>(
+    const response = await api.put<{ success: boolean; message: string; data: KOL }>(
       `/kols/${id}`,
       data
     );
@@ -77,7 +77,7 @@ class KOLService {
    * 删除 KOL
    */
   async deleteKOL(id: number): Promise<void> {
-    await apiClient.delete(`/kols/${id}`);
+    await api.delete(`/kols/${id}`);
   }
 }
 
