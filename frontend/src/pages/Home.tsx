@@ -144,15 +144,27 @@ export default function Home() {
         >
           <Row gutter={[16, 16]}>
             <Col xs={24} sm={12} md={8}>
-              <div style={{
-                padding: 24,
-                background: 'var(--bg-tertiary)',
-                border: '1px solid var(--border-color)',
-                borderRadius: 'var(--radius-md)',
-                cursor: 'not-allowed',
-                opacity: 0.6,
-                transition: 'all 0.3s ease',
-              }}>
+              <div
+                onClick={() => navigate('/kols')}
+                style={{
+                  padding: 24,
+                  background: 'var(--bg-tertiary)',
+                  border: '1px solid var(--border-color)',
+                  borderRadius: 'var(--radius-md)',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--brand-primary)';
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(99, 102, 241, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border-color)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
                 <div style={{
                   width: 48,
                   height: 48,
@@ -172,7 +184,7 @@ export default function Home() {
                   管理 KOL 数据库，筛选和评分
                 </Text>
                 <div style={{ marginTop: 16 }}>
-                  <Text style={{ color: 'var(--text-tertiary)', fontSize: 12 }}>待实现</Text>
+                  <Text style={{ color: 'var(--brand-primary)', fontSize: 12, fontWeight: 500 }}>立即使用 →</Text>
                 </div>
               </div>
             </Col>
