@@ -1,0 +1,364 @@
+/**
+ * Solana 风格主题系统
+ * Color System inspired by Solana
+ */
+
+:root {
+  /* Solana 品牌色 */
+  --solana-purple: #9945FF;
+  --solana-green: #14F195;
+  --solana-blue: #00D4AA;
+  --solana-pink: #DC1FFF;
+
+  /* 渐变色 */
+  --gradient-primary: linear-gradient(135deg, #9945FF 0%, #14F195 100%);
+  --gradient-secondary: linear-gradient(135deg, #DC1FFF 0%, #00D4AA 100%);
+  --gradient-tertiary: linear-gradient(135deg, #9945FF 0%, #DC1FFF 50%, #14F195 100%);
+  --gradient-glow: radial-gradient(circle, rgba(153, 69, 255, 0.4) 0%, transparent 70%);
+
+  /* 背景色 */
+  --bg-primary: #000000;
+  --bg-secondary: #0a0a0f;
+  --bg-tertiary: #141420;
+  --bg-card: rgba(20, 20, 32, 0.6);
+  --bg-glass: rgba(255, 255, 255, 0.05);
+
+  /* 文字色 */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-tertiary: rgba(255, 255, 255, 0.5);
+  --text-muted: rgba(255, 255, 255, 0.3);
+
+  /* 边框色 */
+  --border-primary: rgba(153, 69, 255, 0.3);
+  --border-secondary: rgba(255, 255, 255, 0.1);
+  --border-glow: rgba(153, 69, 255, 0.6);
+
+  /* 阴影 */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 40px rgba(153, 69, 255, 0.4);
+  --shadow-glow-green: 0 0 40px rgba(20, 241, 149, 0.4);
+
+  /* 圆角 */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* 间距 */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  /* Z-index */
+  --z-background: 0;
+  --z-content: 1;
+  --z-card: 2;
+  --z-header: 10;
+  --z-dropdown: 20;
+  --z-modal: 30;
+  --z-tooltip: 40;
+}
+
+/* 全局样式重置 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* 选中文字颜色 */
+::selection {
+  background: var(--solana-purple);
+  color: var(--text-primary);
+}
+
+::-moz-selection {
+  background: var(--solana-purple);
+  color: var(--text-primary);
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--solana-purple), var(--solana-green));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--solana-purple);
+}
+
+/* 玻璃态效果 */
+.glass {
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-secondary);
+}
+
+.glass-strong {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* 渐变文字 */
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s ease infinite;
+  background-size: 200% auto;
+}
+
+.gradient-text-secondary {
+  background: var(--gradient-secondary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 渐变边框 */
+.gradient-border {
+  position: relative;
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+  padding: 2px;
+  background: var(--gradient-primary);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* 发光效果 */
+.glow-purple {
+  box-shadow: var(--shadow-glow);
+}
+
+.glow-green {
+  box-shadow: var(--shadow-glow-green);
+}
+
+/* 渐变按钮基础 */
+.btn-gradient {
+  position: relative;
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--gradient-primary);
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-gradient::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btn-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-gradient:hover::before {
+  width: 300px;
+  height: 300px;
+}
+
+.btn-gradient:active {
+  transform: translateY(0);
+}
+
+/* 轮廓按钮 */
+.btn-outline {
+  padding: 12px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: var(--radius-lg);
+  background-image:
+    linear-gradient(var(--bg-primary), var(--bg-primary)),
+    var(--gradient-primary);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-outline:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+  background: var(--gradient-primary);
+}
+
+/* 卡片样式 */
+.card-solana {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-solana::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(153, 69, 255, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.card-solana:hover::before {
+  opacity: 1;
+}
+
+.card-solana:hover {
+  transform: translateY(-8px);
+  border-color: var(--border-glow);
+  box-shadow: var(--shadow-glow);
+}
+
+/* 3D 卡片效果 */
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-3d:hover {
+  transform: translateY(-8px) rotateX(5deg) rotateY(5deg);
+}
+
+/* 输入框样式 */
+.input-solana {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 16px;
+  color: var(--text-primary);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: all 0.3s;
+}
+
+.input-solana:focus {
+  border-color: var(--solana-purple);
+  box-shadow: 0 0 0 3px rgba(153, 69, 255, 0.1);
+}
+
+.input-solana::placeholder {
+  color: var(--text-muted);
+}
+
+/* 徽章 */
+.badge-gradient {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--gradient-primary);
+  border-radius: 999px;
+  color: var(--text-primary);
+}
+
+/* 分割线 */
+.divider-gradient {
+  height: 2px;
+  background: var(--gradient-primary);
+  opacity: 0.3;
+  border: none;
+}
+
+/* 加载动画 */
+@keyframes rotate-gradient {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loader-gradient {
+  width: 48px;
+  height: 48px;
+  border: 4px solid transparent;
+  border-top: 4px solid var(--solana-purple);
+  border-right: 4px solid var(--solana-green);
+  border-radius: 50%;
+  animation: rotate-gradient 1s linear infinite;
+}
+
+/* 工具类 */
+.text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-glow {
+  text-shadow: 0 0 20px rgba(153, 69, 255, 0.6);
+}
+
+.blur-background {
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+}

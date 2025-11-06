@@ -1,207 +1,237 @@
-# KOL-BD-Tool
+# KOL BD Tool - KOL 管理系统
 
-> A comprehensive KOL (Key Opinion Leader) management system for crypto exchange BD (Business Development) teams
+> 面向加密货币交易所 BD 团队的 KOL（意见领袖）管理与联系工具
 
-## 🎯 Project Overview
+## 📖 项目简介
 
-KOL-BD-Tool is a full-stack web application designed to streamline the process of discovering, managing, and communicating with crypto KOLs on Twitter/X. Built specifically for KCEX exchange BD team.
+KOL BD Tool 是一个专为 KCEX 交易所 BD 团队打造的全栈 Web 应用，旨在简化在 Twitter/X 上发现、管理和联系加密货币 KOL 的流程。
 
-## ✨ Key Features
+## ✨ 核心功能
 
-### 1. **Message Template Management**
-- Create, edit, and organize communication templates
-- Support for variables (e.g., `{{username}}`, `{{follower_count}}`)
-- AI-powered template generation (OpenAI/Claude integration)
-- Template effectiveness tracking (response rates)
-- Multi-language support
+### 1. **话术模板管理**（计划中）
+- 创建、编辑和组织沟通模板
+- 支持变量替换（如 `{{username}}`、`{{follower_count}}`）
+- AI 驱动的模板生成（OpenAI/Claude 集成）
+- 模板效果跟踪（回复率统计）
+- 多语言支持
 
-### 2. **KOL Discovery & Filtering**
-- Manual import (batch username input)
-- Seed expansion (discover from existing KOLs)
-- Automatic quality scoring (0-100)
-- Content analysis and categorization
-- Smart filtering based on:
-  - Follower count (1k-50k)
-  - Content type (contract trading > crypto trading > web3)
-  - Language (exclude Chinese, Turkish, Middle Eastern, Persian)
-  - Activity (must have tweets within 7 days)
+### 2. **KOL 发现与筛选**
+- 手动导入（批量用户名输入）
+- 种子扩展（从现有 KOL 发现新 KOL）
+- 自动质量评分（0-100 分）
+- 内容分析与分类
+- 智能筛选条件：
+  - 粉丝数（1k-50k）
+  - 内容类型（合约交易 > 加密交易 > Web3）
+  - 语言（排除中文、土耳其语、中东语言、波斯语）
+  - 活跃度（7 天内必须有推文）
 
-### 3. **CRM System**
-- Complete KOL database with profiles
-- Contact history timeline
-- Status management (new/contacted/replied/negotiating/cooperating/rejected)
-- Tag system for organization
-- Notes and custom fields
-- Advanced search and filtering
+### 3. **CRM 系统**
+- 完整的 KOL 数据库与档案
+- 联系历史时间线
+- 状态管理（新添加/已联系/已回复/协商中/合作中/已拒绝）
+- 标签系统
+- 笔记和自定义字段
+- 高级搜索与筛选
 
-### 4. **Outreach Assistant**
-- Select KOL + Template
-- Auto-fill variables
-- Message preview
-- Copy to clipboard (manual sending to avoid account risks)
-- Interaction logging
+### 4. **联系助手**（计划中）
+- 选择 KOL + 模板
+- 自动填充变量
+- 消息预览
+- 复制到剪贴板（手动发送以避免账号风险）
+- 交互日志记录
 
-### 5. **Analytics Dashboard**
-- Weekly statistics (contacts, response rates)
-- KOL distribution charts
-- Template effectiveness analysis
-- Follow-up reminders
+### 5. **数据分析面板**（计划中）
+- 每周统计（联系数、回复率）
+- KOL 分布图表
+- 模板效果分析
+- 跟进提醒
 
-### 6. **Browser Extension**
-- Quick capture KOL info from Twitter pages
-- Batch import from following list
-- Page enhancements (show scores, quick actions)
+### 6. **浏览器插件**（计划中）
+- 从 Twitter 页面快速捕获 KOL 信息
+- 从关注列表批量导入
+- 页面增强（显示评分、快捷操作）
 
-## 🏗️ Technology Stack
+## 🏗️ 技术栈
 
-### Frontend
-- **Framework:** React 18 + TypeScript
-- **UI Library:** Ant Design
-- **State Management:** Zustand
-- **HTTP Client:** Axios
-- **Router:** React Router v6
+### 前端
+- **框架：** React 18 + TypeScript + Vite
+- **UI 库：** Ant Design 5.x
+- **状态管理：** Zustand
+- **HTTP 客户端：** Axios
+- **路由：** React Router v6
+- **包管理器：** pnpm
 
-### Backend
-- **Framework:** Express.js + TypeScript
-- **Database:** PostgreSQL (production) / SQLite (development)
-- **ORM:** Prisma 6.0
-- **Validation:** Zod
-- **Authentication:** JWT + bcrypt
-- **Logging:** Pino
+### 后端
+- **框架：** Express.js + TypeScript
+- **数据库：** PostgreSQL（生产）/ SQLite（开发）
+- **ORM：** Prisma 6.0
+- **验证：** Zod
+- **认证：** JWT + bcrypt
+- **日志：** Pino
 
-### Browser Extension
-- **Platform:** Chrome Extension (Manifest V3)
-- **Language:** JavaScript/TypeScript
-- **Integration:** REST API communication with backend
+### 浏览器插件（计划中）
+- **平台：** Chrome Extension（Manifest V3）
+- **语言：** JavaScript/TypeScript
+- **集成：** REST API 与后端通信
 
-### AI Integration
-- **OpenAI API:** GPT-4 for template generation
-- **Anthropic Claude API:** Alternative AI provider
-- **Use cases:** Template generation, content analysis, language detection
+### AI 集成（计划中）
+- **OpenAI API：** GPT-4 用于模板生成
+- **Anthropic Claude API：** 备用 AI 提供商
+- **使用场景：** 模板生成、内容分析、语言检测
 
-## 📁 Project Structure
+## 📁 项目结构
 
 ```
-kol-bd-tool/
-├── docs/                        # Comprehensive documentation
-│   ├── README.md               # This file
-│   ├── REQUIREMENTS.md         # Detailed requirements specification
-│   ├── DATABASE.md             # Database schema and design
-│   ├── API.md                  # API documentation
-│   ├── DEVELOPMENT.md          # Development log and changelog
-│   └── DEPLOYMENT.md           # Deployment guide
+BDTool/
+├── docs/                        # 完整文档
+│   ├── API.md                  # API 文档
+│   ├── DEVELOPMENT.md          # 开发日志与更新记录
+│   ├── 开发任务.md              # 任务跟踪文档
+│   └── 测试报告.md              # 集成测试报告
 │
-├── frontend/                    # React frontend application
+├── frontend/                    # React 前端应用
 │   ├── public/
 │   ├── src/
-│   │   ├── components/         # Reusable UI components
-│   │   ├── pages/              # Page components
-│   │   ├── services/           # API service layer
-│   │   ├── stores/             # State management (Zustand)
-│   │   ├── types/              # TypeScript type definitions
-│   │   └── utils/              # Helper functions
+│   │   ├── components/         # 可复用 UI 组件
+│   │   │   ├── Effects/        # 视觉效果组件
+│   │   │   ├── KOL/            # KOL 相关组件
+│   │   │   └── Navbar.tsx      # 导航栏
+│   │   ├── pages/              # 页面组件
+│   │   │   ├── Home.tsx        # 首页
+│   │   │   ├── Login.tsx       # 登录页
+│   │   │   ├── Register.tsx    # 注册页
+│   │   │   ├── KOLList.tsx     # KOL 列表
+│   │   │   └── KOLImport.tsx   # 批量导入
+│   │   ├── services/           # API 服务层
+│   │   ├── store/              # Zustand 状态管理
+│   │   ├── styles/             # 全局样式
+│   │   ├── types/              # TypeScript 类型定义
+│   │   └── utils/              # 工具函数
 │   ├── package.json
 │   └── tsconfig.json
 │
-├── backend/                     # FastAPI backend application
-│   ├── app/
-│   │   ├── models/             # SQLAlchemy database models
-│   │   ├── routers/            # API route handlers
-│   │   ├── services/           # Business logic layer
-│   │   ├── schemas/            # Pydantic request/response schemas
-│   │   ├── utils/              # Helper functions
-│   │   ├── config.py           # Configuration management
-│   │   └── main.py             # FastAPI application entry
-│   ├── alembic/                # Database migrations
-│   ├── requirements.txt        # Python dependencies
-│   └── Dockerfile
-│
-├── extension/                   # Chrome browser extension
-│   ├── manifest.json           # Extension configuration
-│   ├── popup.html              # Extension popup UI
-│   ├── popup.js                # Popup logic
-│   ├── content.js              # Twitter page injection script
-│   └── background.js           # Background service worker
+├── backend/                     # Express.js 后端应用
+│   ├── prisma/
+│   │   ├── schema.prisma       # 数据库模型定义
+│   │   ├── migrations/         # 数据库迁移记录
+│   │   └── seed.ts             # 种子数据
+│   ├── src/
+│   │   ├── controllers/        # HTTP 控制器
+│   │   ├── dtos/               # 数据验证 DTO
+│   │   ├── middlewares/        # 中间件（认证、错误处理）
+│   │   ├── routes/             # 路由定义
+│   │   ├── services/           # 业务逻辑层
+│   │   ├── utils/              # 工具函数
+│   │   ├── config.ts           # 配置管理
+│   │   └── server.ts           # 应用入口
+│   ├── .env.example            # 环境变量示例
+│   ├── package.json
+│   └── tsconfig.json
 │
 ├── .gitignore
-├── docker-compose.yml          # Local development environment
-└── README.md                   # This file
+└── README.md                    # 本文件
 ```
 
 ## 📋 当前实现状态
 
-### ✅ 已实现功能 (v1.0.0)
+### ✅ 已实现功能（v1.0.0）
 
-#### 1. 用户认证系统
+#### 1. 用户认证系统 ✅
 - ✅ 用户注册（邮箱 + 密码）
 - ✅ 用户登录（JWT Token 认证）
-- ✅ Token 自动管理
+- ✅ Token 自动管理与刷新
 - ✅ 权限中间件（认证、管理员、所有者权限）
 - ✅ 用户管理 API（查询、更新、删除）
 - ✅ 密码加密存储（bcrypt）
-- ✅ 自动登录态保持
+- ✅ 自动登录态保持（7 天有效期）
 
-#### 2. KOL 管理系统（核心功能）
-- ✅ **KOL 列表查询**
-  - 分页功能（可调整每页数量）
-  - 多维度搜索（用户名、显示名）
-  - 状态筛选（7 种状态）
-  - 分类筛选（内容类别）
-  - 粉丝数范围筛选
-  - 质量分范围筛选
-  - 认证状态筛选
-  - 多字段排序（创建时间、更新时间、粉丝数、质量分）
+#### 2. KOL 管理系统 ✅（核心功能）
 
-- ✅ **KOL 批量导入**
-  - 支持 4 种输入格式：
-    - `@username`
-    - `username`
-    - `https://twitter.com/username`
-    - `https://x.com/username`
-  - 自动去重
-  - 详细导入结果（成功/失败/重复统计）
-  - 错误提示
-  - 一次最多 100 个
+**2.1 KOL 列表查询**
+- ✅ 分页功能（可调整每页数量：10/20/50/100）
+- ✅ 多维度搜索（用户名、显示名）
+- ✅ 状态筛选（7 种状态）
+- ✅ 分类筛选（内容类别）
+- ✅ 粉丝数范围筛选
+- ✅ 质量分范围筛选
+- ✅ 认证状态筛选
+- ✅ 多字段排序（创建时间、更新时间、粉丝数、质量分）
 
-- ✅ **KOL 编辑功能**
-  - 在线编辑弹窗
-  - 所有字段可编辑
-  - 实时验证
-  - 自动列表刷新
+**2.2 KOL 批量导入**
+- ✅ 支持 4 种输入格式：
+  - `@username`
+  - `username`
+  - `https://twitter.com/username`
+  - `https://x.com/username`
+- ✅ 自动去重
+- ✅ 详细导入结果（成功/失败/重复统计）
+- ✅ 错误提示与验证
+- ✅ 一次最多 100 个
 
-- ✅ **KOL 删除功能**
-  - 删除确认弹窗
-  - 软删除或硬删除（可配置）
+**2.3 KOL 编辑功能**
+- ✅ 在线编辑弹窗
+- ✅ 所有字段可编辑
+- ✅ 实时验证
+- ✅ 自动列表刷新
 
-#### 3. 数据隔离
+**2.4 KOL 删除功能**
+- ✅ 删除确认弹窗
+- ✅ 级联删除关联数据
+
+#### 3. 数据隔离 ✅
 - ✅ 每个用户只能看到自己创建的 KOL
 - ✅ 无法访问其他用户的数据
 - ✅ 所有操作自动关联当前用户
 
-#### 4. UI/UX
+#### 4. UI/UX ✅
 - ✅ Web3 风格深色主题
-- ✅ 响应式设计
+- ✅ 响应式设计（移动端适配）
 - ✅ 友好的错误提示
 - ✅ 状态标签颜色区分
-- ✅ 质量评分可视化
+- ✅ 质量评分可视化（进度条）
 - ✅ 加载状态显示
 - ✅ 空状态提示
 
 ### 🚧 待实现功能
 
-- ⏳ 模板管理系统
-- ⏳ 联系记录系统
-- ⏳ 智能质量评分算法
-- ⏳ AI 内容生成集成
-- ⏳ 浏览器插件
-- ⏳ 数据统计和分析
+- ⏳ **功能 3：模板管理系统**
+  - 模板 CRUD 操作
+  - 变量替换引擎
+  - AI 模板生成
+
+- ⏳ **功能 4：联系记录系统**
+  - 联系历史时间线
+  - 交互日志
+  - 统计分析
+
+- ⏳ **功能 5：智能质量评分算法**
+  - 自动计算 KOL 质量分
+  - 内容分析
+  - 活跃度评估
+
+- ⏳ **功能 6：AI 集成**
+  - OpenAI GPT-4 集成
+  - Anthropic Claude 集成
+  - 自动内容生成
+
+- ⏳ **功能 7：浏览器插件**
+  - Chrome Extension 开发
+  - 快速捕获 KOL
+  - 页面增强功能
+
+- ⏳ **功能 8：数据统计和分析**
+  - 数据可视化面板
+  - 回复率统计
+  - 趋势分析
 
 ## 🚀 快速开始
 
-### Prerequisites
+### 前置要求
+
 - Node.js 18+
-- npm 9+
-- PostgreSQL 14+ (or SQLite for development)
+- pnpm 8+
+- PostgreSQL 14+（或使用 SQLite 开发）
 
 ### 后端设置
 
@@ -214,7 +244,7 @@ pnpm install
 
 # 配置环境变量
 cp .env.example .env
-# 编辑 .env 填写你的配置
+# 编辑 .env 文件，填写你的配置
 
 # 生成 Prisma Client
 pnpm db:generate
@@ -227,40 +257,53 @@ pnpm dev
 ```
 
 后端将在 `http://localhost:3000` 启动
-健康检查端点：`http://localhost:3000/health`
+- 健康检查端点：`http://localhost:3000/health`
+- API 文档：`http://localhost:3000/api/v1`
 
-### Frontend Setup
+### 前端设置
 
 ```bash
-# Navigate to frontend directory
+# 进入前端目录
 cd frontend
 
-# Install dependencies
-npm install
+# 安装依赖
+pnpm install
 
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your backend API URL
-
-# Start development server
-npm run dev
+# 启动开发服务器
+pnpm dev
 ```
 
-Frontend will be available at: `http://localhost:5173` or `http://localhost:5174`
+前端将在以下地址启动：
+- 主要地址：`http://localhost:5173`
+- 备用地址：`http://localhost:5174`
+
+### 数据库管理（可选）
+
+```bash
+# 打开 Prisma Studio（可视化数据库管理工具）
+cd backend
+pnpm db:studio
+```
+
+Prisma Studio 将在 `http://localhost:5555` 启动
 
 ## 📖 使用指南
 
 ### 1. 首次使用
 
-1. **注册账号**
-   - 访问前端地址 `http://localhost:5174`
-   - 点击"注册"按钮
-   - 填写邮箱、密码（至少 8 位）和姓名
-   - 提交注册
+#### 1.1 注册账号
+1. 访问前端地址 `http://localhost:5173`
+2. 点击"注册"按钮
+3. 填写信息：
+   - 邮箱地址
+   - 密码（至少 8 位）
+   - 姓名
+4. 点击"注册"提交
 
-2. **登录系统**
-   - 使用注册的邮箱和密码登录
-   - 系统会自动保存登录状态（7天有效期）
+#### 1.2 登录系统
+1. 使用注册的邮箱和密码登录
+2. 系统会自动保存登录状态
+3. Token 有效期 7 天，过期后需要重新登录
 
 ### 2. KOL 管理
 
@@ -269,193 +312,265 @@ Frontend will be available at: `http://localhost:5173` or `http://localhost:5174
 1. 点击首页的"KOL 管理"卡片
 2. 点击右上角"批量导入"按钮
 3. 在文本框中输入 Twitter 用户名（支持多种格式）：
-   ```
-   @elonmusk
-   jack
-   https://twitter.com/naval
-   https://x.com/pmarca
-   ```
+
+```
+@elonmusk
+jack
+https://twitter.com/naval
+https://x.com/pmarca
+vitalikbuterin
+```
+
 4. 点击"开始导入"
 5. 查看导入结果（成功/失败/重复统计）
 
-**提示**：
+**提示：**
 - 一次最多导入 100 个
 - 系统自动去重
 - 支持 4 种输入格式
+- 每行一个用户名
 
 #### 2.2 查看 KOL 列表
 
 - 默认按创建时间倒序排列
-- 显示所有 KOL 的关键信息
-- 每页 10 条，可调整
+- 显示关键信息：
+  - Twitter 用户名
+  - 显示名称
+  - 粉丝数
+  - 质量评分
+  - 当前状态
+  - 内容分类
+- 每页默认 10 条，可调整为 20/50/100
 
 #### 2.3 搜索和筛选
 
-1. **文本搜索**：输入用户名或显示名
-2. **状态筛选**：选择特定状态（新添加、已联系、已回复等）
-3. **分类筛选**：选择内容类别（合约交易、加密交易、Web3）
-4. **粉丝数筛选**：设置最小和最大粉丝数
-5. **质量分筛选**：设置最小和最大质量分
-6. **认证状态**：筛选已认证或未认证账号
-7. **排序**：按创建时间、粉丝数、质量分等排序
+**搜索功能：**
+- 输入用户名或显示名进行搜索
+- 支持模糊匹配
 
-**提示**：
+**筛选条件：**
+1. **状态筛选**：选择特定状态
+2. **分类筛选**：选择内容类别
+3. **粉丝数筛选**：设置最小和最大粉丝数
+4. **质量分筛选**：设置最小和最大质量分（0-100）
+5. **认证状态**：筛选已认证或未认证账号
+6. **排序选项**：
+   - 创建时间（升序/降序）
+   - 更新时间（升序/降序）
+   - 粉丝数（升序/降序）
+   - 质量分（升序/降序）
+
+**提示：**
 - 可以组合多个筛选条件
-- 点击"重置"清空所有筛选
+- 点击"重置"按钮清空所有筛选
+- 筛选结果会自动更新
 
 #### 2.4 编辑 KOL
 
-1. 点击列表中的"编辑"按钮
-2. 在弹窗中修改信息：
-   - 基本信息（用户名、显示名、简介）
-   - 状态（7 种可选）
-   - 内容分类
-   - 质量评分（0-100）
-   - 粉丝数、关注数
-   - Twitter Bio
-3. 点击"保存"完成更新
+1. 在列表中找到要编辑的 KOL
+2. 点击"编辑"按钮
+3. 在弹窗中修改信息：
+   - **基本信息**：用户名、显示名、简介
+   - **状态**：7 种可选状态
+   - **内容分类**：合约交易/加密交易/Web3/其他
+   - **质量评分**：0-100 分
+   - **社交数据**：粉丝数、关注数
+   - **Twitter Bio**：个人简介
+4. 点击"保存"完成更新
+5. 列表自动刷新显示最新数据
 
 #### 2.5 删除 KOL
 
-1. 点击列表中的"删除"按钮
-2. 确认删除操作
-3. KOL 将从列表中移除
+1. 在列表中找到要删除的 KOL
+2. 点击"删除"按钮
+3. 在确认弹窗中点击"确定"
+4. KOL 将从列表中永久移除
 
-### 3. 数据隔离
+**注意：** 删除操作不可恢复，请谨慎操作。
+
+### 3. 数据隔离说明
 
 - 每个用户的 KOL 数据完全独立
-- 不同用户之间看不到对方的 KOL
+- 用户 A 无法看到用户 B 的 KOL
 - 所有操作自动关联当前登录用户
+- 确保数据安全和隐私
 
 ### 4. 状态说明
 
-| 状态 | 说明 | 颜色 |
-|------|------|------|
-| 新添加 | 刚导入的 KOL | 蓝色 |
-| 已联系 | 已发送过消息 | 橙色 |
-| 已回复 | KOL 有回复 | 绿色 |
-| 协商中 | 正在谈判合作 | 青色 |
-| 合作中 | 达成合作 | 紫色 |
-| 已拒绝 | KOL 明确拒绝 | 红色 |
-| 无兴趣 | KOL 未回复或表示无兴趣 | 灰色 |
+| 状态 | 说明 | 颜色标识 |
+|------|------|----------|
+| 新添加 | 刚导入的 KOL，未联系 | 🔵 蓝色 |
+| 已联系 | 已发送过消息，等待回复 | 🟠 橙色 |
+| 已回复 | KOL 有回复 | 🟢 绿色 |
+| 协商中 | 正在谈判合作细节 | 🔷 青色 |
+| 合作中 | 达成合作协议 | 🟣 紫色 |
+| 已拒绝 | KOL 明确拒绝合作 | 🔴 红色 |
+| 无兴趣 | KOL 未回复或表示无兴趣 | ⚪ 灰色 |
 
 ### 5. 常见问题
 
 **Q: 为什么登录后看不到数据？**
-A: 新注册用户的 KOL 列表为空，需要先批量导入或创建 KOL。
+A: 新注册用户的 KOL 列表为空，需要先通过"批量导入"功能添加 KOL。
 
 **Q: 批量导入失败怎么办？**
-A: 检查输入格式是否正确，确保每行一个用户名，并且符合支持的格式。
+A: 检查输入格式是否正确，确保每行一个用户名，并且符合支持的 4 种格式之一。
 
 **Q: 如何调整列表显示数量？**
 A: 在列表页面底部的分页器中，可以选择每页显示 10/20/50/100 条。
 
 **Q: 质量分是如何计算的？**
-A: 目前质量分需要手动设置，后续版本将实现自动计算算法。
+A: 目前质量分需要手动设置（0-100），后续版本将实现基于粉丝数、活跃度、内容质量的自动计算算法。
 
 **Q: CORS 错误怎么解决？**
-A: 确保后端 `.env` 文件中的 `CORS_ORIGIN` 包含前端运行的端口（5173 或 5174）。
+A: 确保后端 `.env` 文件中的 `CORS_ORIGIN` 包含前端运行的端口（默认 5173 或 5174）。
 
-### Browser Extension Setup
+**Q: 如何备份数据？**
+A: 使用 Prisma Studio 或直接备份 SQLite 数据库文件（`backend/prisma/dev.db`）。
+
+**Q: 忘记密码怎么办？**
+A: 当前版本暂不支持密码重置功能，请联系管理员或重新注册。
+
+## 🔐 环境变量配置
+
+### 后端 (.env)
 
 ```bash
-# Navigate to extension directory
-cd extension
+# 数据库连接
+# SQLite（开发环境）
+DATABASE_URL="file:./dev.db"
 
-# Install dependencies (if using build tools)
-npm install
+# PostgreSQL（生产环境）
+# DATABASE_URL="postgresql://user:password@localhost:5432/kol_bd_tool"
 
-# Build extension
-npm run build
+# JWT 密钥（至少 32 个字符）
+JWT_SECRET="your-super-secret-jwt-key-min-32-chars"
 
-# Load extension in Chrome:
-# 1. Open chrome://extensions/
-# 2. Enable "Developer mode"
-# 3. Click "Load unpacked"
-# 4. Select the extension/ directory
+# JWT 过期时间（单位：秒）
+JWT_EXPIRES_IN="604800"  # 7 天
+
+# 服务器端口
+PORT=3000
+
+# CORS 允许的来源（多个用逗号分隔）
+CORS_ORIGIN="http://localhost:5173,http://localhost:5174"
+
+# 日志级别（debug, info, warn, error）
+LOG_LEVEL="info"
+
+# AI API 密钥（可选，用于模板生成）
+OPENAI_API_KEY="sk-..."
+ANTHROPIC_API_KEY="sk-ant-..."
 ```
 
-## 📚 Documentation
+### 前端 (.env)
 
-- **[Requirements Specification](docs/REQUIREMENTS.md)** - Detailed feature requirements and user stories
-- **[Database Design](docs/DATABASE.md)** - Complete database schema and relationships
-- **[API Documentation](docs/API.md)** - REST API endpoints and examples
-- **[Development Log](docs/DEVELOPMENT.md)** - Development progress and changelog
-- **[Deployment Guide](docs/DEPLOYMENT.md)** - Production deployment instructions
+前端使用 Vite 代理，无需额外配置环境变量。
 
-## 🔐 Environment Variables
+如需自定义后端 API 地址，可在 `frontend/vite.config.ts` 中修改：
 
-### Backend (.env)
-```bash
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/kol_bd_tool
-
-# Security
-SECRET_KEY=your-secret-key-here
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-# AI APIs (optional)
-OPENAI_API_KEY=sk-...
-ANTHROPIC_API_KEY=sk-ant-...
-
-# CORS
-ALLOWED_ORIGINS=http://localhost:5173,https://yourdomain.com
+```typescript
+server: {
+  proxy: {
+    '/api': {
+      target: 'http://localhost:3000',  // 修改为你的后端地址
+      changeOrigin: true,
+    },
+  },
+},
 ```
 
-### Frontend (.env)
-```bash
-VITE_API_BASE_URL=http://localhost:8000
-VITE_APP_NAME=KOL-BD-Tool
-```
+## 🛡️ 安全考虑
 
-## 🛡️ Security Considerations
+- **无自动 DM 发送**：所有联系都是手动的，避免 Twitter 账号限制
+- **速率限制**：内置 API 滥用防护
+- **JWT 认证**：安全的用户认证机制
+- **环境变量**：敏感数据不提交到 Git
+- **输入验证**：所有 API 输入使用 Zod 验证
+- **密码加密**：使用 bcrypt 加密存储密码
+- **SQL 注入防护**：使用 Prisma ORM 参数化查询
 
-- **No automated DM sending** - All outreach is manual to avoid Twitter account restrictions
-- **Rate limiting** - Built-in protection against API abuse
-- **JWT authentication** - Secure user authentication
-- **Environment variables** - Sensitive data never committed to Git
-- **Input validation** - All API inputs validated with Pydantic schemas
+## 📊 KOL 筛选规则
 
-## 📊 KOL Filtering Rules
+### ✅ 必需条件
+- 粉丝数：1,000 - 50,000
+- 7 天内活跃（必须有最近的推文）
+- 内容分类优先级：
+  1. 合约交易分析（最高优先级）
+  2. 加密货币交易
+  3. Web3 一般内容
 
-### ✅ Required Criteria
-- Follower count: 1,000 - 50,000
-- Active within last 7 days (must have recent tweets)
-- Content category priority:
-  1. Contract trading analysis (highest priority)
-  2. Crypto token trading
-  3. Web3 general content
+### ❌ 排除条件
+- 粉丝数 <1k 或 >50k 的账号
+- 不活跃账号（7 天以上无推文）
+- 非加密相关内容
+- 语言：中文、土耳其语、中东语言、波斯语
 
-### ❌ Exclusion Criteria
-- Accounts with <1k or >50k followers
-- Inactive accounts (no tweets in 7+ days)
-- Non-crypto content
-- Languages: Chinese, Turkish, Middle Eastern languages, Persian
+## 🤝 贡献指南
 
-## 🤝 Contributing
+这是 KCEX 交易所的私有项目。如果你是团队成员：
 
-This is a private project for KCEX exchange. If you're part of the team:
+1. 创建功能分支：`git checkout -b feature/your-feature`
+2. 提交更改：`git commit -m "功能：添加你的功能"`
+3. 推送分支：`git push origin feature/your-feature`
+4. 创建 Pull Request
 
-1. Create a feature branch: `git checkout -b feature/your-feature`
-2. Commit your changes: `git commit -m "Add your feature"`
-3. Push to branch: `git push origin feature/your-feature`
-4. Create a Pull Request
+### 提交信息规范
 
-## 📝 License
+使用中文提交信息，遵循以下格式：
 
-Private project - All rights reserved
+- `功能：添加 XXX 功能`
+- `修复：解决 XXX 问题`
+- `优化：改进 XXX 性能`
+- `文档：更新 XXX 文档`
+- `重构：重构 XXX 模块`
+- `测试：添加 XXX 测试`
 
-## 👥 Team
+## 📚 文档
 
-- **Developer:** Claude Code
-- **Product Owner:** KCEX BD Team
-- **Target Users:** BD interns and team members
+- **[API 文档](docs/API.md)** - REST API 端点与示例
+- **[开发日志](docs/DEVELOPMENT.md)** - 开发进度与更新记录
+- **[开发任务](docs/开发任务.md)** - 任务跟踪与需求管理
+- **[测试报告](docs/测试报告.md)** - 完整集成测试报告
 
-## 📞 Support
+## 📝 许可证
 
-For issues, questions, or feature requests, please contact the development team or create an issue in the repository.
+私有项目 - 保留所有权利
+
+## 👥 团队
+
+- **开发者：** Claude Code
+- **产品负责人：** KCEX BD Team
+- **目标用户：** BD 实习生和团队成员
+
+## 📞 支持
+
+如有问题、疑问或功能请求，请联系开发团队或在仓库中创建 Issue。
+
+## 🎯 路线图
+
+### v1.0.0（已完成）✅
+- 用户认证系统
+- KOL 管理系统（CRUD）
+- 批量导入功能
+- 高级搜索与筛选
+
+### v1.1.0（计划中）🚧
+- 模板管理系统
+- 联系记录系统
+- 基础统计功能
+
+### v1.2.0（计划中）🚧
+- 智能质量评分算法
+- AI 内容生成集成
+- 数据分析面板
+
+### v2.0.0（计划中）🚧
+- 浏览器插件
+- 移动端应用
+- Twitter API 集成
 
 ---
 
-**Built with ❤️ for efficient crypto KOL management**
+**使用 ❤️ 打造，助力高效的加密货币 KOL 管理**
+
+*最后更新：2025-11-07*

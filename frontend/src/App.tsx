@@ -11,6 +11,7 @@ import Login from '@/pages/Login';
 import Register from '@/pages/Register';
 import KOLList from '@/pages/KOL/KOLList';
 import KOLImport from '@/pages/KOL/KOLImport';
+import KOLDetail from '@/pages/KOL/KOLDetail';
 import { useThemeStore } from '@/store/theme.store';
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
           {/* KOL 管理路由 */}
           <Route path="/kols" element={<KOLList />} />
           <Route path="/kols/import" element={<KOLImport />} />
+          <Route path="/kols/:id" element={<KOLDetail />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>

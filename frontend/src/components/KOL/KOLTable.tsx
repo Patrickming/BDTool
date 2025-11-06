@@ -39,10 +39,14 @@ const KOLTable: React.FC<KOLTableProps> = ({ loading = false, onChange }) => {
     try {
       const values = await form.validateFields();
       const data: UpdateKOLDto = {
+        username: values.username,
         displayName: values.displayName,
         status: values.status,
         contentCategory: values.contentCategory,
         qualityScore: values.qualityScore,
+        followerCount: values.followerCount,
+        followingCount: values.followingCount,
+        verified: values.verified,
         customNotes: values.customNotes,
       };
 
@@ -74,7 +78,7 @@ const KOLTable: React.FC<KOLTableProps> = ({ loading = false, onChange }) => {
       width: 60,
     },
     {
-      title: 'Twitter 用户名',
+      title: '用户ID',
       dataIndex: 'username',
       key: 'username',
       width: 150,
@@ -89,7 +93,7 @@ const KOLTable: React.FC<KOLTableProps> = ({ loading = false, onChange }) => {
       ),
     },
     {
-      title: '显示名',
+      title: '用户名称',
       dataIndex: 'displayName',
       key: 'displayName',
       width: 150,
@@ -205,11 +209,37 @@ const KOLTable: React.FC<KOLTableProps> = ({ loading = false, onChange }) => {
       >
         <Form form={form} layout="vertical">
           <Form.Item
-            name="displayName"
-            label="显示名"
-            rules={[{ required: true, message: '请输入显示名' }]}
+            name="username"
+            label="用户ID"
+            rules={[
+              { required: true, message: '请输入用户ID' },
+              { pattern: /^[a-zA-Z0-9_]{1,15}$/, message: '用户ID只能包含字母、数字和下划线，1-15个字符' }
+            ]}
           >
-            <Input />
+            <Input placeholder="输入 Twitter 用户ID（不含 @）" />
+          </Form.Item>
+
+          <Form.Item
+            name="displayName"
+            label="用户名称"
+            rules={[{ required: true, message: '请输入用户名称' }]}
+          >
+            <Input placeholder="KOL 的用户名称" />
+          </Form.Item>
+
+          <Form.Item name="followerCount" label="粉丝数">
+            <InputNumber min={0} style={{ width: '100%' }} placeholder="粉丝数量" />
+          </Form.Item>
+
+          <Form.Item name="followingCount" label="关注数">
+            <InputNumber min={0} style={{ width: '100%' }} placeholder="关注数量" />
+          </Form.Item>
+
+          <Form.Item name="verified" label="认证状态">
+            <Select>
+              <Select.Option value={true}>已认证 ✓</Select.Option>
+              <Select.Option value={false}>未认证</Select.Option>
+            </Select>
           </Form.Item>
 
           <Form.Item name="status" label="状态">
@@ -235,15 +265,12 @@ const KOLTable: React.FC<KOLTableProps> = ({ loading = false, onChange }) => {
           <Form.Item
             name="qualityScore"
             label="质量分"
-            rules={[
-              { type: 'number', min: 0, max: 100, message: '质量分必须在 0-100 之间' },
-            ]}
           >
             <InputNumber min={0} max={100} style={{ width: '100%' }} />
           </Form.Item>
 
           <Form.Item name="customNotes" label="备注">
-            <Input.TextArea rows={3} maxLength={1000} showCount />
+            <Input.TextArea rows={3} maxLength={1000} showCount placeholder="添加自定义备注" />
           </Form.Item>
         </Form>
       </Modal>
