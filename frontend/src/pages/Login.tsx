@@ -122,6 +122,15 @@ export default function Login() {
             <Input
               prefix={<MailOutlined style={{ color: 'var(--text-tertiary)' }} />}
               placeholder="your@example.com"
+              styles={{
+                affixWrapper: {
+                  background: '#16161f',
+                  border: '0.5px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '8px',
+                  height: '40px',
+                  padding: '8px 12px',
+                }
+              }}
             />
           </Form.Item>
 
@@ -136,6 +145,15 @@ export default function Login() {
             <Input.Password
               prefix={<LockOutlined style={{ color: 'var(--text-tertiary)' }} />}
               placeholder="请输入密码"
+              styles={{
+                affixWrapper: {
+                  background: '#16161f',
+                  border: '0.5px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '8px',
+                  height: '40px',
+                  padding: '8px 12px',
+                }
+              }}
             />
           </Form.Item>
 

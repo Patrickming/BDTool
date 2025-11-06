@@ -149,7 +149,9 @@ body {
   margin-bottom: 20px;
 }
 
-/* 普通输入框 */
+/* 普通输入框 - 强制应用到所有输入框 */
+input.ant-input,
+input.ant-input-lg,
 .ant-input,
 .ant-input-lg {
   background: var(--bg-card) !important;
@@ -162,11 +164,13 @@ body {
   font-size: 14px !important;
 }
 
+input.ant-input:hover,
 .ant-input:hover {
   border-color: var(--brand-primary) !important;
   background: var(--bg-tertiary) !important;
 }
 
+input.ant-input:focus,
 .ant-input:focus,
 .ant-input-focused {
   border-color: var(--brand-primary) !important;
@@ -174,11 +178,32 @@ body {
   background: var(--bg-tertiary) !important;
 }
 
+input.ant-input::placeholder,
 .ant-input::placeholder {
   color: var(--text-tertiary) !important;
 }
 
-/* 带前缀的输入框 */
+/* 防止浏览器自动填充时输入框变白 */
+input.ant-input:-webkit-autofill,
+input.ant-input-lg:-webkit-autofill,
+.ant-input:-webkit-autofill,
+.ant-input-lg:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-card) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+input.ant-input:-webkit-autofill:hover,
+input.ant-input:-webkit-autofill:focus,
+input.ant-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-card) inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+/* 带前缀的输入框 - 强制应用到所有包装器 */
+span.ant-input-affix-wrapper,
+span.ant-input-affix-wrapper-lg,
+span.ant-input-affix-wrapper-status-error,
 .ant-input-affix-wrapper,
 .ant-input-affix-wrapper-lg,
 .ant-input-affix-wrapper-status-error {
@@ -199,6 +224,9 @@ body {
   color: var(--text-primary) !important;
 }
 
+span.ant-input-affix-wrapper:hover,
+span.ant-input-affix-wrapper-lg:hover,
+span.ant-input-affix-wrapper-status-error:hover,
 .ant-input-affix-wrapper:hover,
 .ant-input-affix-wrapper-lg:hover,
 .ant-input-affix-wrapper-status-error:hover {
@@ -206,6 +234,10 @@ body {
   background: var(--bg-tertiary) !important;
 }
 
+span.ant-input-affix-wrapper-focused,
+span.ant-input-affix-wrapper:focus,
+span.ant-input-affix-wrapper-lg.ant-input-affix-wrapper-focused,
+span.ant-input-affix-wrapper-status-error.ant-input-affix-wrapper-focused,
 .ant-input-affix-wrapper-focused,
 .ant-input-affix-wrapper:focus,
 .ant-input-affix-wrapper-lg.ant-input-affix-wrapper-focused,
@@ -244,7 +276,9 @@ div[class*="ant-input-affix-wrapper"] {
   color: var(--text-tertiary) !important;
 }
 
-/* 密码输入框 */
+/* 密码输入框 - 强制应用到所有密码框 */
+span.ant-input-password,
+span.ant-input-password-lg,
 .ant-input-password,
 .ant-input-password-lg {
   background: var(--bg-card) !important;
@@ -259,11 +293,13 @@ div[class*="ant-input-affix-wrapper"] {
   font-size: 14px !important;
 }
 
+span.ant-input-password:hover,
 .ant-input-password:hover {
   border-color: var(--brand-primary) !important;
   background: var(--bg-tertiary) !important;
 }
 
+span.ant-input-password.ant-input-affix-wrapper-focused,
 .ant-input-password.ant-input-affix-wrapper-focused {
   border-color: var(--brand-primary) !important;
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important;
