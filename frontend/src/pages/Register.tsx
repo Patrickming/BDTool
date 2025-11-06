@@ -77,9 +77,9 @@ export default function Register() {
         background: 'var(--bg-secondary)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        border: '1px solid var(--glass-border)',
+        border: '0.5px solid var(--glass-border)',
         borderRadius: 'var(--radius-xl)',
-        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 0.5px rgba(255, 255, 255, 0.05)',
         position: 'relative',
         zIndex: 1,
       }}>
