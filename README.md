@@ -62,11 +62,12 @@ KOL-BD-Tool is a full-stack web application designed to streamline the process o
 - **Router:** React Router v6
 
 ### Backend
-- **Framework:** FastAPI (Python 3.10+)
+- **Framework:** Express.js + TypeScript
 - **Database:** PostgreSQL (production) / SQLite (development)
-- **ORM:** SQLAlchemy 2.0
-- **Authentication:** JWT
-- **API Documentation:** Auto-generated with Swagger/OpenAPI
+- **ORM:** Prisma 6.0
+- **Validation:** Zod
+- **Authentication:** JWT + bcrypt
+- **Logging:** Pino
 
 ### Browser Extension
 - **Platform:** Chrome Extension (Manifest V3)
@@ -130,8 +131,8 @@ kol-bd-tool/
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.10+
 - Node.js 18+
+- npm 9+
 - PostgreSQL 14+ (or SQLite for development)
 
 ### Backend Setup
@@ -140,26 +141,25 @@ kol-bd-tool/
 # Navigate to backend directory
 cd backend
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
 # Install dependencies
-pip install -r requirements.txt
+npm install
 
 # Set up environment variables
 cp .env.example .env
 # Edit .env with your configuration
 
+# Generate Prisma Client
+npm run db:generate
+
 # Run database migrations
-alembic upgrade head
+npm run db:migrate
 
 # Start development server
-uvicorn app.main:app --reload
+npm run dev
 ```
 
-Backend will be available at: `http://localhost:8000`
-API documentation: `http://localhost:8000/docs`
+Backend will be available at: `http://localhost:3000`
+Health check: `http://localhost:3000/health`
 
 ### Frontend Setup
 
