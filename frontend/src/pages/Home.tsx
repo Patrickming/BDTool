@@ -7,13 +7,12 @@ import { useNavigate } from 'react-router-dom';
 import { Card, Typography, Row, Col, Spin } from 'antd';
 import { UserOutlined, DatabaseOutlined, FileTextOutlined, PhoneOutlined } from '@ant-design/icons';
 import { useAuthStore } from '@/store/auth.store';
-import Navbar from '@/components/Navbar';
 
 const { Title, Text } = Typography;
 
 export default function Home() {
   const navigate = useNavigate();
-  const { user, isLoading, clearAuth, loadUser } = useAuthStore();
+  const { user, isLoading, loadUser } = useAuthStore();
 
   useEffect(() => {
     // 检查是否有 token
@@ -38,11 +37,10 @@ export default function Home() {
   if (isLoading) {
     return (
       <div style={{
-        minHeight: '100vh',
+        minHeight: '50vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'var(--bg-primary)',
       }}>
         <Spin size="large" />
       </div>
@@ -55,28 +53,7 @@ export default function Home() {
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: 'var(--bg-primary)',
-      position: 'relative',
-      overflow: 'hidden',
-    }}>
-      {/* 导航栏 */}
-      <Navbar />
-
-      {/* 背景装饰 */}
-      <div style={{
-        position: 'absolute',
-        top: '10%',
-        right: '0',
-        width: '400px',
-        height: '400px',
-        background: 'radial-gradient(circle, rgba(99,102,241,0.1) 0%, transparent 70%)',
-        borderRadius: '50%',
-        filter: 'blur(60px)',
-      }} />
-
-      <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1, padding: '40px 20px' }}>
+    <div className="animate-fade-in-up">
 
         {/* 用户信息卡片 */}
         <Card
@@ -146,36 +123,28 @@ export default function Home() {
             <Col xs={24} sm={12} md={8}>
               <div
                 onClick={() => navigate('/kols')}
+                className="hover-lift"
                 style={{
                   padding: 24,
-                  background: 'var(--bg-tertiary)',
-                  border: '1px solid var(--border-color)',
+                  background: 'var(--bg-glass)',
+                  border: '1px solid var(--border-secondary)',
                   borderRadius: 'var(--radius-md)',
                   cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--brand-primary)';
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                  e.currentTarget.style.boxShadow = '0 8px 24px rgba(99, 102, 241, 0.2)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--border-color)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = 'none';
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
               >
                 <div style={{
                   width: 48,
                   height: 48,
                   borderRadius: 'var(--radius-sm)',
-                  background: 'rgba(99, 102, 241, 0.1)',
+                  background: 'var(--gradient-primary)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginBottom: 16,
+                  boxShadow: 'var(--shadow-glow)',
                 }}>
-                  <DatabaseOutlined style={{ fontSize: 24, color: 'var(--brand-primary)' }} />
+                  <DatabaseOutlined style={{ fontSize: 24, color: 'white' }} />
                 </div>
                 <Title level={4} style={{ margin: 0, marginBottom: 8, fontSize: 16 }}>
                   KOL 管理
@@ -184,7 +153,12 @@ export default function Home() {
                   管理 KOL 数据库，筛选和评分
                 </Text>
                 <div style={{ marginTop: 16 }}>
-                  <Text style={{ color: 'var(--brand-primary)', fontSize: 12, fontWeight: 500 }}>立即使用 →</Text>
+                  <Text
+                    className="text-gradient"
+                    style={{ fontSize: 12, fontWeight: 600 }}
+                  >
+                    立即使用 →
+                  </Text>
                 </div>
               </div>
             </Col>
@@ -192,8 +166,8 @@ export default function Home() {
             <Col xs={24} sm={12} md={8}>
               <div style={{
                 padding: 24,
-                background: 'var(--bg-tertiary)',
-                border: '1px solid var(--border-color)',
+                background: 'var(--bg-glass)',
+                border: '1px solid var(--border-secondary)',
                 borderRadius: 'var(--radius-md)',
                 cursor: 'not-allowed',
                 opacity: 0.6,
@@ -203,13 +177,13 @@ export default function Home() {
                   width: 48,
                   height: 48,
                   borderRadius: 'var(--radius-sm)',
-                  background: 'rgba(139, 92, 246, 0.1)',
+                  background: 'rgba(220, 31, 255, 0.15)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginBottom: 16,
                 }}>
-                  <FileTextOutlined style={{ fontSize: 24, color: '#8b5cf6' }} />
+                  <FileTextOutlined style={{ fontSize: 24, color: 'var(--solana-pink)' }} />
                 </div>
                 <Title level={4} style={{ margin: 0, marginBottom: 8, fontSize: 16 }}>
                   模板管理
@@ -218,7 +192,7 @@ export default function Home() {
                   话术模板，AI 生成
                 </Text>
                 <div style={{ marginTop: 16 }}>
-                  <Text style={{ color: 'var(--text-tertiary)', fontSize: 12 }}>待实现</Text>
+                  <Text style={{ color: 'var(--text-muted)', fontSize: 12 }}>待实现</Text>
                 </div>
               </div>
             </Col>
@@ -226,8 +200,8 @@ export default function Home() {
             <Col xs={24} sm={12} md={8}>
               <div style={{
                 padding: 24,
-                background: 'var(--bg-tertiary)',
-                border: '1px solid var(--border-color)',
+                background: 'var(--bg-glass)',
+                border: '1px solid var(--border-secondary)',
                 borderRadius: 'var(--radius-md)',
                 cursor: 'not-allowed',
                 opacity: 0.6,
@@ -237,13 +211,13 @@ export default function Home() {
                   width: 48,
                   height: 48,
                   borderRadius: 'var(--radius-sm)',
-                  background: 'rgba(16, 185, 129, 0.1)',
+                  background: 'rgba(20, 241, 149, 0.15)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginBottom: 16,
                 }}>
-                  <PhoneOutlined style={{ fontSize: 24, color: 'var(--success)' }} />
+                  <PhoneOutlined style={{ fontSize: 24, color: 'var(--solana-green)' }} />
                 </div>
                 <Title level={4} style={{ margin: 0, marginBottom: 8, fontSize: 16 }}>
                   联系记录
@@ -252,13 +226,12 @@ export default function Home() {
                   历史记录，统计分析
                 </Text>
                 <div style={{ marginTop: 16 }}>
-                  <Text style={{ color: 'var(--text-tertiary)', fontSize: 12 }}>待实现</Text>
+                  <Text style={{ color: 'var(--text-muted)', fontSize: 12 }}>待实现</Text>
                 </div>
               </div>
             </Col>
           </Row>
         </Card>
-      </div>
     </div>
   );
 }
