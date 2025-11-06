@@ -213,7 +213,235 @@ curl -X GET http://localhost:3000/api/v1/auth/me \
 
 ---
 
-## 2. KOL 管理模块 (KOLs)
+## 2. 用户管理模块 (Users)
+
+### 2.1 获取所有用户列表
+
+获取所有用户列表（分页、搜索）。仅管理员可访问。
+
+**接口地址**: `GET /users`
+
+**认证**: 需要 Bearer Token（管理员权限）
+
+**请求头**:
+
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+**查询参数**:
+
+| 参数名 | 类型 | 必填 | 默认值 | 说明 |
+|--------|------|------|--------|------|
+| `page` | number | 否 | 1 | 页码 |
+| `limit` | number | 否 | 10 | 每页数量 |
+| `search` | string | 否 | - | 搜索关键词（匹配邮箱或姓名）|
+
+**请求示例**:
+
+```bash
+curl -X GET "http://localhost:3000/api/v1/users?page=1&limit=10&search=zhang" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+**成功响应** (200):
+
+```json
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "user@example.com",
+      "fullName": "张三",
+      "role": "admin",
+      "createdAt": "2025-11-06T10:30:00.000Z",
+      "updatedAt": "2025-11-06T10:30:00.000Z"
+    },
+    {
+      "id": 2,
+      "email": "member@example.com",
+      "fullName": "李四",
+      "role": "member",
+      "createdAt": "2025-11-06T11:00:00.000Z",
+      "updatedAt": "2025-11-06T11:00:00.000Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 2,
+    "totalPages": 1
+  }
+}
+```
+
+**错误响应**:
+
+- `401` - 未认证
+- `403` - 需要管理员权限
+
+---
+
+### 2.2 获取单个用户信息
+
+获取指定用户的详细信息。管理员或用户本人可访问。
+
+**接口地址**: `GET /users/:id`
+
+**认证**: 需要 Bearer Token（管理员或本人）
+
+**请求头**:
+
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+**路径参数**:
+
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| `id` | number | 用户 ID |
+
+**请求示例**:
+
+```bash
+curl -X GET http://localhost:3000/api/v1/users/1 \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+**成功响应** (200):
+
+```json
+{
+  "id": 1,
+  "email": "user@example.com",
+  "fullName": "张三",
+  "role": "admin",
+  "createdAt": "2025-11-06T10:30:00.000Z",
+  "updatedAt": "2025-11-06T10:30:00.000Z"
+}
+```
+
+**错误响应**:
+
+- `400` - 无效的用户 ID
+- `401` - 未认证
+- `403` - 没有权限访问此资源
+- `404` - 用户不存在
+
+---
+
+### 2.3 更新用户信息
+
+更新指定用户的信息。管理员或用户本人可访问。普通用户不能修改自己的角色。
+
+**接口地址**: `PUT /users/:id`
+
+**认证**: 需要 Bearer Token（管理员或本人）
+
+**请求头**:
+
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+**路径参数**:
+
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| `id` | number | 用户 ID |
+
+**请求参数**:
+
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| `fullName` | string | 否 | 姓名，2-100 字符 |
+| `email` | string | 否 | 邮箱地址 |
+| `role` | string | 否 | 角色（仅管理员可修改）|
+
+**请求示例**:
+
+```bash
+curl -X PUT http://localhost:3000/api/v1/users/1 \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "fullName": "张三丰",
+    "email": "newemail@example.com"
+  }'
+```
+
+**成功响应** (200):
+
+```json
+{
+  "id": 1,
+  "email": "newemail@example.com",
+  "fullName": "张三丰",
+  "role": "admin",
+  "createdAt": "2025-11-06T10:30:00.000Z",
+  "updatedAt": "2025-11-06T12:00:00.000Z"
+}
+```
+
+**错误响应**:
+
+- `400` - 无效的用户 ID
+- `400` - 数据验证失败
+- `400` - 该邮箱已被使用
+- `401` - 未认证
+- `403` - 没有权限访问此资源
+- `403` - 没有权限修改用户角色
+- `404` - 用户不存在
+
+---
+
+### 2.4 删除用户
+
+删除指定用户。仅管理员可访问，不能删除自己。
+
+**接口地址**: `DELETE /users/:id`
+
+**认证**: 需要 Bearer Token（管理员权限）
+
+**请求头**:
+
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+**路径参数**:
+
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| `id` | number | 用户 ID |
+
+**请求示例**:
+
+```bash
+curl -X DELETE http://localhost:3000/api/v1/users/2 \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+**成功响应** (200):
+
+```json
+{
+  "message": "用户已删除"
+}
+```
+
+**错误响应**:
+
+- `400` - 无效的用户 ID
+- `400` - 不能删除自己的账户
+- `401` - 未认证
+- `403` - 需要管理员权限
+- `404` - 用户不存在
+
+---
+
+## 3. KOL 管理模块 (KOLs)
 
 **待实现**
 
@@ -227,7 +455,7 @@ curl -X GET http://localhost:3000/api/v1/auth/me \
 
 ---
 
-## 3. 模板管理模块 (Templates)
+## 4. 模板管理模块 (Templates)
 
 **待实现**
 
@@ -241,7 +469,7 @@ curl -X GET http://localhost:3000/api/v1/auth/me \
 
 ---
 
-## 4. 联系记录模块 (Contacts)
+## 5. 联系记录模块 (Contacts)
 
 **待实现**
 
