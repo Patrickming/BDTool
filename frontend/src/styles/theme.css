@@ -1,9 +1,11 @@
 /**
  * Solana 风格主题系统
  * Color System inspired by Solana
+ * 完整支持暗色/亮色模式
  */
 
-:root {
+:root,
+[data-theme='dark'] {
   /* Solana 品牌色 */
   --solana-purple: #9945FF;
   --solana-green: #14F195;
@@ -16,25 +18,25 @@
   --gradient-tertiary: linear-gradient(135deg, #9945FF 0%, #DC1FFF 50%, #14F195 100%);
   --gradient-glow: radial-gradient(circle, rgba(153, 69, 255, 0.4) 0%, transparent 70%);
 
-  /* 背景色 */
+  /* 背景色 - 暗色模式 */
   --bg-primary: #000000;
   --bg-secondary: #0a0a0f;
   --bg-tertiary: #141420;
   --bg-card: rgba(20, 20, 32, 0.6);
   --bg-glass: rgba(255, 255, 255, 0.05);
 
-  /* 文字色 */
+  /* 文字色 - 暗色模式 */
   --text-primary: #ffffff;
   --text-secondary: rgba(255, 255, 255, 0.7);
   --text-tertiary: rgba(255, 255, 255, 0.5);
   --text-muted: rgba(255, 255, 255, 0.3);
 
-  /* 边框色 */
+  /* 边框色 - 暗色模式 */
   --border-primary: rgba(153, 69, 255, 0.3);
   --border-secondary: rgba(255, 255, 255, 0.1);
   --border-glow: rgba(153, 69, 255, 0.6);
 
-  /* 阴影 */
+  /* 阴影 - 暗色模式 */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
@@ -65,6 +67,69 @@
   --z-tooltip: 40;
 }
 
+/* 亮色模式主题变量 */
+[data-theme='light'] {
+  /* Solana 品牌色 (保持一致) */
+  --solana-purple: #9945FF;
+  --solana-green: #14F195;
+  --solana-blue: #00D4AA;
+  --solana-pink: #DC1FFF;
+
+  /* 渐变色 (保持一致) */
+  --gradient-primary: linear-gradient(135deg, #9945FF 0%, #14F195 100%);
+  --gradient-secondary: linear-gradient(135deg, #DC1FFF 0%, #00D4AA 100%);
+  --gradient-tertiary: linear-gradient(135deg, #9945FF 0%, #DC1FFF 50%, #14F195 100%);
+  --gradient-glow: radial-gradient(circle, rgba(153, 69, 255, 0.3) 0%, transparent 70%);
+
+  /* 背景色 - 亮色模式 */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #f0f2f5;
+  --bg-card: rgba(255, 255, 255, 0.8);
+  --bg-glass: rgba(255, 255, 255, 0.6);
+
+  /* 文字色 - 亮色模式 */
+  --text-primary: #1a1a1a;
+  --text-secondary: rgba(0, 0, 0, 0.75);
+  --text-tertiary: rgba(0, 0, 0, 0.55);
+  --text-muted: rgba(0, 0, 0, 0.35);
+
+  /* 边框色 - 亮色模式 */
+  --border-primary: rgba(153, 69, 255, 0.25);
+  --border-secondary: rgba(0, 0, 0, 0.08);
+  --border-glow: rgba(153, 69, 255, 0.5);
+
+  /* 阴影 - 亮色模式 */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+  --shadow-glow: 0 0 40px rgba(153, 69, 255, 0.25);
+  --shadow-glow-green: 0 0 40px rgba(20, 241, 149, 0.25);
+
+  /* 圆角 (保持一致) */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* 间距 (保持一致) */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+
+  /* Z-index (保持一致) */
+  --z-background: 0;
+  --z-content: 1;
+  --z-card: 2;
+  --z-header: 10;
+  --z-dropdown: 20;
+  --z-modal: 30;
+  --z-tooltip: 40;
+}
+
 /* 全局样式重置 */
 * {
   box-sizing: border-box;
@@ -81,6 +146,17 @@ body {
   background: var(--bg-primary);
   color: var(--text-primary);
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 平滑主题切换 */
+*,
+*::before,
+*::after {
+  transition: background-color 0.3s ease,
+              color 0.3s ease,
+              border-color 0.3s ease,
+              box-shadow 0.3s ease;
 }
 
 /* 选中文字颜色 */
@@ -361,4 +437,148 @@ body {
 .blur-background {
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
+}
+
+/* Web3 风格动画 */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(153, 69, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(153, 69, 255, 0.8);
+  }
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 动画工具类 */
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.4s ease forwards;
+}
+
+/* 悬停效果增强 */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.hover-glow {
+  transition: box-shadow 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: var(--shadow-glow);
+}
+
+/* 背景粒子效果容器 */
+.particles-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: var(--z-background);
+  overflow: hidden;
+}
+
+.particles-bg::before,
+.particles-bg::after {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.15;
+  animation: float 8s ease-in-out infinite;
+}
+
+.particles-bg::before {
+  background: var(--solana-purple);
+  top: 10%;
+  left: 10%;
+}
+
+.particles-bg::after {
+  background: var(--solana-green);
+  bottom: 10%;
+  right: 10%;
+  animation-delay: -4s;
 }

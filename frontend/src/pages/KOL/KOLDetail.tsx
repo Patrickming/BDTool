@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Descriptions, Button, Space, Spin, Tag, Divider, Avatar, Row, Col, Statistic } from 'antd';
 import { ArrowLeftOutlined, EditOutlined, TwitterOutlined, UserOutlined, CalendarOutlined } from '@ant-design/icons';
-import Navbar from '@/components/Navbar';
 import KOLStatusBadge from '@/components/KOL/KOLStatusBadge';
 import QualityScoreBar from '@/components/KOL/QualityScoreBar';
 import { kolService } from '@/services/kol.service';
@@ -40,11 +39,10 @@ const KOLDetail: React.FC = () => {
   if (loading) {
     return (
       <div style={{
-        minHeight: '100vh',
+        minHeight: '50vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'var(--bg-primary)',
       }}>
         <Spin size="large" />
       </div>
@@ -53,14 +51,11 @@ const KOLDetail: React.FC = () => {
 
   if (!kol) {
     return (
-      <div style={{ minHeight: '100vh', background: 'var(--bg-primary)' }}>
-        <Navbar />
-        <div style={{ maxWidth: 1200, margin: '40px auto', padding: '0 20px' }}>
-          <Card>
-            <p>KOL 不存在</p>
-            <Button onClick={() => navigate('/kols')}>返回列表</Button>
-          </Card>
-        </div>
+      <div className="animate-fade-in-up">
+        <Card>
+          <p>KOL 不存在</p>
+          <Button onClick={() => navigate('/kols')}>返回列表</Button>
+        </Card>
       </div>
     );
   }
@@ -75,10 +70,7 @@ const KOLDetail: React.FC = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-primary)' }}>
-      <Navbar />
-
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 20px' }}>
+    <div className="animate-fade-in-up">
         {/* 顶部操作栏 */}
         <div style={{ marginBottom: 24 }}>
           <Space>
@@ -211,7 +203,6 @@ const KOLDetail: React.FC = () => {
             <p style={{ fontSize: 12 }}>此功能将在后续版本中实现</p>
           </div>
         </Card>
-      </div>
     </div>
   );
 };
