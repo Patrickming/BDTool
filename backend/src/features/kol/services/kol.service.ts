@@ -62,8 +62,20 @@ export class KOLService {
 
     // 2. 处理日期字段（将 ISO 字符串转换为 Date 对象）
     const data: any = {
-      ...createDto,
       userId,
+      username: createDto.username,
+      displayName: createDto.displayName,
+      twitterId: createDto.twitterId,
+      bio: createDto.bio,
+      followerCount: createDto.followerCount ?? 0,
+      followingCount: createDto.followingCount ?? 0,
+      verified: createDto.verified ?? false,
+      profileImgUrl: createDto.profileImgUrl,
+      language: createDto.language,
+      qualityScore: createDto.qualityScore ?? 0,  // 明确处理质量分
+      contentCategory: createDto.contentCategory ?? 'unknown',
+      status: createDto.status ?? 'new',
+      customNotes: createDto.customNotes,
     };
 
     if (createDto.lastTweetDate) {
@@ -73,6 +85,8 @@ export class KOLService {
     if (createDto.accountCreated) {
       data.accountCreated = new Date(createDto.accountCreated);
     }
+
+    logger.info(`准备插入的 qualityScore: ${data.qualityScore} (类型: ${typeof data.qualityScore})`);
 
     // 3. 创建 KOL
     const kol = await prisma.kOL.create({

@@ -13,6 +13,8 @@ import {
   Col,
   Form,
   InputNumber,
+  Modal,
+  message,
 } from 'antd';
 import { PlusOutlined, UploadOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -24,12 +26,14 @@ import {
   SortByOptions,
   SortOrderOptions,
 } from '../../types/kol';
-import type { KOLQueryParams } from '../../types/kol';
+import type { KOLQueryParams, CreateKOLDto } from '../../types/kol';
 
 const KOLList: React.FC = () => {
   const navigate = useNavigate();
-  const { loading, fetchKOLs, queryParams, setQueryParams, resetQueryParams } = useKOLStore();
+  const { loading, fetchKOLs, queryParams, setQueryParams, resetQueryParams, createKOL } = useKOLStore();
   const [form] = Form.useForm();
+  const [createForm] = Form.useForm();
+  const [createModalOpen, setCreateModalOpen] = useState(false);
 
   // 初始加载
   useEffect(() => {
@@ -70,6 +74,49 @@ const KOLList: React.FC = () => {
     fetchKOLs(params);
   };
 
+  // 创建 KOL
+  const handleCreateKOL = async () => {
+    try {
+      console.log('开始验证表单...');
+      const values = await createForm.validateFields();
+      console.log('表单验证成功，原始值:', values);
+
+      // 确保所有数值类型字段都被正确处理
+      const data: CreateKOLDto = {
+        username: values.username,
+        displayName: values.displayName,
+        followerCount: values.followerCount !== undefined ? Number(values.followerCount) : 0,
+        followingCount: values.followingCount !== undefined ? Number(values.followingCount) : 0,
+        verified: values.verified !== undefined ? values.verified : false,
+        qualityScore: values.qualityScore !== undefined ? Number(values.qualityScore) : 0,
+        contentCategory: values.contentCategory || 'unknown',
+        status: values.status || 'new',
+        customNotes: values.customNotes,
+      };
+
+      console.log('准备发送的数据:', data);
+      console.log('质量分字段检查:', {
+        raw: values.qualityScore,
+        converted: Number(values.qualityScore),
+        final: data.qualityScore
+      });
+
+      const result = await createKOL(data);
+      console.log('创建成功，结果:', result);
+
+      setCreateModalOpen(false);
+      createForm.resetFields();
+    } catch (error: any) {
+      console.error('创建 KOL 失败:', error);
+      console.error('错误详情:', {
+        message: error.message,
+        response: error.response?.data,
+        stack: error.stack
+      });
+      message.error(error.response?.data?.message || error.message || '创建失败');
+    }
+  };
+
   return (
     <div style={{ padding: '24px' }}>
       {/* 页面头部 */}
@@ -89,7 +136,7 @@ const KOLList: React.FC = () => {
             <Button
               type="primary"
               icon={<PlusOutlined />}
-              onClick={() => navigate('/kols/create')}
+              onClick={() => setCreateModalOpen(true)}
             >
               创建 KOL
             </Button>
@@ -236,6 +283,85 @@ const KOLList: React.FC = () => {
       <Card>
         <KOLTable loading={loading} onChange={handleTableChange} />
       </Card>
+
+      {/* 创建 KOL 模态框 */}
+      <Modal
+        title="创建 KOL"
+        open={createModalOpen}
+        onOk={handleCreateKOL}
+        onCancel={() => {
+          setCreateModalOpen(false);
+          createForm.resetFields();
+        }}
+        width={600}
+      >
+        <Form form={createForm} layout="vertical">
+          <Form.Item
+            name="username"
+            label="用户ID"
+            rules={[
+              { required: true, message: '请输入用户ID' },
+              { pattern: /^[a-zA-Z0-9_]{1,15}$/, message: '用户ID只能包含字母、数字和下划线，1-15个字符' }
+            ]}
+          >
+            <Input placeholder="输入 Twitter 用户ID（不含 @）" />
+          </Form.Item>
+
+          <Form.Item
+            name="displayName"
+            label="用户名称"
+            rules={[{ required: true, message: '请输入用户名称' }]}
+          >
+            <Input placeholder="KOL 的用户名称" />
+          </Form.Item>
+
+          <Form.Item name="followerCount" label="粉丝数">
+            <InputNumber min={0} style={{ width: '100%' }} placeholder="粉丝数量" />
+          </Form.Item>
+
+          <Form.Item name="followingCount" label="关注数">
+            <InputNumber min={0} style={{ width: '100%' }} placeholder="关注数量" />
+          </Form.Item>
+
+          <Form.Item name="verified" label="认证状态">
+            <Select placeholder="选择认证状态">
+              <Select.Option value={true}>已认证 ✓</Select.Option>
+              <Select.Option value={false}>未认证</Select.Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item name="status" label="状态">
+            <Select placeholder="选择状态">
+              {Object.entries(KOLStatusConfig).map(([value, config]) => (
+                <Select.Option key={value} value={value}>
+                  {config.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item name="contentCategory" label="内容分类">
+            <Select placeholder="选择分类">
+              {Object.entries(ContentCategoryConfig).map(([value, config]) => (
+                <Select.Option key={value} value={value}>
+                  {config.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="qualityScore"
+            label="质量分"
+          >
+            <InputNumber min={0} max={100} style={{ width: '100%' }} placeholder="0-100" />
+          </Form.Item>
+
+          <Form.Item name="customNotes" label="备注">
+            <Input.TextArea rows={3} maxLength={1000} showCount placeholder="添加自定义备注" />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

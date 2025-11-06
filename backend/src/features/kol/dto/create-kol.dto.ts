@@ -85,6 +85,13 @@ export const createKOLSchema = z.object({
 
   status: KOLStatus.default('new'),
 
+  qualityScore: z
+    .number()
+    .int('质量分必须是整数')
+    .min(0, '质量分不能小于 0')
+    .max(100, '质量分不能大于 100')
+    .default(0),
+
   customNotes: z.string().max(1000, '备注不能超过 1000 个字符').optional(),
 });
 

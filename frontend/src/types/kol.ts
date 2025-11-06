@@ -93,6 +93,7 @@ export interface CreateKOLDto {
   language?: string;
   lastTweetDate?: string;
   accountCreated?: string;
+  qualityScore?: number;
   contentCategory?: ContentCategory;
   status?: KOLStatus;
   customNotes?: string;
