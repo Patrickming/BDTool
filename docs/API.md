@@ -443,15 +443,491 @@ curl -X DELETE http://localhost:3000/api/v1/users/2 \
 
 ## 3. KOL 管理模块 (KOLs)
 
-**待实现**
+### 3.1 创建 KOL
 
-将包含以下功能:
-- `GET /kols` - 获取 KOL 列表（支持筛选、搜索、分页）
-- `POST /kols` - 创建 KOL
-- `GET /kols/:id` - 获取 KOL 详情
-- `PUT /kols/:id` - 更新 KOL
-- `DELETE /kols/:id` - 删除 KOL
-- `POST /kols/:id/calculate-score` - 计算 KOL 质量评分
+创建单个 KOL 记录。
+
+**接口地址**: `POST /kols`
+
+**认证**: 需要 Bearer Token
+
+**请求头**:
+
+```
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
+```
+
+**请求参数**:
+
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| `username` | string | 是 | Twitter 用户名，1-15 字符，只能包含字母数字下划线 |
+| `displayName` | string | 是 | 显示名，1-50 字符 |
+| `twitterId` | string | 否 | Twitter ID |
+| `bio` | string | 否 | 个人简介，最多 500 字符 |
+| `followerCount` | number | 否 | 粉丝数，默认 0 |
+| `followingCount` | number | 否 | 关注数，默认 0 |
+| `verified` | boolean | 否 | 是否认证，默认 false |
+| `profileImgUrl` | string | 否 | 头像 URL |
+| `language` | string | 否 | 语言代码（2 字符 ISO 代码）|
+| `lastTweetDate` | string | 否 | 最后推文日期（ISO 8601 格式）|
+| `accountCreated` | string | 否 | 账户创建日期（ISO 8601 格式）|
+| `contentCategory` | string | 否 | 内容分类：contract_trading, crypto_trading, web3, unknown |
+| `status` | string | 否 | 状态：new, contacted, replied, negotiating, cooperating, rejected, not_interested |
+| `customNotes` | string | 否 | 自定义备注，最多 1000 字符 |
+
+**请求示例**:
+
+```bash
+curl -X POST http://localhost:3000/api/v1/kols \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "elonmusk",
+    "displayName": "Elon Musk",
+    "bio": "Tesla, SpaceX, Twitter",
+    "followerCount": 150000000,
+    "verified": true,
+    "contentCategory": "crypto_trading",
+    "status": "new"
+  }'
+```
+
+**成功响应** (201):
+
+```json
+{
+  "success": true,
+  "message": "KOL 创建成功",
+  "data": {
+    "id": 1,
+    "username": "elonmusk",
+    "displayName": "Elon Musk",
+    "bio": "Tesla, SpaceX, Twitter",
+    "followerCount": 150000000,
+    "followingCount": 0,
+    "verified": true,
+    "profileImgUrl": null,
+    "language": null,
+    "lastTweetDate": null,
+    "accountCreated": null,
+    "qualityScore": 0,
+    "contentCategory": "crypto_trading",
+    "status": "new",
+    "customNotes": null,
+    "createdAt": "2025-11-06T15:00:00.000Z",
+    "updatedAt": "2025-11-06T15:00:00.000Z"
+  }
+}
+```
+
+**错误响应**:
+
+- `400` - 数据验证失败
+- `400` - KOL @username 已存在
+- `401` - 未认证
+
+---
+
+### 3.2 批量导入 KOL
+
+批量导入 KOL，支持多种输入格式。
+
+**接口地址**: `POST /kols/batch/import`
+
+**认证**: 需要 Bearer Token
+
+**请求头**:
+
+```
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
+```
+
+**请求参数**:
+
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| `inputs` | string[] | 是 | 用户名列表，1-100 个 |
+
+**支持的输入格式**:
+- `@username` - 带 @ 的用户名
+- `username` - 纯用户名
+- `https://twitter.com/username` - Twitter URL
+- `https://x.com/username` - X.com URL
+
+**请求示例**:
+
+```bash
+curl -X POST http://localhost:3000/api/v1/kols/batch/import \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "inputs": [
+      "@elonmusk",
+      "jack",
+      "https://twitter.com/naval",
+      "https://x.com/pmarca"
+    ]
+  }'
+```
+
+**成功响应** (200):
+
+```json
+{
+  "success": true,
+  "message": "批量导入完成",
+  "data": {
+    "success": 3,
+    "failed": 0,
+    "duplicate": 1,
+    "errors": [],
+    "imported": [
+      {
+        "id": 2,
+        "username": "jack",
+        "displayName": "jack",
+        "status": "new",
+        "createdAt": "2025-11-06T15:01:00.000Z"
+      },
+      {
+        "id": 3,
+        "username": "naval",
+        "displayName": "naval",
+        "status": "new",
+        "createdAt": "2025-11-06T15:01:00.000Z"
+      },
+      {
+        "id": 4,
+        "username": "pmarca",
+        "displayName": "pmarca",
+        "status": "new",
+        "createdAt": "2025-11-06T15:01:00.000Z"
+      }
+    ]
+  }
+}
+```
+
+**错误响应**:
+
+- `400` - 数据验证失败
+- `401` - 未认证
+
+---
+
+### 3.3 获取 KOL 列表
+
+获取 KOL 列表，支持分页、搜索、筛选、排序。
+
+**接口地址**: `GET /kols`
+
+**认证**: 需要 Bearer Token
+
+**请求头**:
+
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+**查询参数**:
+
+| 参数名 | 类型 | 必填 | 默认值 | 说明 |
+|--------|------|------|--------|------|
+| `page` | number | 否 | 1 | 页码 |
+| `limit` | number | 否 | 10 | 每页数量（1-100）|
+| `search` | string | 否 | - | 搜索关键词（匹配用户名或显示名）|
+| `status` | string | 否 | - | 状态筛选 |
+| `contentCategory` | string | 否 | - | 内容分类筛选 |
+| `minQualityScore` | number | 否 | - | 最小质量分（0-100）|
+| `maxQualityScore` | number | 否 | - | 最大质量分（0-100）|
+| `minFollowerCount` | number | 否 | - | 最小粉丝数 |
+| `maxFollowerCount` | number | 否 | - | 最大粉丝数 |
+| `verified` | boolean | 否 | - | 是否认证筛选 |
+| `sortBy` | string | 否 | createdAt | 排序字段：createdAt, updatedAt, followerCount, qualityScore, username |
+| `sortOrder` | string | 否 | desc | 排序方向：asc, desc |
+
+**请求示例**:
+
+```bash
+# 基础查询
+curl -X GET "http://localhost:3000/api/v1/kols?page=1&limit=10" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+# 高级筛选
+curl -X GET "http://localhost:3000/api/v1/kols?status=new&minFollowerCount=10000&maxFollowerCount=50000&sortBy=followerCount&sortOrder=desc" \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+**成功响应** (200):
+
+```json
+{
+  "success": true,
+  "message": "获取 KOL 列表成功",
+  "data": {
+    "kols": [
+      {
+        "id": 1,
+        "username": "elonmusk",
+        "displayName": "Elon Musk",
+        "bio": "Tesla, SpaceX, Twitter",
+        "followerCount": 150000000,
+        "followingCount": 0,
+        "verified": true,
+        "profileImgUrl": null,
+        "language": null,
+        "lastTweetDate": null,
+        "accountCreated": null,
+        "qualityScore": 0,
+        "contentCategory": "crypto_trading",
+        "status": "new",
+        "customNotes": null,
+        "createdAt": "2025-11-06T15:00:00.000Z",
+        "updatedAt": "2025-11-06T15:00:00.000Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 4,
+      "totalPages": 1
+    }
+  }
+}
+```
+
+**错误响应**:
+
+- `400` - 查询参数验证失败
+- `401` - 未认证
+
+---
+
+### 3.4 获取 KOL 详情
+
+获取指定 KOL 的详细信息。
+
+**接口地址**: `GET /kols/:id`
+
+**认证**: 需要 Bearer Token
+
+**请求头**:
+
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+**路径参数**:
+
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| `id` | number | KOL ID |
+
+**请求示例**:
+
+```bash
+curl -X GET http://localhost:3000/api/v1/kols/1 \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+**成功响应** (200):
+
+```json
+{
+  "success": true,
+  "message": "获取 KOL 详情成功",
+  "data": {
+    "id": 1,
+    "username": "elonmusk",
+    "displayName": "Elon Musk",
+    "bio": "Tesla, SpaceX, Twitter",
+    "twitterId": "44196397",
+    "followerCount": 150000000,
+    "followingCount": 100,
+    "verified": true,
+    "profileImgUrl": "https://pbs.twimg.com/profile_images/...",
+    "language": "en",
+    "lastTweetDate": "2025-11-06T14:30:00.000Z",
+    "accountCreated": "2009-06-02T20:12:29.000Z",
+    "qualityScore": 85,
+    "contentCategory": "crypto_trading",
+    "status": "new",
+    "customNotes": "High priority target",
+    "createdAt": "2025-11-06T15:00:00.000Z",
+    "updatedAt": "2025-11-06T15:00:00.000Z"
+  }
+}
+```
+
+**错误响应**:
+
+- `400` - 无效的 KOL ID
+- `401` - 未认证
+- `404` - KOL 不存在
+
+---
+
+### 3.5 更新 KOL 信息
+
+更新指定 KOL 的信息。
+
+**接口地址**: `PUT /kols/:id`
+
+**认证**: 需要 Bearer Token
+
+**请求头**:
+
+```
+Authorization: Bearer <your_jwt_token>
+Content-Type: application/json
+```
+
+**路径参数**:
+
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| `id` | number | KOL ID |
+
+**请求参数**: （所有字段都是可选的）
+
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| `username` | string | Twitter 用户名 |
+| `displayName` | string | 显示名 |
+| `twitterId` | string | Twitter ID |
+| `bio` | string | 个人简介 |
+| `followerCount` | number | 粉丝数 |
+| `followingCount` | number | 关注数 |
+| `verified` | boolean | 是否认证 |
+| `profileImgUrl` | string | 头像 URL |
+| `language` | string | 语言代码 |
+| `lastTweetDate` | string | 最后推文日期 |
+| `accountCreated` | string | 账户创建日期 |
+| `qualityScore` | number | 质量分（0-100）|
+| `contentCategory` | string | 内容分类 |
+| `status` | string | 状态 |
+| `customNotes` | string | 自定义备注 |
+
+**请求示例**:
+
+```bash
+curl -X PUT http://localhost:3000/api/v1/kols/1 \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "contacted",
+    "customNotes": "Sent initial DM on 2025-11-06",
+    "qualityScore": 85
+  }'
+```
+
+**成功响应** (200):
+
+```json
+{
+  "success": true,
+  "message": "KOL 更新成功",
+  "data": {
+    "id": 1,
+    "username": "elonmusk",
+    "displayName": "Elon Musk",
+    "bio": "Tesla, SpaceX, Twitter",
+    "followerCount": 150000000,
+    "followingCount": 100,
+    "verified": true,
+    "profileImgUrl": null,
+    "language": "en",
+    "lastTweetDate": "2025-11-06T14:30:00.000Z",
+    "accountCreated": "2009-06-02T20:12:29.000Z",
+    "qualityScore": 85,
+    "contentCategory": "crypto_trading",
+    "status": "contacted",
+    "customNotes": "Sent initial DM on 2025-11-06",
+    "createdAt": "2025-11-06T15:00:00.000Z",
+    "updatedAt": "2025-11-06T16:00:00.000Z"
+  }
+}
+```
+
+**错误响应**:
+
+- `400` - 无效的 KOL ID
+- `400` - 数据验证失败
+- `401` - 未认证
+- `404` - KOL 不存在
+
+---
+
+### 3.6 删除 KOL
+
+删除指定 KOL 及其关联数据。
+
+**接口地址**: `DELETE /kols/:id`
+
+**认证**: 需要 Bearer Token
+
+**请求头**:
+
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+**路径参数**:
+
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| `id` | number | KOL ID |
+
+**请求示例**:
+
+```bash
+curl -X DELETE http://localhost:3000/api/v1/kols/1 \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+```
+
+**成功响应** (200):
+
+```json
+{
+  "success": true,
+  "message": "KOL 删除成功",
+  "data": null
+}
+```
+
+**错误响应**:
+
+- `400` - 无效的 KOL ID
+- `401` - 未认证
+- `404` - KOL 不存在
+
+---
+
+### 附：KOL 字段说明
+
+#### 内容分类 (contentCategory)
+
+| 值 | 说明 | 优先级 |
+|---|------|--------|
+| `contract_trading` | 合约交易分析 | 最高 |
+| `crypto_trading` | 代币交易分析 | 高 |
+| `web3` | Web3 通用内容 | 中 |
+| `unknown` | 未分类 | 低 |
+
+#### 状态 (status)
+
+| 值 | 说明 | 颜色建议 |
+|---|------|----------|
+| `new` | 新添加 | 蓝色 |
+| `contacted` | 已联系 | 橙色 |
+| `replied` | 已回复 | 绿色 |
+| `negotiating` | 协商中 | 紫色 |
+| `cooperating` | 合作中 | 青色 |
+| `rejected` | 已拒绝 | 红色 |
+| `not_interested` | 不感兴趣 | 灰色 |
 
 ---
 
