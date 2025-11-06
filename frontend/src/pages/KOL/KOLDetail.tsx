@@ -135,7 +135,7 @@ const KOLDetail: React.FC = () => {
             {/* 右侧：统计数据 */}
             <Col xs={24} md={16}>
               <Row gutter={[16, 16]}>
-                <Col span={8}>
+                <Col span={12}>
                   <Statistic
                     title="粉丝数"
                     value={kol.followerCount}
@@ -143,14 +143,7 @@ const KOLDetail: React.FC = () => {
                     valueStyle={{ color: 'var(--brand-primary)' }}
                   />
                 </Col>
-                <Col span={8}>
-                  <Statistic
-                    title="关注数"
-                    value={kol.followingCount}
-                    formatter={formatNumber}
-                  />
-                </Col>
-                <Col span={8}>
+                <Col span={12}>
                   <Statistic
                     title="质量评分"
                     value={kol.qualityScore}

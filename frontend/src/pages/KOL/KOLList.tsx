@@ -83,10 +83,9 @@ const KOLList: React.FC = () => {
 
       // 确保所有数值类型字段都被正确处理
       const data: CreateKOLDto = {
-        username: values.username,
+        username: values.username.replace(/^@/, ''), // 去除开头的@符号
         displayName: values.displayName,
         followerCount: values.followerCount !== undefined ? Number(values.followerCount) : 0,
-        followingCount: values.followingCount !== undefined ? Number(values.followingCount) : 0,
         verified: values.verified !== undefined ? values.verified : false,
         qualityScore: values.qualityScore !== undefined ? Number(values.qualityScore) : 0,
         contentCategory: values.contentCategory || 'unknown',
@@ -301,10 +300,10 @@ const KOLList: React.FC = () => {
             label="用户ID"
             rules={[
               { required: true, message: '请输入用户ID' },
-              { pattern: /^[a-zA-Z0-9_]{1,15}$/, message: '用户ID只能包含字母、数字和下划线，1-15个字符' }
+              { pattern: /^@?[a-zA-Z0-9_]{1,15}$/, message: '用户ID只能包含字母、数字和下划线，1-15个字符' }
             ]}
           >
-            <Input placeholder="输入 Twitter 用户ID（不含 @）" />
+            <Input placeholder="输入 Twitter 用户ID（可带 @）" />
           </Form.Item>
 
           <Form.Item
@@ -317,10 +316,6 @@ const KOLList: React.FC = () => {
 
           <Form.Item name="followerCount" label="粉丝数">
             <InputNumber min={0} style={{ width: '100%' }} placeholder="粉丝数量" />
-          </Form.Item>
-
-          <Form.Item name="followingCount" label="关注数">
-            <InputNumber min={0} style={{ width: '100%' }} placeholder="关注数量" />
           </Form.Item>
 
           <Form.Item name="verified" label="认证状态">
