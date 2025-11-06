@@ -180,7 +180,8 @@ body {
 
 /* 带前缀的输入框 */
 .ant-input-affix-wrapper,
-.ant-input-affix-wrapper-lg {
+.ant-input-affix-wrapper-lg,
+.ant-input-affix-wrapper-status-error {
   background: var(--bg-card) !important;
   border: 0.5px solid var(--border-color) !important;
   border-radius: var(--radius-sm) !important;
@@ -190,31 +191,51 @@ body {
 }
 
 .ant-input-affix-wrapper-lg .ant-input,
-.ant-input-affix-wrapper .ant-input {
+.ant-input-affix-wrapper .ant-input,
+.ant-input-affix-wrapper-status-error .ant-input {
   height: 100% !important;
   font-size: 14px !important;
+  background: transparent !important;
+  color: var(--text-primary) !important;
 }
 
-.ant-input-affix-wrapper:hover {
+.ant-input-affix-wrapper:hover,
+.ant-input-affix-wrapper-lg:hover,
+.ant-input-affix-wrapper-status-error:hover {
   border-color: var(--brand-primary) !important;
   background: var(--bg-tertiary) !important;
 }
 
 .ant-input-affix-wrapper-focused,
-.ant-input-affix-wrapper:focus {
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-lg.ant-input-affix-wrapper-focused,
+.ant-input-affix-wrapper-status-error.ant-input-affix-wrapper-focused {
   border-color: var(--brand-primary) !important;
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important;
   background: var(--bg-tertiary) !important;
 }
 
-.ant-input-affix-wrapper .ant-input {
+.ant-input-affix-wrapper .ant-input,
+.ant-input-affix-wrapper-lg .ant-input,
+.ant-input-affix-wrapper-status-error .ant-input {
   background: transparent !important;
   border: none !important;
   color: var(--text-primary) !important;
 }
 
-.ant-input-affix-wrapper .ant-input::placeholder {
+.ant-input-affix-wrapper .ant-input::placeholder,
+.ant-input-affix-wrapper-lg .ant-input::placeholder,
+.ant-input-affix-wrapper-status-error .ant-input::placeholder {
   color: var(--text-tertiary) !important;
+}
+
+/* 强制所有输入框包装器都有背景 */
+input[class*="ant-input"] {
+  color: var(--text-primary) !important;
+}
+
+div[class*="ant-input-affix-wrapper"] {
+  background: var(--bg-card) !important;
 }
 
 /* 前缀后缀图标 */
