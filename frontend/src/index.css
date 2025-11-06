@@ -150,14 +150,16 @@ body {
 }
 
 /* 普通输入框 */
-.ant-input {
+.ant-input,
+.ant-input-lg {
   background: var(--bg-card) !important;
   border: 0.5px solid var(--border-color) !important;
   color: var(--text-primary) !important;
   border-radius: var(--radius-sm) !important;
-  transition: all 0.3s ease;
-  height: 40px;
-  padding: 8px 12px;
+  transition: all 0.3s ease !important;
+  height: 40px !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
 }
 
 .ant-input:hover {
@@ -177,12 +179,20 @@ body {
 }
 
 /* 带前缀的输入框 */
-.ant-input-affix-wrapper {
+.ant-input-affix-wrapper,
+.ant-input-affix-wrapper-lg {
   background: var(--bg-card) !important;
   border: 0.5px solid var(--border-color) !important;
   border-radius: var(--radius-sm) !important;
-  transition: all 0.3s ease;
-  padding: 8px 12px;
+  transition: all 0.3s ease !important;
+  padding: 8px 12px !important;
+  height: 40px !important;
+}
+
+.ant-input-affix-wrapper-lg .ant-input,
+.ant-input-affix-wrapper .ant-input {
+  height: 100% !important;
+  font-size: 14px !important;
 }
 
 .ant-input-affix-wrapper:hover {
@@ -214,11 +224,18 @@ body {
 }
 
 /* 密码输入框 */
-.ant-input-password {
+.ant-input-password,
+.ant-input-password-lg {
   background: var(--bg-card) !important;
   border: 0.5px solid var(--border-color) !important;
   border-radius: var(--radius-sm) !important;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease !important;
+  height: 40px !important;
+}
+
+.ant-input-password .ant-input,
+.ant-input-password-lg .ant-input {
+  font-size: 14px !important;
 }
 
 .ant-input-password:hover {
