@@ -74,12 +74,12 @@ export default function Register() {
       <div style={{
         width: '450px',
         padding: '48px',
-        background: 'var(--glass-bg)',
+        background: 'var(--bg-secondary)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         border: '1px solid var(--glass-border)',
         borderRadius: 'var(--radius-xl)',
-        boxShadow: 'var(--shadow-xl)',
+        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05)',
         position: 'relative',
         zIndex: 1,
       }}>

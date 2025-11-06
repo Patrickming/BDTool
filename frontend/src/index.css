@@ -57,6 +57,7 @@
   --bg-primary: #f8f9fa;
   --bg-secondary: #ffffff;
   --bg-tertiary: #f1f3f5;
+  --bg-card: #fafbfc;
 
   /* 品牌色保持一致 */
   --brand-primary: #6366f1;
@@ -139,9 +140,13 @@ body {
 
 /* Ant Design 主题覆盖 - Web3 风格 */
 .ant-form-item-label > label {
-  color: var(--text-secondary);
+  color: var(--text-primary) !important;
   font-size: 14px;
   font-weight: 500;
+}
+
+.ant-form-item {
+  margin-bottom: 20px;
 }
 
 .ant-input,
@@ -263,6 +268,27 @@ body {
 
 .ant-form-item-explain-error {
   color: var(--error) !important;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+/* Spin 加载组件 */
+.ant-spin-dot-item {
+  background-color: var(--brand-primary) !important;
+}
+
+/* Message 提示组件 */
+.ant-message {
+  z-index: 9999;
+}
+
+.ant-message-notice-content {
+  background: var(--bg-secondary) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  box-shadow: var(--shadow-lg) !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 12px 16px !important;
 }
 
 /* 链接样式 */
@@ -274,12 +300,4 @@ a {
 
 a:hover {
   color: var(--brand-hover);
-}
-
-/* 消息提示样式覆盖 */
-.ant-message-notice-content {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  box-shadow: var(--shadow-lg);
 }
