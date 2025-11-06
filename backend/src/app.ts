@@ -9,6 +9,7 @@ import { corsOptions } from '@config/cors.config';
 import { requestLogger } from '@common/middleware/request-logger.middleware';
 import { errorHandler, notFoundHandler } from '@common/middleware/error-handler.middleware';
 import { logger } from '@config/logger.config';
+import routes from './routes';
 
 export const createApp = (): Application => {
   const app = express();
@@ -35,8 +36,8 @@ export const createApp = (): Application => {
     });
   });
 
-  // API 路由（待实现）
-  // app.use('/api/v1', routes);
+  // API 路由
+  app.use('/api/v1', routes);
 
   // 404 处理
   app.use(notFoundHandler);

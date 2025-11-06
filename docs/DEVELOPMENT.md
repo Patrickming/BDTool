@@ -1,8 +1,8 @@
 # Development Log - KOL-BD-Tool
 
 **Project Start Date:** 2025-11-06
-**Current Phase:** Initial Setup
-**Current Version:** 0.1.0 (MVP in progress)
+**Current Phase:** Feature Development - Auth Module
+**Current Version:** 0.2.0 (用户认证已完成)
 
 ---
 
@@ -129,6 +129,53 @@
 
 ## Changelog
 
+### [0.2.0] - 2025-11-06
+
+#### ✅ 已完成 - 用户认证系统（功能 1.1）
+
+**后端实现：**
+- ✅ 创建 DTO（数据验证）
+  - `RegisterDto`: email, password, fullName
+  - `LoginDto`: email, password
+  - 使用 Zod 进行数据验证
+- ✅ 创建 Password Service（密码加密）
+  - `hashPassword()` - bcrypt 加密，10 轮
+  - `verifyPassword()` - 密码验证
+- ✅ 创建 JWT Service（Token 生成）
+  - `generateToken()` - 生成 JWT Token（7天有效期）
+  - `verifyToken()` - 验证 Token
+  - `extractTokenFromHeader()` - 从 Authorization Header 提取 Token
+- ✅ 创建 Auth Service（业务逻辑）
+  - `register()` - 用户注册（检查邮箱、加密密码、创建用户）
+  - `login()` - 用户登录（验证密码、生成 Token）
+  - `getCurrentUser()` - 获取当前用户信息
+- ✅ 创建 Auth Controller（HTTP 处理）
+  - `POST /api/v1/auth/register` - 用户注册
+  - `POST /api/v1/auth/login` - 用户登录
+  - `GET /api/v1/auth/me` - 获取当前用户信息
+- ✅ 创建 Auth Routes 并注册到主应用
+
+**测试结果：**
+- ✅ 用户注册测试通过（成功创建用户并返回 Token）
+- ✅ 重复邮箱注册测试通过（正确返回错误提示）
+- ✅ 数据验证测试通过（邮箱格式、密码强度、姓名长度）
+- ✅ 用户登录测试通过（返回用户信息和 Token）
+- ✅ 错误密码登录测试通过（返回错误提示）
+
+**文档更新：**
+- ✅ 创建 `docs/API.md` - 认证 API 文档
+- ✅ 更新 `docs/DEVELOPMENT.md` - 记录开发进度
+- ✅ 更新 `docs/开发任务.md` - 标记任务完成状态
+
+**技术亮点：**
+- 密码使用 bcrypt 加密（SALT_ROUNDS=10）
+- JWT Token 包含 issuer 和 audience 验证
+- 完善的错误处理（UnauthorizedError, BadRequestError, ValidationError）
+- 统一的 API 响应格式
+- Zod 数据验证（支持详细错误信息）
+
+---
+
 ### [0.1.0] - 2025-11-06
 
 #### Added
@@ -138,19 +185,29 @@
   - `docs/REQUIREMENTS.md` with detailed functional requirements
   - `docs/DATABASE.md` with complete schema design
   - `docs/DEVELOPMENT.md` (this file) for tracking progress
-- `.gitignore` configured for Python, Node.js, and sensitive files
-- Git repository initialized with proper configuration
+  - `docs/开发任务.md` - 中文开发任务跟踪
+- Backend infrastructure (TypeScript + Express + Prisma)
+  - Express app configuration with middleware
+  - Prisma schema with 6 models
+  - Environment configuration with Zod validation
+  - Error handling system
+  - Logger configuration (Pino)
+  - CORS configuration
+- Database migrated successfully (SQLite for development)
 
 #### Technical Details
 - **Directory Structure:**
-  - `backend/` for FastAPI application
-  - `frontend/` for React application
-  - `extension/` for Chrome browser extension
+  - `backend/` for TypeScript + Express application
+  - `frontend/` for React application (待实现)
+  - `extension/` for Chrome browser extension (待实现)
   - `docs/` for all documentation
-- **Documentation Standards:**
-  - Markdown format for all docs
-  - Detailed specifications with examples
-  - Clear section organization
+- **Backend Stack:**
+  - TypeScript 5.7
+  - Express 4.21
+  - Prisma 6.1
+  - JWT + bcrypt
+  - Zod validation
+  - Pino logger
 
 ---
 
