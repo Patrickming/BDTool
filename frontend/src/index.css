@@ -13,6 +13,7 @@
   --bg-primary: #0a0a0f;
   --bg-secondary: #13131a;
   --bg-tertiary: #1a1a24;
+  --bg-card: #16161f;
 
   /* 品牌色 - 科技蓝紫 */
   --brand-primary: #6366f1;
@@ -34,7 +35,7 @@
   --error: #ef4444;
 
   /* 玻璃态效果 */
-  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-bg: rgba(19, 19, 26, 0.8);
   --glass-border: rgba(255, 255, 255, 0.1);
 
   /* 阴影 */
@@ -144,8 +145,9 @@ body {
 }
 
 .ant-input,
-.ant-input-password {
-  background: var(--bg-tertiary) !important;
+.ant-input-password,
+.ant-input-password input {
+  background: var(--bg-card) !important;
   border: 1px solid var(--border-color) !important;
   color: var(--text-primary) !important;
   border-radius: var(--radius-sm) !important;
@@ -153,18 +155,38 @@ body {
 }
 
 .ant-input:hover,
-.ant-input-password:hover {
+.ant-input-password:hover,
+.ant-input-password:hover input {
   border-color: var(--brand-primary) !important;
+  background: var(--bg-tertiary) !important;
 }
 
 .ant-input:focus,
-.ant-input-password:focus {
+.ant-input-focused,
+.ant-input-password:focus,
+.ant-input-password.ant-input-affix-wrapper-focused {
   border-color: var(--brand-primary) !important;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1) !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important;
+  background: var(--bg-tertiary) !important;
 }
 
-.ant-input::placeholder {
-  color: var(--text-tertiary);
+.ant-input::placeholder,
+.ant-input-password input::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+/* 密码输入框特殊样式 */
+.ant-input-password .ant-input {
+  background: transparent !important;
+  border: none !important;
+}
+
+.ant-input-password-icon {
+  color: var(--text-tertiary) !important;
+}
+
+.ant-input-password-icon:hover {
+  color: var(--text-secondary) !important;
 }
 
 .ant-btn-primary {
@@ -190,13 +212,26 @@ body {
 }
 
 .ant-checkbox-inner {
-  background: var(--bg-tertiary) !important;
+  background: var(--bg-card) !important;
   border-color: var(--border-color) !important;
+  border-width: 1.5px !important;
+}
+
+.ant-checkbox:hover .ant-checkbox-inner {
+  border-color: var(--brand-primary) !important;
 }
 
 .ant-checkbox-checked .ant-checkbox-inner {
   background: var(--brand-primary) !important;
   border-color: var(--brand-primary) !important;
+}
+
+.ant-checkbox-wrapper {
+  color: var(--text-secondary) !important;
+}
+
+.ant-checkbox-wrapper:hover {
+  color: var(--text-primary) !important;
 }
 
 .ant-card {
