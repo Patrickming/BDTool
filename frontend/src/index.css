@@ -149,41 +149,97 @@ body {
   margin-bottom: 20px;
 }
 
-.ant-input,
-.ant-input-password,
-.ant-input-password input {
+/* 普通输入框 */
+.ant-input {
   background: var(--bg-card) !important;
   border: 1px solid var(--border-color) !important;
   color: var(--text-primary) !important;
   border-radius: var(--radius-sm) !important;
   transition: all 0.3s ease;
+  height: 40px;
+  padding: 8px 12px;
 }
 
-.ant-input:hover,
-.ant-input-password:hover,
-.ant-input-password:hover input {
+.ant-input:hover {
   border-color: var(--brand-primary) !important;
   background: var(--bg-tertiary) !important;
 }
 
 .ant-input:focus,
-.ant-input-focused,
-.ant-input-password:focus,
+.ant-input-focused {
+  border-color: var(--brand-primary) !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important;
+  background: var(--bg-tertiary) !important;
+}
+
+.ant-input::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+/* 带前缀的输入框 */
+.ant-input-affix-wrapper {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-sm) !important;
+  transition: all 0.3s ease;
+  padding: 8px 12px;
+}
+
+.ant-input-affix-wrapper:hover {
+  border-color: var(--brand-primary) !important;
+  background: var(--bg-tertiary) !important;
+}
+
+.ant-input-affix-wrapper-focused,
+.ant-input-affix-wrapper:focus {
+  border-color: var(--brand-primary) !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important;
+  background: var(--bg-tertiary) !important;
+}
+
+.ant-input-affix-wrapper .ant-input {
+  background: transparent !important;
+  border: none !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-input-affix-wrapper .ant-input::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+/* 前缀后缀图标 */
+.ant-input-prefix,
+.ant-input-suffix {
+  color: var(--text-tertiary) !important;
+}
+
+/* 密码输入框 */
+.ant-input-password {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-sm) !important;
+  transition: all 0.3s ease;
+}
+
+.ant-input-password:hover {
+  border-color: var(--brand-primary) !important;
+  background: var(--bg-tertiary) !important;
+}
+
 .ant-input-password.ant-input-affix-wrapper-focused {
   border-color: var(--brand-primary) !important;
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important;
   background: var(--bg-tertiary) !important;
 }
 
-.ant-input::placeholder,
-.ant-input-password input::placeholder {
-  color: var(--text-tertiary) !important;
-}
-
-/* 密码输入框特殊样式 */
 .ant-input-password .ant-input {
   background: transparent !important;
   border: none !important;
+  color: var(--text-primary) !important;
+}
+
+.ant-input-password .ant-input::placeholder {
+  color: var(--text-tertiary) !important;
 }
 
 .ant-input-password-icon {
