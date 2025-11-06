@@ -135,31 +135,31 @@ kol-bd-tool/
 - npm 9+
 - PostgreSQL 14+ (or SQLite for development)
 
-### Backend Setup
+### 后端设置
 
 ```bash
-# Navigate to backend directory
+# 进入后端目录
 cd backend
 
-# Install dependencies
-npm install
+# 安装依赖
+pnpm install
 
-# Set up environment variables
+# 配置环境变量
 cp .env.example .env
-# Edit .env with your configuration
+# 编辑 .env 填写你的配置
 
-# Generate Prisma Client
-npm run db:generate
+# 生成 Prisma Client
+pnpm db:generate
 
-# Run database migrations
-npm run db:migrate
+# 运行数据库迁移
+pnpm db:migrate
 
-# Start development server
-npm run dev
+# 启动开发服务器
+pnpm dev
 ```
 
-Backend will be available at: `http://localhost:3000`
-Health check: `http://localhost:3000/health`
+后端将在 `http://localhost:3000` 启动
+健康检查端点：`http://localhost:3000/health`
 
 ### Frontend Setup
 
