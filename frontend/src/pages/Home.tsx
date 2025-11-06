@@ -4,29 +4,52 @@
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Typography, Button, Space, Row, Col, Divider } from 'antd';
-import { LogoutOutlined, UserOutlined, DatabaseOutlined, FileTextOutlined, PhoneOutlined } from '@ant-design/icons';
+import { Card, Typography, Row, Col, Spin } from 'antd';
+import { UserOutlined, DatabaseOutlined, FileTextOutlined, PhoneOutlined } from '@ant-design/icons';
 import { useAuthStore } from '@/store/auth.store';
+import Navbar from '@/components/Navbar';
 
 const { Title, Text } = Typography;
 
 export default function Home() {
   const navigate = useNavigate();
-  const { user, isAuthenticated, clearAuth, loadUser } = useAuthStore();
+  const { user, isLoading, clearAuth, loadUser } = useAuthStore();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    // 检查是否有 token
+    const token = localStorage.getItem('auth_token');
+
+    if (!token) {
+      // 没有 token，跳转到登录页
       navigate('/login');
       return;
     }
-    loadUser();
-  }, [isAuthenticated, navigate, loadUser]);
 
-  const handleLogout = () => {
-    clearAuth();
-    navigate('/login');
-  };
+    // 有 token，尝试加载用户信息
+    if (!user) {
+      loadUser().catch(() => {
+        // 加载失败，跳转到登录页
+        navigate('/login');
+      });
+    }
+  }, [user, navigate, loadUser]);
 
+  // 加载中
+  if (isLoading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'var(--bg-primary)',
+      }}>
+        <Spin size="large" />
+      </div>
+    );
+  }
+
+  // 没有用户信息
   if (!user) {
     return null;
   }
@@ -35,10 +58,12 @@ export default function Home() {
     <div style={{
       minHeight: '100vh',
       background: 'var(--bg-primary)',
-      padding: '40px 20px',
       position: 'relative',
       overflow: 'hidden',
     }}>
+      {/* 导航栏 */}
+      <Navbar />
+
       {/* 背景装饰 */}
       <div style={{
         position: 'absolute',
@@ -51,47 +76,7 @@ export default function Home() {
         filter: 'blur(60px)',
       }} />
 
-      <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        {/* 顶部标题栏 */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: 48,
-          padding: '24px 32px',
-          background: 'var(--glass-bg)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid var(--glass-border)',
-          borderRadius: 'var(--radius-lg)',
-        }}>
-          <div>
-            <Title level={2} style={{
-              margin: 0,
-              fontSize: '28px',
-              fontWeight: 700,
-              background: 'var(--brand-gradient)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}>
-              KOL BD Tool
-            </Title>
-            <Text style={{ color: 'var(--text-secondary)', fontSize: '14px', marginTop: 4 }}>
-              Web3 BD 管理系统
-            </Text>
-          </div>
-          <Button
-            icon={<LogoutOutlined />}
-            onClick={handleLogout}
-            style={{
-              height: 40,
-              borderRadius: 'var(--radius-sm)',
-            }}
-          >
-            退出登录
-          </Button>
-        </div>
+      <div style={{ maxWidth: 1200, margin: '0 auto', position: 'relative', zIndex: 1, padding: '40px 20px' }}>
 
         {/* 用户信息卡片 */}
         <Card
