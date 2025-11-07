@@ -49,65 +49,49 @@ export const TemplateEdit: React.FC = () => {
   }
 
   return (
-    <div style={{ padding: '24px' }}>
-      <Card
-        className="animate-fade-in-up"
-        style={{
-          background: 'rgba(20, 241, 149, 0.05)',
-          border: '1px solid rgba(20, 241, 149, 0.2)',
-        }}
-      >
-        <Space direction="vertical" size="large" style={{ width: '100%' }}>
-          {/* 头部 */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <Button
-                icon={<ArrowLeftOutlined />}
-                onClick={() => navigate('/templates')}
-                size="large"
-              >
-                返回
-              </Button>
-              <Title level={2} style={{ margin: 0 }}>
-                ✏️ 编辑模板
-              </Title>
-            </div>
-            <Button
-              type="primary"
-              size="large"
-              icon={<SaveOutlined />}
-              onClick={handleSubmit}
-              loading={loading}
-              className="hover-lift"
-            >
-              保存更改
-            </Button>
-          </div>
+    <div style={{ padding: '24px', maxWidth: '1600px', margin: '0 auto' }}>
+      {/* 头部 */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <Button
+            icon={<ArrowLeftOutlined />}
+            onClick={() => navigate('/templates')}
+            size="large"
+          >
+            返回
+          </Button>
+          <Title level={2} style={{ margin: 0 }}>
+            ✏️ 编辑模板
+          </Title>
+        </div>
+        <Button
+          type="primary"
+          size="large"
+          icon={<SaveOutlined />}
+          onClick={handleSubmit}
+          loading={loading}
+          className="hover-lift"
+        >
+          保存更改
+        </Button>
+      </div>
 
-          {/* 模板信息 */}
-          {currentTemplate && (
-            <Card
-              size="small"
-              style={{
-                background: 'rgba(20, 241, 149, 0.03)',
-                border: '1px solid rgba(20, 241, 149, 0.15)',
-              }}
-            >
-              <Descriptions column={2} size="small">
-                <Descriptions.Item label="创建时间">
-                  {dayjs(currentTemplate.createdAt).format('YYYY-MM-DD HH:mm:ss')}
-                </Descriptions.Item>
-                <Descriptions.Item label="更新时间">
-                  {dayjs(currentTemplate.updatedAt).format('YYYY-MM-DD HH:mm:ss')}
-                </Descriptions.Item>
-              </Descriptions>
-            </Card>
-          )}
+      {/* 模板信息 */}
+      {currentTemplate && (
+        <div style={{ marginBottom: '16px', padding: '12px 16px', background: 'rgba(20, 241, 149, 0.05)', borderRadius: '8px' }}>
+          <Descriptions column={2} size="small">
+            <Descriptions.Item label="创建时间">
+              {dayjs(currentTemplate.createdAt).format('YYYY-MM-DD HH:mm:ss')}
+            </Descriptions.Item>
+            <Descriptions.Item label="更新时间">
+              {dayjs(currentTemplate.updatedAt).format('YYYY-MM-DD HH:mm:ss')}
+            </Descriptions.Item>
+          </Descriptions>
+        </div>
+      )}
 
-          {/* 编辑器 */}
-          <TemplateEditor form={form} initialValues={currentTemplate || undefined} />
-        </Space>
-      </Card>
+      {/* 编辑器 */}
+      <TemplateEditor form={form} initialValues={currentTemplate || undefined} />
     </div>
   );
 };

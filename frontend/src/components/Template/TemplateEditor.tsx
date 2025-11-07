@@ -152,84 +152,76 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({ form, initialVal
   }));
 
   return (
-    <Row gutter={16}>
-      <Col xs={24} lg={20}>
-        <Card
-          title="模板信息"
-          style={{
-            background: 'rgba(20, 241, 149, 0.03)',
-            border: '1px solid rgba(20, 241, 149, 0.2)',
-          }}
-        >
-          <Form
-            form={form}
-            layout="vertical"
-            initialValues={initialValues || { versions: [{ language: 'en', content: '' }] }}
+    <Form
+      form={form}
+      layout="vertical"
+      initialValues={initialValues || { versions: [{ language: 'en', content: '' }] }}
+    >
+      <Row gutter={24}>
+        <Col xs={24} lg={18}>
+          {/* 基本信息 */}
+          <Form.Item
+            label="模板名称"
+            name="name"
+            rules={[
+              { required: true, message: '请输入模板名称' },
+              { max: 100, message: '模板名称不能超过100个字符' },
+            ]}
           >
-            {/* 基本信息 */}
-            <Form.Item
-              label="模板名称"
-              name="name"
-              rules={[
-                { required: true, message: '请输入模板名称' },
-                { max: 100, message: '模板名称不能超过100个字符' },
-              ]}
-            >
-              <Input placeholder="例如：初次联系模板" size="large" />
-            </Form.Item>
+            <Input placeholder="例如：初次联系模板" size="large" />
+          </Form.Item>
 
-            <Form.Item
-              label="模板分类"
-              name="category"
-              rules={[{ required: true, message: '请选择模板分类' }]}
-            >
-              <Select placeholder="选择分类" size="large">
-                {Object.entries(TEMPLATE_CATEGORY_CONFIG).map(([key, config]) => (
-                  <Select.Option key={key} value={key}>
-                    <span style={{ marginRight: '8px' }}>{config.icon}</span>
-                    {config.label}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
+          <Form.Item
+            label="模板分类"
+            name="category"
+            rules={[{ required: true, message: '请选择模板分类' }]}
+          >
+            <Select placeholder="选择分类" size="large">
+              {Object.entries(TEMPLATE_CATEGORY_CONFIG).map(([key, config]) => (
+                <Select.Option key={key} value={key}>
+                  <span style={{ marginRight: '8px' }}>{config.icon}</span>
+                  {config.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
 
-            {/* 多语言版本编辑 */}
-            <Form.Item label="模板内容（多语言版本）">
-              <Tabs
-                activeKey={activeLanguage}
-                onChange={setActiveLanguage}
-                items={tabItems}
-                tabBarExtraContent={
-                  availableLanguages.length > 0 && (
-                    <Select
-                      placeholder="添加语言版本"
-                      style={{ width: 180 }}
-                      onChange={handleAddLanguage}
-                      value={undefined}
-                      suffixIcon={<PlusOutlined />}
-                    >
-                      {availableLanguages.map(lang => (
-                        <Select.Option key={lang.value} value={lang.value}>
-                          {lang.label}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  )
-                }
-              />
-            </Form.Item>
+          {/* 多语言版本编辑 */}
+          <Form.Item label="模板内容（多语言版本）">
+            <Tabs
+              activeKey={activeLanguage}
+              onChange={setActiveLanguage}
+              items={tabItems}
+              tabBarExtraContent={
+                availableLanguages.length > 0 && (
+                  <Select
+                    placeholder="添加语言版本"
+                    style={{ width: 180 }}
+                    onChange={handleAddLanguage}
+                    value={undefined}
+                    suffixIcon={<PlusOutlined />}
+                  >
+                    {availableLanguages.map(lang => (
+                      <Select.Option key={lang.value} value={lang.value}>
+                        {lang.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                )
+              }
+            />
+          </Form.Item>
 
-            {/* 隐藏的 versions 字段，用于表单验证 */}
-            <Form.Item name="versions" hidden>
-              <Input />
-            </Form.Item>
-          </Form>
-        </Card>
-      </Col>
+          {/* 隐藏的 versions 字段，用于表单验证 */}
+          <Form.Item name="versions" hidden>
+            <Input />
+          </Form.Item>
+        </Col>
 
-      <Col xs={24} lg={4}>
-        <VariableHelper onInsert={handleInsertVariable} />
-      </Col>
-    </Row>
+        <Col xs={24} lg={6}>
+          <VariableHelper onInsert={handleInsertVariable} />
+        </Col>
+      </Row>
+    </Form>
   );
 };
