@@ -1,5 +1,5 @@
 /**
- * 模板类型定义
+ * 模板类型定义（多语言版本）
  */
 
 /**
@@ -8,42 +8,54 @@
 export type TemplateCategory = 'initial' | 'followup' | 'negotiation' | 'collaboration' | 'maintenance';
 
 /**
- * 模板接口
+ * 模板语言版本接口
+ */
+export interface TemplateVersion {
+  id: number;
+  templateId: number;
+  language: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * 模板接口（多语言版本）
  */
 export interface Template {
   id: number;
   userId: number;
   name: string;
   category: TemplateCategory;
-  content: string;
-  language: string;
-  aiGenerated: boolean;
-  useCount: number;
-  successCount: number;
+  versions: TemplateVersion[]; // 多语言版本数组
   createdAt: string;
   updatedAt: string;
 }
 
 /**
- * 创建模板 DTO
+ * 语言版本数据（用于创建/更新）
+ */
+export interface TemplateVersionData {
+  language: string;
+  content: string;
+}
+
+/**
+ * 创建模板 DTO（多语言版本）
  */
 export interface CreateTemplateDto {
   name: string;
   category: TemplateCategory;
-  content: string;
-  language?: string;
-  aiGenerated?: boolean;
+  versions: TemplateVersionData[]; // 至少一个语言版本
 }
 
 /**
- * 更新模板 DTO
+ * 更新模板 DTO（多语言版本）
  */
 export interface UpdateTemplateDto {
   name?: string;
   category?: TemplateCategory;
-  content?: string;
-  language?: string;
-  aiGenerated?: boolean;
+  versions?: TemplateVersionData[]; // 可选更新语言版本
 }
 
 /**
@@ -61,12 +73,13 @@ export interface TemplateQueryParams {
 }
 
 /**
- * 模板预览请求
+ * 模板预览请求（支持语言选择）
  */
 export interface PreviewTemplateDto {
   templateId?: number;
-  content: string;
-  kolId?: number;
+  language?: string; // 指定语言版本
+  content?: string; // 或直接提供内容
+  kolId?: number; // 选择 KOL 进行变量替换
 }
 
 /**
