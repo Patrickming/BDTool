@@ -1,11 +1,9 @@
 /**
- * Solana 风格主题系统
+ * Solana 风格主题系统 - 纯暗色模式
  * Color System inspired by Solana
- * 完整支持暗色/亮色模式
  */
 
-:root,
-[data-theme='dark'] {
+:root {
   /* Solana 品牌色 */
   --solana-purple: #9945FF;
   --solana-green: #14F195;
@@ -18,25 +16,25 @@
   --gradient-tertiary: linear-gradient(135deg, #9945FF 0%, #DC1FFF 50%, #14F195 100%);
   --gradient-glow: radial-gradient(circle, rgba(153, 69, 255, 0.4) 0%, transparent 70%);
 
-  /* 背景色 - 暗色模式 */
+  /* 背景色 */
   --bg-primary: #000000;
   --bg-secondary: #0a0a0f;
   --bg-tertiary: #141420;
   --bg-card: rgba(20, 20, 32, 0.6);
   --bg-glass: rgba(255, 255, 255, 0.05);
 
-  /* 文字色 - 暗色模式 */
+  /* 文字色 */
   --text-primary: #ffffff;
   --text-secondary: rgba(255, 255, 255, 0.7);
   --text-tertiary: rgba(255, 255, 255, 0.5);
   --text-muted: rgba(255, 255, 255, 0.3);
 
-  /* 边框色 - 暗色模式 */
+  /* 边框色 */
   --border-primary: rgba(153, 69, 255, 0.3);
   --border-secondary: rgba(255, 255, 255, 0.1);
   --border-glow: rgba(153, 69, 255, 0.6);
 
-  /* 阴影 - 暗色模式 */
+  /* 阴影 */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
@@ -58,69 +56,6 @@
   --spacing-2xl: 48px;
 
   /* Z-index */
-  --z-background: 0;
-  --z-content: 1;
-  --z-card: 2;
-  --z-header: 10;
-  --z-dropdown: 20;
-  --z-modal: 30;
-  --z-tooltip: 40;
-}
-
-/* 亮色模式主题变量 */
-[data-theme='light'] {
-  /* Solana 品牌色 (保持一致) */
-  --solana-purple: #9945FF;
-  --solana-green: #14F195;
-  --solana-blue: #00D4AA;
-  --solana-pink: #DC1FFF;
-
-  /* 渐变色 (保持一致) */
-  --gradient-primary: linear-gradient(135deg, #9945FF 0%, #14F195 100%);
-  --gradient-secondary: linear-gradient(135deg, #DC1FFF 0%, #00D4AA 100%);
-  --gradient-tertiary: linear-gradient(135deg, #9945FF 0%, #DC1FFF 50%, #14F195 100%);
-  --gradient-glow: radial-gradient(circle, rgba(153, 69, 255, 0.3) 0%, transparent 70%);
-
-  /* 背景色 - 亮色模式 */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --bg-tertiary: #f0f2f5;
-  --bg-card: rgba(255, 255, 255, 0.8);
-  --bg-glass: rgba(255, 255, 255, 0.6);
-
-  /* 文字色 - 亮色模式 */
-  --text-primary: #1a1a1a;
-  --text-secondary: rgba(0, 0, 0, 0.75);
-  --text-tertiary: rgba(0, 0, 0, 0.55);
-  --text-muted: rgba(0, 0, 0, 0.35);
-
-  /* 边框色 - 亮色模式 */
-  --border-primary: rgba(153, 69, 255, 0.25);
-  --border-secondary: rgba(0, 0, 0, 0.08);
-  --border-glow: rgba(153, 69, 255, 0.5);
-
-  /* 阴影 - 亮色模式 */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
-  --shadow-glow: 0 0 40px rgba(153, 69, 255, 0.25);
-  --shadow-glow-green: 0 0 40px rgba(20, 241, 149, 0.25);
-
-  /* 圆角 (保持一致) */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-
-  /* 间距 (保持一致) */
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  --spacing-2xl: 48px;
-
-  /* Z-index (保持一致) */
   --z-background: 0;
   --z-content: 1;
   --z-card: 2;

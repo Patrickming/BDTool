@@ -1,5 +1,5 @@
 /**
- * 首页 - Web3 简约高级风格
+ * 首页 - Solana 风格
  */
 
 import { useEffect } from 'react';
@@ -14,6 +14,7 @@ import {
   RocketOutlined,
   ThunderboltOutlined,
   StarOutlined,
+  ArrowRightOutlined,
 } from '@ant-design/icons';
 import { useAuthStore } from '@/store/auth.store';
 
@@ -24,25 +25,18 @@ export default function Home() {
   const { user, isLoading, loadUser } = useAuthStore();
 
   useEffect(() => {
-    // 检查是否有 token
     const token = localStorage.getItem('auth_token');
-
     if (!token) {
-      // 没有 token，跳转到登录页
       navigate('/login');
       return;
     }
-
-    // 有 token，尝试加载用户信息
     if (!user) {
       loadUser().catch(() => {
-        // 加载失败，跳转到登录页
         navigate('/login');
       });
     }
   }, [user, navigate, loadUser]);
 
-  // 加载中
   if (isLoading) {
     return (
       <div
@@ -58,111 +52,64 @@ export default function Home() {
     );
   }
 
-  // 没有用户信息
   if (!user) {
     return null;
   }
 
   return (
-    <div style={{ padding: '0 8px' }}>
+    <div>
       {/* 欢迎横幅 */}
       <div
-        className="animate-fade-in-up"
         style={{
-          background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '40px 32px',
-          marginBottom: 24,
-          position: 'relative',
-          overflow: 'hidden',
-          border: '1px solid rgba(153, 69, 255, 0.2)',
+          background: 'rgba(255, 255, 255, 0.02)',
+          borderRadius: '12px',
+          padding: '48px',
+          marginBottom: 40,
+          border: '1px solid rgba(255, 255, 255, 0.06)',
         }}
       >
-        {/* 背景装饰 */}
-        <div
-          style={{
-            position: 'absolute',
-            top: -50,
-            right: -50,
-            width: 200,
-            height: 200,
-            background: 'radial-gradient(circle, rgba(153, 69, 255, 0.3) 0%, transparent 70%)',
-            borderRadius: '50%',
-            filter: 'blur(40px)',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            bottom: -30,
-            left: -30,
-            width: 150,
-            height: 150,
-            background: 'radial-gradient(circle, rgba(20, 241, 149, 0.3) 0%, transparent 70%)',
-            borderRadius: '50%',
-            filter: 'blur(40px)',
-          }}
-        />
-
-        <Row align="middle" gutter={24} style={{ position: 'relative', zIndex: 1 }}>
-          <Col flex="auto">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 12 }}>
-              <div
-                style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: '50%',
-                  background: 'var(--gradient-primary)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: 'var(--shadow-glow)',
-                }}
-                className="animate-pulse-glow"
-              >
-                <UserOutlined style={{ fontSize: 28, color: 'white' }} />
-              </div>
-              <div>
-                <Title level={2} style={{ margin: 0, color: '#fff', fontSize: 28 }}>
-                  欢迎回来，
-                  <span
-                    style={{
-                      background: 'var(--gradient-primary)',
-                      WebkitBackgroundClip: 'text',
-                      backgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      marginLeft: 8,
-                    }}
-                    className="animate-gradient"
-                  >
-                    {user.fullName}
-                  </span>
-                </Title>
-                <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>
-                  {user.role === 'admin' ? '管理员' : '团队成员'} • {user.email}
-                </Text>
-              </div>
-            </div>
-          </Col>
-        </Row>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+          <div
+            style={{
+              width: 64,
+              height: 64,
+              borderRadius: '12px',
+              background: 'linear-gradient(135deg, #9945FF 0%, #14F195 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <UserOutlined style={{ fontSize: 32, color: 'white' }} />
+          </div>
+          <div>
+            <h1 style={{ margin: 0, color: '#ffffff', fontSize: 32, fontWeight: 600 }}>
+              欢迎回来，{user.fullName}
+            </h1>
+            <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 16 }}>
+              {user.role === 'admin' ? '管理员' : '团队成员'} • {user.email}
+            </Text>
+          </div>
+        </div>
       </div>
 
-      {/* 快速统计卡片 */}
-      <Row gutter={[16, 16]} className="animate-fade-in-up" style={{ marginBottom: 24 }}>
+      {/* 快速统计 */}
+      <Row gutter={[24, 24]} style={{ marginBottom: 48 }}>
         <Col xs={24} sm={12} lg={6}>
           <Card
             bordered={false}
             style={{
-              background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-              borderRadius: 'var(--radius-md)',
+              background: 'rgba(255, 255, 255, 0.02)',
+              borderRadius: '12px',
               border: '1px solid rgba(153, 69, 255, 0.2)',
             }}
+            bodyStyle={{ padding: 24 }}
           >
             <Statistic
-              title={<span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>KOL 总数</span>}
+              title={<span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>KOL 总数</span>}
               value={0}
-              prefix={<DatabaseOutlined style={{ color: '#9945FF' }} />}
-              valueStyle={{ color: '#fff', fontSize: 24 }}
+              prefix={<DatabaseOutlined style={{ color: '#9945FF', fontSize: 20 }} />}
+              valueStyle={{ color: '#fff', fontSize: 28, fontWeight: 600 }}
             />
           </Card>
         </Col>
@@ -170,16 +117,17 @@ export default function Home() {
           <Card
             bordered={false}
             style={{
-              background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-              borderRadius: 'var(--radius-md)',
+              background: 'rgba(255, 255, 255, 0.02)',
+              borderRadius: '12px',
               border: '1px solid rgba(20, 241, 149, 0.2)',
             }}
+            bodyStyle={{ padding: 24 }}
           >
             <Statistic
-              title={<span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>模板数量</span>}
+              title={<span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>模板数量</span>}
               value={0}
-              prefix={<FileTextOutlined style={{ color: '#14F195' }} />}
-              valueStyle={{ color: '#fff', fontSize: 24 }}
+              prefix={<FileTextOutlined style={{ color: '#14F195', fontSize: 20 }} />}
+              valueStyle={{ color: '#fff', fontSize: 28, fontWeight: 600 }}
             />
           </Card>
         </Col>
@@ -187,16 +135,17 @@ export default function Home() {
           <Card
             bordered={false}
             style={{
-              background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-              borderRadius: 'var(--radius-md)',
+              background: 'rgba(255, 255, 255, 0.02)',
+              borderRadius: '12px',
               border: '1px solid rgba(0, 212, 170, 0.2)',
             }}
+            bodyStyle={{ padding: 24 }}
           >
             <Statistic
-              title={<span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>联系次数</span>}
+              title={<span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>联系次数</span>}
               value={0}
-              prefix={<ThunderboltOutlined style={{ color: '#00D4AA' }} />}
-              valueStyle={{ color: '#fff', fontSize: 24 }}
+              prefix={<ThunderboltOutlined style={{ color: '#00D4AA', fontSize: 20 }} />}
+              valueStyle={{ color: '#fff', fontSize: 28, fontWeight: 600 }}
             />
           </Card>
         </Col>
@@ -204,234 +153,223 @@ export default function Home() {
           <Card
             bordered={false}
             style={{
-              background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-              borderRadius: 'var(--radius-md)',
+              background: 'rgba(255, 255, 255, 0.02)',
+              borderRadius: '12px',
               border: '1px solid rgba(220, 31, 255, 0.2)',
             }}
+            bodyStyle={{ padding: 24 }}
           >
             <Statistic
-              title={<span style={{ color: 'rgba(255, 255, 255, 0.6)' }}>活跃合作</span>}
+              title={<span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>活跃合作</span>}
               value={0}
-              prefix={<StarOutlined style={{ color: '#DC1FFF' }} />}
-              valueStyle={{ color: '#fff', fontSize: 24 }}
+              prefix={<StarOutlined style={{ color: '#DC1FFF', fontSize: 20 }} />}
+              valueStyle={{ color: '#fff', fontSize: 28, fontWeight: 600 }}
             />
           </Card>
         </Col>
       </Row>
 
-      {/* 功能模块卡片 */}
-      <Card
-        title={
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <RocketOutlined
-              style={{
-                fontSize: 20,
-                background: 'var(--gradient-primary)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            />
-            <span style={{ fontSize: 18, fontWeight: 600 }}>功能模块</span>
-          </div>
-        }
-        bordered={false}
-        style={{
-          background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
-          borderRadius: 'var(--radius-lg)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-        }}
-        headStyle={{
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-          color: '#fff',
-        }}
-        bodyStyle={{ padding: '24px' }}
-        className="animate-fade-in-up"
-      >
-        <Row gutter={[16, 16]}>
-          <Col xs={24} sm={12} md={6}>
+      {/* 功能模块 */}
+      <div>
+        <h2
+          style={{
+            fontSize: 28,
+            fontWeight: 600,
+            color: '#ffffff',
+            marginBottom: 24,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12,
+          }}
+        >
+          <RocketOutlined style={{ color: '#9945FF' }} />
+          功能模块
+        </h2>
+        <Row gutter={[24, 24]}>
+          <Col xs={24} sm={12} lg={6}>
             <div
               onClick={() => navigate('/kols')}
-              className="hover-lift"
               style={{
-                padding: 24,
-                background: 'rgba(153, 69, 255, 0.1)',
-                border: '1px solid rgba(153, 69, 255, 0.3)',
-                borderRadius: 'var(--radius-md)',
+                padding: 32,
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                borderRadius: '12px',
                 cursor: 'pointer',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                transition: 'all 0.2s',
                 height: '100%',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                e.currentTarget.style.border = '1px solid rgba(153, 69, 255, 0.3)';
+                e.currentTarget.style.transform = 'translateY(-4px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+                e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.06)';
+                e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
               <div
                 style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 'var(--radius-sm)',
-                  background: 'var(--gradient-primary)',
+                  width: 48,
+                  height: 48,
+                  borderRadius: '8px',
+                  background: 'linear-gradient(135deg, #9945FF 0%, #14F195 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginBottom: 16,
-                  boxShadow: '0 0 30px rgba(153, 69, 255, 0.5)',
+                  marginBottom: 20,
                 }}
-                className="animate-pulse-glow"
               >
-                <DatabaseOutlined style={{ fontSize: 28, color: 'white' }} />
+                <DatabaseOutlined style={{ fontSize: 24, color: 'white' }} />
               </div>
-              <Title level={4} style={{ margin: 0, marginBottom: 8, fontSize: 18, color: '#fff' }}>
+              <Title level={4} style={{ margin: 0, marginBottom: 12, fontSize: 20, color: '#fff', fontWeight: 600 }}>
                 KOL 管理
               </Title>
-              <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>
+              <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14, display: 'block', marginBottom: 16 }}>
                 管理 KOL 数据库，筛选和评分
               </Text>
-              <div style={{ marginTop: 16 }}>
-                <Text
-                  className="text-gradient"
-                  style={{ fontSize: 13, fontWeight: 600 }}
-                >
-                  立即使用 →
-                </Text>
-              </div>
+              <Text style={{ color: '#9945FF', fontSize: 14, fontWeight: 500 }}>
+                立即使用 <ArrowRightOutlined />
+              </Text>
             </div>
           </Col>
 
-          <Col xs={24} sm={12} md={6}>
+          <Col xs={24} sm={12} lg={6}>
             <div
               onClick={() => navigate('/templates')}
-              className="hover-lift"
               style={{
-                padding: 24,
-                background: 'rgba(220, 31, 255, 0.1)',
-                border: '1px solid rgba(220, 31, 255, 0.3)',
-                borderRadius: 'var(--radius-md)',
+                padding: 32,
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                borderRadius: '12px',
                 cursor: 'pointer',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                transition: 'all 0.2s',
                 height: '100%',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                e.currentTarget.style.border = '1px solid rgba(220, 31, 255, 0.3)';
+                e.currentTarget.style.transform = 'translateY(-4px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+                e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.06)';
+                e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
               <div
                 style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 'var(--radius-sm)',
-                  background: 'var(--gradient-secondary)',
+                  width: 48,
+                  height: 48,
+                  borderRadius: '8px',
+                  background: 'linear-gradient(135deg, #DC1FFF 0%, #00D4AA 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginBottom: 16,
-                  boxShadow: '0 0 30px rgba(220, 31, 255, 0.5)',
+                  marginBottom: 20,
                 }}
-                className="animate-pulse-glow"
               >
-                <FileTextOutlined style={{ fontSize: 28, color: 'white' }} />
+                <FileTextOutlined style={{ fontSize: 24, color: 'white' }} />
               </div>
-              <Title level={4} style={{ margin: 0, marginBottom: 8, fontSize: 18, color: '#fff' }}>
+              <Title level={4} style={{ margin: 0, marginBottom: 12, fontSize: 20, color: '#fff', fontWeight: 600 }}>
                 模板管理
               </Title>
-              <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>
+              <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14, display: 'block', marginBottom: 16 }}>
                 多语言模板，快速复制
               </Text>
-              <div style={{ marginTop: 16 }}>
-                <Text
-                  className="text-gradient"
-                  style={{ fontSize: 13, fontWeight: 600 }}
-                >
-                  立即使用 →
-                </Text>
-              </div>
+              <Text style={{ color: '#DC1FFF', fontSize: 14, fontWeight: 500 }}>
+                立即使用 <ArrowRightOutlined />
+              </Text>
             </div>
           </Col>
 
-          <Col xs={24} sm={12} md={6}>
+          <Col xs={24} sm={12} lg={6}>
             <div
               onClick={() => navigate('/analytics')}
-              className="hover-lift"
               style={{
-                padding: 24,
-                background: 'rgba(20, 241, 149, 0.1)',
-                border: '1px solid rgba(20, 241, 149, 0.3)',
-                borderRadius: 'var(--radius-md)',
+                padding: 32,
+                background: 'rgba(255, 255, 255, 0.02)',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                borderRadius: '12px',
                 cursor: 'pointer',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                transition: 'all 0.2s',
                 height: '100%',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                e.currentTarget.style.border = '1px solid rgba(20, 241, 149, 0.3)';
+                e.currentTarget.style.transform = 'translateY(-4px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+                e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.06)';
+                e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
               <div
                 style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 'var(--radius-sm)',
+                  width: 48,
+                  height: 48,
+                  borderRadius: '8px',
                   background: 'linear-gradient(135deg, #14F195 0%, #00D4AA 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginBottom: 16,
-                  boxShadow: '0 0 30px rgba(20, 241, 149, 0.5)',
+                  marginBottom: 20,
                 }}
-                className="animate-pulse-glow"
               >
-                <BarChartOutlined style={{ fontSize: 28, color: 'white' }} />
+                <BarChartOutlined style={{ fontSize: 24, color: 'white' }} />
               </div>
-              <Title level={4} style={{ margin: 0, marginBottom: 8, fontSize: 18, color: '#fff' }}>
+              <Title level={4} style={{ margin: 0, marginBottom: 12, fontSize: 20, color: '#fff', fontWeight: 600 }}>
                 数据分析
               </Title>
-              <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>
+              <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14, display: 'block', marginBottom: 16 }}>
                 可视化图表，深度洞察
               </Text>
-              <div style={{ marginTop: 16 }}>
-                <Text
-                  className="text-gradient"
-                  style={{ fontSize: 13, fontWeight: 600 }}
-                >
-                  立即使用 →
-                </Text>
-              </div>
+              <Text style={{ color: '#14F195', fontSize: 14, fontWeight: 500 }}>
+                立即使用 <ArrowRightOutlined />
+              </Text>
             </div>
           </Col>
 
-          <Col xs={24} sm={12} md={6}>
+          <Col xs={24} sm={12} lg={6}>
             <div
               style={{
-                padding: 24,
-                background: 'rgba(138, 138, 138, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: 'var(--radius-md)',
+                padding: 32,
+                background: 'rgba(255, 255, 255, 0.01)',
+                border: '1px solid rgba(255, 255, 255, 0.04)',
+                borderRadius: '12px',
                 cursor: 'not-allowed',
                 opacity: 0.5,
-                transition: 'all 0.3s ease',
                 height: '100%',
               }}
             >
               <div
                 style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 'var(--radius-sm)',
-                  background: 'rgba(138, 138, 138, 0.3)',
+                  width: 48,
+                  height: 48,
+                  borderRadius: '8px',
+                  background: 'rgba(138, 138, 138, 0.2)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginBottom: 16,
+                  marginBottom: 20,
                 }}
               >
-                <PhoneOutlined style={{ fontSize: 28, color: 'rgba(255, 255, 255, 0.5)' }} />
+                <PhoneOutlined style={{ fontSize: 24, color: 'rgba(255, 255, 255, 0.4)' }} />
               </div>
-              <Title level={4} style={{ margin: 0, marginBottom: 8, fontSize: 18, color: '#fff' }}>
+              <Title level={4} style={{ margin: 0, marginBottom: 12, fontSize: 20, color: '#fff', fontWeight: 600 }}>
                 联系记录
               </Title>
-              <Text style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: 14 }}>
+              <Text style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: 14, display: 'block', marginBottom: 16 }}>
                 历史记录，统计分析
               </Text>
-              <div style={{ marginTop: 16 }}>
-                <Text style={{ color: 'rgba(255, 255, 255, 0.3)', fontSize: 13 }}>
-                  即将推出
-                </Text>
-              </div>
+              <Text style={{ color: 'rgba(255, 255, 255, 0.3)', fontSize: 14 }}>即将推出</Text>
             </div>
           </Col>
         </Row>
-      </Card>
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@
  * 包含顶部导航栏和主题切换功能
  */
 
-import { Layout, Menu, Button, Dropdown, Avatar, Space } from 'antd';
+import { Layout, Menu, Dropdown, Avatar, Space } from 'antd';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import {
   HomeOutlined,
@@ -13,11 +13,8 @@ import {
   BarChartOutlined,
   SettingOutlined,
   LogoutOutlined,
-  SunOutlined,
-  MoonOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { useThemeStore } from '@/store/theme.store';
 import { useAuthStore } from '@/store/auth.store';
 import type { MenuProps } from 'antd';
 
@@ -29,8 +26,6 @@ const { Header, Content } = Layout;
 export default function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const theme = useThemeStore((state) => state.theme);
-  const toggleTheme = useThemeStore((state) => state.toggleTheme);
   const { user, clearAuth } = useAuthStore();
 
   // 处理登出
@@ -117,176 +112,137 @@ export default function AppLayout() {
       {/* 背景粒子效果 */}
       <div className="particles-bg" />
 
-      {/* 顶部导航栏 */}
+      {/* 顶部导航栏 - Solana 风格 */}
       <Header
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
-          zIndex: 100,
+          zIndex: 1000,
           width: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 32px',
-          background: 'linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%)',
-          backdropFilter: 'blur(30px)',
-          WebkitBackdropFilter: 'blur(30px)',
-          borderBottom: '1px solid rgba(153, 69, 255, 0.2)',
-          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.3)',
-          height: 70,
+          padding: '0 48px',
+          background: 'rgba(0, 0, 0, 0.8)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+          height: 64,
         }}
       >
-        {/* 左侧：Logo + 导航菜单 */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 40 }}>
-          {/* Logo */}
+        {/* 左侧：Logo */}
+        <div
+          onClick={() => navigate('/')}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            cursor: 'pointer',
+            transition: 'opacity 0.2s',
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.8')}
+          onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+        >
           <div
-            onClick={() => navigate('/')}
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: '6px',
+              background: 'linear-gradient(135deg, #9945FF 0%, #14F195 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 18,
+              fontWeight: 700,
+              color: 'white',
+            }}
+          >
+            K
+          </div>
+          <span
+            style={{
+              fontSize: 17,
+              fontWeight: 600,
+              color: '#ffffff',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            KOL BD Tool
+          </span>
+        </div>
+
+        {/* 中间：导航菜单 */}
+        <Menu
+          mode="horizontal"
+          selectedKeys={[getSelectedKey()]}
+          items={menuItems}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            flex: 1,
+            justifyContent: 'center',
+            maxWidth: 600,
+          }}
+          theme="dark"
+        />
+
+        {/* 右侧：用户信息 */}
+        <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+          <div
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 12,
+              gap: 10,
               cursor: 'pointer',
               padding: '6px 12px',
-              borderRadius: 'var(--radius-md)',
-              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              borderRadius: '8px',
+              transition: 'background 0.2s',
             }}
-            className="hover-lift"
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)')
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = 'transparent')
+            }
           >
-            <div
+            <Avatar
+              size={32}
               style={{
-                width: 40,
-                height: 40,
-                borderRadius: 'var(--radius-sm)',
-                background: 'var(--gradient-primary)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 22,
-                fontWeight: 700,
-                color: 'white',
-                boxShadow: '0 0 30px rgba(153, 69, 255, 0.6)',
+                background: 'linear-gradient(135deg, #9945FF 0%, #14F195 100%)',
+                fontWeight: 600,
               }}
-              className="animate-pulse-glow"
             >
-              K
-            </div>
+              {user?.fullName?.[0]?.toUpperCase()}
+            </Avatar>
             <span
               style={{
-                fontSize: 20,
-                fontWeight: 700,
-                background: 'var(--gradient-primary)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                letterSpacing: '0.5px',
+                color: '#ffffff',
+                fontWeight: 500,
+                fontSize: 14,
               }}
-              className="animate-gradient"
             >
-              KOL BD Tool
+              {user?.fullName}
             </span>
           </div>
-
-          {/* 导航菜单 */}
-          <Menu
-            mode="horizontal"
-            selectedKeys={[getSelectedKey()]}
-            items={menuItems}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--text-primary)',
-              minWidth: 450,
-              flex: 1,
-              fontSize: 15,
-            }}
-            theme="dark"
-          />
-        </div>
-
-        {/* 右侧：主题切换和用户信息 */}
-        <Space size={12}>
-          {/* 主题切换按钮 */}
-          <Button
-            type="text"
-            icon={theme === 'dark' ? <SunOutlined /> : <MoonOutlined />}
-            onClick={toggleTheme}
-            style={{
-              fontSize: 18,
-              width: 44,
-              height: 44,
-              color: 'var(--text-primary)',
-              borderRadius: 'var(--radius-md)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              background: 'rgba(255, 255, 255, 0.05)',
-              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            }}
-            className="hover-glow"
-          />
-
-          {/* 用户下拉菜单 */}
-          <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                cursor: 'pointer',
-                padding: '8px 16px',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                background: 'rgba(255, 255, 255, 0.05)',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-              }}
-              className="hover-lift"
-            >
-              <Avatar
-                size={36}
-                style={{
-                  background: 'var(--gradient-primary)',
-                  border: '2px solid rgba(153, 69, 255, 0.5)',
-                  boxShadow: '0 0 20px rgba(153, 69, 255, 0.4)',
-                }}
-              >
-                {user?.fullName?.[0]?.toUpperCase()}
-              </Avatar>
-              <span
-                style={{
-                  color: 'var(--text-primary)',
-                  fontWeight: 500,
-                  fontSize: 15,
-                }}
-              >
-                {user?.fullName}
-              </span>
-            </div>
-          </Dropdown>
-        </Space>
+        </Dropdown>
       </Header>
 
       {/* 页面内容 */}
       <Content
         style={{
-          marginTop: 70, // 为固定顶部导航栏留出空间
-          padding: '28px',
-          minHeight: 'calc(100vh - 70px)',
+          marginTop: 64,
+          padding: '32px 48px',
+          minHeight: 'calc(100vh - 64px)',
+          background: '#000000',
         }}
       >
         <div
           style={{
             maxWidth: 1400,
             margin: '0 auto',
-            background: 'linear-gradient(135deg, rgba(26, 26, 46, 0.6) 0%, rgba(22, 33, 62, 0.6) 100%)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            borderRadius: 'var(--radius-lg)',
-            border: '1px solid rgba(153, 69, 255, 0.2)',
-            padding: '32px',
-            minHeight: 'calc(100vh - 126px)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
           }}
-          className="animate-fade-in-up"
         >
           <Outlet />
         </div>
