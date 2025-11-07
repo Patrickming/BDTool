@@ -164,35 +164,44 @@ export default function Home() {
             </Col>
 
             <Col xs={24} sm={12} md={8}>
-              <div style={{
-                padding: 24,
-                background: 'var(--bg-glass)',
-                border: '1px solid var(--border-secondary)',
-                borderRadius: 'var(--radius-md)',
-                cursor: 'not-allowed',
-                opacity: 0.6,
-                transition: 'all 0.3s ease',
-              }}>
+              <div
+                onClick={() => navigate('/templates')}
+                className="hover-lift"
+                style={{
+                  padding: 24,
+                  background: 'var(--bg-glass)',
+                  border: '1px solid var(--border-secondary)',
+                  borderRadius: 'var(--radius-md)',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                }}
+              >
                 <div style={{
                   width: 48,
                   height: 48,
                   borderRadius: 'var(--radius-sm)',
-                  background: 'rgba(220, 31, 255, 0.15)',
+                  background: 'var(--gradient-secondary)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginBottom: 16,
+                  boxShadow: 'var(--shadow-glow)',
                 }}>
-                  <FileTextOutlined style={{ fontSize: 24, color: 'var(--solana-pink)' }} />
+                  <FileTextOutlined style={{ fontSize: 24, color: 'white' }} />
                 </div>
                 <Title level={4} style={{ margin: 0, marginBottom: 8, fontSize: 16 }}>
                   模板管理
                 </Title>
                 <Text style={{ color: 'var(--text-secondary)', fontSize: 14 }}>
-                  话术模板，AI 生成
+                  多语言模板，快速复制
                 </Text>
                 <div style={{ marginTop: 16 }}>
-                  <Text style={{ color: 'var(--text-muted)', fontSize: 12 }}>待实现</Text>
+                  <Text
+                    className="text-gradient"
+                    style={{ fontSize: 12, fontWeight: 600 }}
+                  >
+                    立即使用 →
+                  </Text>
                 </div>
               </div>
             </Col>
