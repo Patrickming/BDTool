@@ -4,10 +4,11 @@
 
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Card, Button, Form, Space, Typography, Spin } from 'antd';
+import { Card, Button, Form, Space, Typography, Spin, Descriptions } from 'antd';
 import { ArrowLeftOutlined, SaveOutlined } from '@ant-design/icons';
 import { useTemplateStore } from '@/store/template.store';
 import { TemplateEditor } from '@/components/Template/TemplateEditor';
+import dayjs from 'dayjs';
 
 const { Title } = Typography;
 
@@ -82,6 +83,26 @@ export const TemplateEdit: React.FC = () => {
               保存更改
             </Button>
           </div>
+
+          {/* 模板信息 */}
+          {currentTemplate && (
+            <Card
+              size="small"
+              style={{
+                background: 'rgba(20, 241, 149, 0.03)',
+                border: '1px solid rgba(20, 241, 149, 0.15)',
+              }}
+            >
+              <Descriptions column={2} size="small">
+                <Descriptions.Item label="创建时间">
+                  {dayjs(currentTemplate.createdAt).format('YYYY-MM-DD HH:mm:ss')}
+                </Descriptions.Item>
+                <Descriptions.Item label="更新时间">
+                  {dayjs(currentTemplate.updatedAt).format('YYYY-MM-DD HH:mm:ss')}
+                </Descriptions.Item>
+              </Descriptions>
+            </Card>
+          )}
 
           {/* 编辑器 */}
           <TemplateEditor form={form} initialValues={currentTemplate || undefined} />

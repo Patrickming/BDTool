@@ -118,28 +118,6 @@ export const TemplateList: React.FC = () => {
       },
     },
     {
-      title: '创建时间',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      width: 150,
-      render: (date: string) => (
-        <Text type="secondary" style={{ fontSize: '12px' }}>
-          {dayjs(date).format('YYYY-MM-DD HH:mm')}
-        </Text>
-      ),
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      width: 150,
-      render: (date: string) => (
-        <Text type="secondary" style={{ fontSize: '12px' }}>
-          {dayjs(date).format('YYYY-MM-DD HH:mm')}
-        </Text>
-      ),
-    },
-    {
       title: '操作',
       key: 'actions',
       width: 180,
