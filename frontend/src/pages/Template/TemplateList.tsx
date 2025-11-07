@@ -2,7 +2,7 @@
  * 模板列表页面
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Card,
@@ -23,9 +23,11 @@ import {
   DeleteOutlined,
   EyeOutlined,
   SearchOutlined,
+  CopyOutlined,
 } from '@ant-design/icons';
 import { useTemplateStore } from '@/store/template.store';
 import { TemplateCategoryBadge } from '@/components/Template/TemplateCategoryBadge';
+import { TemplateCopyModal } from '@/components/Template/TemplateCopyModal';
 import { TEMPLATE_CATEGORY_CONFIG, type Template } from '@/types/template';
 import dayjs from 'dayjs';
 
@@ -43,9 +45,18 @@ export const TemplateList: React.FC = () => {
     setQueryParams,
   } = useTemplateStore();
 
+  // 复制对话框状态
+  const [copyModalOpen, setCopyModalOpen] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
+
   useEffect(() => {
     fetchTemplates();
   }, [queryParams]);
+
+  const handleCopy = (template: Template) => {
+    setSelectedTemplate(template);
+    setCopyModalOpen(true);
+  };
 
   const handleDelete = (template: Template) => {
     Modal.confirm({
@@ -97,19 +108,15 @@ export const TemplateList: React.FC = () => {
       render: (language: string) => <Tag>{language.toUpperCase()}</Tag>,
     },
     {
-      title: '使用统计',
-      key: 'stats',
-      width: 120,
-      render: (_: any, record: Template) => {
-        const successRate =
-          record.useCount > 0 ? ((record.successCount / record.useCount) * 100).toFixed(0) : 0;
-        return (
-          <Space direction="vertical" size={0}>
-            <Text style={{ fontSize: '12px' }}>使用: {record.useCount}次</Text>
-            <Text style={{ fontSize: '12px' }}>成功率: {successRate}%</Text>
-          </Space>
-        );
-      },
+      title: '创建时间',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      width: 150,
+      render: (date: string) => (
+        <Text type="secondary" style={{ fontSize: '12px' }}>
+          {dayjs(date).format('YYYY-MM-DD HH:mm')}
+        </Text>
+      ),
     },
     {
       title: '更新时间',
@@ -132,10 +139,11 @@ export const TemplateList: React.FC = () => {
           <Button
             type="link"
             size="small"
-            icon={<EyeOutlined />}
-            onClick={() => navigate(`/templates/${record.id}/edit`)}
+            icon={<CopyOutlined />}
+            onClick={() => handleCopy(record)}
+            style={{ color: '#14F195' }}
           >
-            查看
+            复制
           </Button>
           <Button
             type="link"
@@ -263,6 +271,13 @@ export const TemplateList: React.FC = () => {
           }}
         />
       </Card>
+
+      {/* 复制对话框 */}
+      <TemplateCopyModal
+        open={copyModalOpen}
+        template={selectedTemplate}
+        onClose={() => setCopyModalOpen(false)}
+      />
     </div>
   );
 };
