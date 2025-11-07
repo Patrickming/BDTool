@@ -235,11 +235,12 @@ export default function AppLayout() {
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 12,
+            gap: 10,
             cursor: 'pointer',
             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            padding: '8px 16px',
+            padding: '6px 12px',
             borderRadius: '12px',
+            flexShrink: 0,
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.background = 'rgba(153, 69, 255, 0.08)';
@@ -252,31 +253,32 @@ export default function AppLayout() {
         >
           <div
             style={{
-              width: 40,
-              height: 40,
+              width: 36,
+              height: 36,
               borderRadius: '10px',
               background: 'linear-gradient(135deg, #9945FF 0%, #14F195 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: 700,
               color: 'white',
               boxShadow: '0 4px 16px rgba(153, 69, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
-              position: 'relative',
+              flexShrink: 0,
             }}
           >
             K
           </div>
           <span
             style={{
-              fontSize: 18,
+              fontSize: 17,
               fontWeight: 700,
               background: 'linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%)',
               WebkitBackgroundClip: 'text',
               backgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               letterSpacing: '-0.03em',
+              whiteSpace: 'nowrap',
             }}
           >
             KOL BD Tool
@@ -294,6 +296,7 @@ export default function AppLayout() {
             flex: 1,
             justifyContent: 'center',
             maxWidth: 600,
+            minWidth: 0,
           }}
           theme="dark"
         />
@@ -304,43 +307,47 @@ export default function AppLayout() {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 12,
+              gap: 8,
               cursor: 'pointer',
-              padding: '8px 16px',
+              padding: '4px 10px',
               borderRadius: '12px',
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              background: 'rgba(255, 255, 255, 0.02)',
+              border: '1px solid transparent',
+              background: 'transparent',
+              flexShrink: 0,
+              maxWidth: '180px',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(153, 69, 255, 0.12)';
-              e.currentTarget.style.borderColor = 'rgba(153, 69, 255, 0.3)';
+              e.currentTarget.style.background = 'rgba(153, 69, 255, 0.08)';
+              e.currentTarget.style.borderColor = 'rgba(153, 69, 255, 0.2)';
               e.currentTarget.style.transform = 'translateY(-1px)';
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(153, 69, 255, 0.2)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+              e.currentTarget.style.background = 'transparent';
+              e.currentTarget.style.borderColor = 'transparent';
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = 'none';
             }}
           >
             <Avatar
-              size={36}
+              size={30}
               style={{
                 background: 'linear-gradient(135deg, #9945FF 0%, #14F195 100%)',
                 fontWeight: 700,
-                fontSize: 16,
-                boxShadow: '0 2px 8px rgba(153, 69, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+                fontSize: 13,
+                boxShadow: '0 2px 8px rgba(153, 69, 255, 0.25)',
+                flexShrink: 0,
               }}
             >
               {user?.fullName?.[0]?.toUpperCase()}
             </Avatar>
             <span
               style={{
-                color: '#ffffff',
-                fontWeight: 600,
-                fontSize: 15,
+                color: 'rgba(255, 255, 255, 0.9)',
+                fontWeight: 500,
+                fontSize: 14,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
               }}
             >
               {user?.fullName}
