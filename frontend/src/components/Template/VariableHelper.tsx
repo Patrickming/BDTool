@@ -23,7 +23,7 @@ export const VariableHelper: React.FC<VariableHelperProps> = ({ onInsert }) => {
       title="可用变量"
       size="small"
       style={{
-        maxHeight: '500px',
+        maxHeight: '800px',
         overflowY: 'auto',
       }}
     >
