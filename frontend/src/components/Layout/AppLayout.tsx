@@ -57,7 +57,6 @@ export default function AppLayout() {
       icon: <FileTextOutlined />,
       label: '模板管理',
       onClick: () => navigate('/templates'),
-      disabled: true, // 待开发功能
     },
     {
       key: '/contacts',
