@@ -6,6 +6,7 @@ import { Router } from 'express';
 import authRoutes from '@features/auth/routes/auth.routes';
 import userRoutes from './routes/user.routes';
 import kolRoutes from '@features/kol/routes/kol.routes';
+import templateRoutes from '@features/templates/routes/template.routes';
 
 const router = Router();
 
@@ -28,10 +29,10 @@ router.use('/users', userRoutes);
 router.use('/kols', kolRoutes);
 
 /**
- * 模板管理路由（待实现）
+ * 模板管理路由
  * /api/v1/templates/*
  */
-// router.use('/templates', templateRoutes);
+router.use('/templates', templateRoutes);
 
 /**
  * 联系记录路由（待实现）

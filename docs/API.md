@@ -983,5 +983,309 @@ curl -X DELETE http://localhost:3000/api/v1/kols/1 \
 
 ---
 
-**最后更新**: 2025-11-06
-**版本**: v1.0.0
+## 4. 模板管理模块 (Templates)
+
+### 4.1 创建模板
+
+创建一个新的消息模板。
+
+**接口地址**: `POST /templates`
+
+**认证**: 需要 Bearer Token
+
+**请求体**:
+
+```json
+{
+  "name": "初次联系模板",
+  "category": "initial",
+  "content": "Hello {{username}}!\n\nI'm {{my_name}} from {{exchange_name}}. I've been following your content and noticed you have {{follower_count}} followers.\n\nWould you be interested in collaborating with us?\n\nBest regards,\n{{my_name}}",
+  "language": "en",
+  "aiGenerated": false
+}
+```
+
+**字段说明**:
+
+| 字段名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| `name` | string | 是 | 模板名称（1-100字符） |
+| `category` | string | 是 | 模板分类：`initial`, `followup`, `negotiation`, `collaboration`, `maintenance` |
+| `content` | string | 是 | 模板内容（1-5000字符，支持变量） |
+| `language` | string | 否 | 语言代码（2字符，默认 `en`） |
+| `aiGenerated` | boolean | 否 | 是否 AI 生成（默认 `false`） |
+
+**支持的变量**:
+
+- **KOL 变量**: `{{username}}`, `{{display_name}}`, `{{follower_count}}`, `{{bio}}`, `{{profile_url}}`
+- **用户变量**: `{{my_name}}`, `{{my_email}}`, `{{exchange_name}}`
+- **系统变量**: `{{today}}`, `{{today_cn}}`
+
+**成功响应** (201):
+
+```json
+{
+  "success": true,
+  "message": "模板创建成功",
+  "data": {
+    "id": 1,
+    "name": "初次联系模板",
+    "category": "initial",
+    "content": "Hello {{username}}!...",
+    "language": "en",
+    "aiGenerated": false,
+    "useCount": 0,
+    "successCount": 0,
+    "createdAt": "2025-11-07T07:20:24.611Z",
+    "updatedAt": "2025-11-07T07:20:24.611Z"
+  }
+}
+```
+
+---
+
+### 4.2 获取模板列表
+
+获取当前用户的所有模板（分页、搜索、筛选、排序）。
+
+**接口地址**: `GET /templates`
+
+**认证**: 需要 Bearer Token
+
+**查询参数**:
+
+| 参数名 | 类型 | 必填 | 默认值 | 说明 |
+|--------|------|------|--------|------|
+| `page` | number | 否 | 1 | 页码（>0） |
+| `limit` | number | 否 | 20 | 每页数量（1-100） |
+| `search` | string | 否 | - | 搜索关键词（匹配名称或内容） |
+| `category` | string | 否 | - | 按分类筛选 |
+| `language` | string | 否 | - | 按语言筛选 |
+| `aiGenerated` | boolean | 否 | - | 按是否 AI 生成筛选 |
+| `sortBy` | string | 否 | createdAt | 排序字段：`createdAt`, `updatedAt`, `useCount`, `name` |
+| `sortOrder` | string | 否 | desc | 排序方向：`asc`, `desc` |
+
+**请求示例**:
+
+```bash
+curl "http://localhost:3000/api/v1/templates?page=1&limit=10&category=initial&sortBy=createdAt&sortOrder=desc" \
+  -H "Authorization: Bearer <your_jwt_token>"
+```
+
+**成功响应** (200):
+
+```json
+{
+  "success": true,
+  "message": "获取模板列表成功",
+  "data": {
+    "templates": [
+      {
+        "id": 1,
+        "name": "初次联系模板",
+        "category": "initial",
+        "content": "Hello {{username}}!...",
+        "language": "en",
+        "aiGenerated": false,
+        "useCount": 0,
+        "successCount": 0,
+        "createdAt": "2025-11-07T07:20:24.611Z",
+        "updatedAt": "2025-11-07T07:20:24.611Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 1,
+      "totalPages": 1
+    }
+  }
+}
+```
+
+---
+
+### 4.3 获取模板详情
+
+获取单个模板的详细信息。
+
+**接口地址**: `GET /templates/:id`
+
+**认证**: 需要 Bearer Token
+
+**路径参数**:
+
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| `id` | number | 模板 ID |
+
+**成功响应** (200):
+
+```json
+{
+  "success": true,
+  "message": "获取模板详情成功",
+  "data": {
+    "id": 1,
+    "name": "初次联系模板",
+    "category": "initial",
+    "content": "Hello {{username}}!...",
+    "language": "en",
+    "aiGenerated": false,
+    "useCount": 0,
+    "successCount": 0,
+    "createdAt": "2025-11-07T07:20:24.611Z",
+    "updatedAt": "2025-11-07T07:20:24.611Z"
+  }
+}
+```
+
+**错误响应**:
+
+- `400` - 无效的模板 ID
+- `404` - 模板不存在
+
+---
+
+### 4.4 更新模板
+
+更新现有模板的信息。
+
+**接口地址**: `PUT /templates/:id`
+
+**认证**: 需要 Bearer Token
+
+**请求体** (所有字段可选):
+
+```json
+{
+  "name": "初次联系模板（更新版）",
+  "category": "followup",
+  "content": "Hi {{display_name}}!...",
+  "language": "zh",
+  "aiGenerated": true
+}
+```
+
+**成功响应** (200):
+
+```json
+{
+  "success": true,
+  "message": "模板更新成功",
+  "data": {
+    "id": 1,
+    "name": "初次联系模板（更新版）",
+    "category": "followup",
+    "content": "Hi {{display_name}}!...",
+    "language": "zh",
+    "aiGenerated": true,
+    "useCount": 0,
+    "successCount": 0,
+    "createdAt": "2025-11-07T07:20:24.611Z",
+    "updatedAt": "2025-11-07T07:25:30.000Z"
+  }
+}
+```
+
+**错误响应**:
+
+- `400` - 无效的模板 ID
+- `404` - 模板不存在
+
+---
+
+### 4.5 删除模板
+
+删除指定模板。
+
+**接口地址**: `DELETE /templates/:id`
+
+**认证**: 需要 Bearer Token
+
+**成功响应** (200):
+
+```json
+{
+  "success": true,
+  "message": "模板删除成功",
+  "data": null
+}
+```
+
+**错误响应**:
+
+- `400` - 无效的模板 ID
+- `404` - 模板不存在
+
+---
+
+### 4.6 预览模板
+
+预览模板内容（变量替换）。
+
+**接口地址**: `POST /templates/preview`
+
+**认证**: 需要 Bearer Token
+
+**请求体**:
+
+```json
+{
+  "templateId": 1,
+  "content": "Hello {{username}}! I am {{my_name}} from {{exchange_name}}. Today is {{today}}.",
+  "kolId": 5
+}
+```
+
+**字段说明**:
+
+| 字段名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| `templateId` | number | 否 | 模板 ID（提供则从数据库获取内容） |
+| `content` | string | 是 | 模板内容（如不提供 templateId 则必填） |
+| `kolId` | number | 否 | KOL ID（用于替换 KOL 相关变量） |
+
+**成功响应** (200):
+
+```json
+{
+  "success": true,
+  "message": "模板预览生成成功",
+  "data": {
+    "originalContent": "Hello {{username}}! I am {{my_name}} from {{exchange_name}}. Today is {{today}}.",
+    "previewContent": "Hello cryptotrader_pro! I am pdm from KCEX. Today is 2025-11-07.",
+    "variables": {
+      "{{username}}": "cryptotrader_pro",
+      "{{display_name}}": "Crypto Trader Pro",
+      "{{follower_count}}": "15,000",
+      "{{bio}}": "Contract trading expert...",
+      "{{profile_url}}": "https://twitter.com/cryptotrader_pro",
+      "{{my_name}}": "pdm",
+      "{{my_email}}": "patrickmingx@gmail.com",
+      "{{exchange_name}}": "KCEX",
+      "{{today}}": "2025-11-07",
+      "{{today_cn}}": "2025年11月7日"
+    }
+  }
+}
+```
+
+---
+
+## 附录
+
+### D. 模板分类
+
+| 分类 | 英文 | 说明 |
+|------|------|------|
+| 初次联系 | `initial` | 首次向 KOL 发送的联系消息 |
+| 跟进联系 | `followup` | 跟进之前的联系 |
+| 价格谈判 | `negotiation` | 讨论合作价格和条件 |
+| 合作细节 | `collaboration` | 商讨具体合作细节 |
+| 关系维护 | `maintenance` | 维护长期合作关系 |
+
+---
+
+**最后更新**: 2025-11-07
+**版本**: v1.1.0
