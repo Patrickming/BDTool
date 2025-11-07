@@ -1287,5 +1287,172 @@ curl "http://localhost:3000/api/v1/templates?page=1&limit=10&category=initial&so
 
 ---
 
+## 5. 分析统计模块 (Analytics)
+
+### 5.1 获取概览统计
+
+获取仪表板概览统计数据。
+
+**接口地址**: `GET /analytics/overview`
+
+**认证**: 需要 Bearer Token
+
+**成功响应** (200):
+
+```json
+{
+  "success": true,
+  "message": "概览统计获取成功",
+  "data": {
+    "totalKols": 9,
+    "newKolsThisWeek": 9,
+    "contactedThisWeek": 0,
+    "overallResponseRate": 0,
+    "weeklyResponseRate": 0,
+    "activePartnerships": 0,
+    "pendingFollowups": 0
+  }
+}
+```
+
+**数据说明**:
+- `totalKols`: 总 KOL 数
+- `newKolsThisWeek`: 本周新增 KOL 数
+- `contactedThisWeek`: 本周联系数
+- `overallResponseRate`: 总体响应率 (%)
+- `weeklyResponseRate`: 本周响应率 (%)
+- `activePartnerships`: 活跃合作数 (状态为 cooperating)
+- `pendingFollowups`: 待跟进数 (已联系或已回复，且最后联系超过3天)
+
+---
+
+### 5.2 获取 KOL 分布数据
+
+获取 KOL 在各维度的分布统计。
+
+**接口地址**: `GET /analytics/distributions`
+
+**认证**: 需要 Bearer Token
+
+**成功响应** (200):
+
+```json
+{
+  "success": true,
+  "message": "KOL 分布数据获取成功",
+  "data": {
+    "byFollowerCount": [
+      {"range": "1k-5k", "count": 0},
+      {"range": "5k-10k", "count": 1},
+      {"range": "10k-30k", "count": 5},
+      {"range": "30k-50k", "count": 0}
+    ],
+    "byQualityScore": [
+      {"level": "优秀 (80+)", "count": 2},
+      {"level": "良好 (60-79)", "count": 7},
+      {"level": "一般 (40-59)", "count": 0},
+      {"level": "差 (<40)", "count": 0}
+    ],
+    "byContentCategory": [
+      {"category": "crypto_trading", "count": 7},
+      {"category": "contract_trading", "count": 2}
+    ],
+    "byStatus": [
+      {"status": "new", "count": 9}
+    ]
+  }
+}
+```
+
+**分布维度**:
+- `byFollowerCount`: 按粉丝数分布 (1k-5k, 5k-10k, 10k-30k, 30k-50k)
+- `byQualityScore`: 按质量分分布 (优秀 80+, 良好 60-79, 一般 40-59, 差 <40)
+- `byContentCategory`: 按内容分类分布
+- `byStatus`: 按状态分布
+
+---
+
+### 5.3 获取模板效果统计
+
+获取所有模板的使用效果分析。
+
+**接口地址**: `GET /analytics/templates`
+
+**认证**: 需要 Bearer Token
+
+**成功响应** (200):
+
+```json
+{
+  "success": true,
+  "message": "模板效果统计获取成功",
+  "data": [
+    {
+      "id": 4,
+      "name": "打招呼",
+      "category": "initial",
+      "useCount": 0,
+      "responseCount": 0,
+      "responseRate": 0,
+      "avgResponseTime": null
+    }
+  ]
+}
+```
+
+**数据说明**:
+- `useCount`: 使用次数
+- `responseCount`: 成功响应次数
+- `responseRate`: 响应率 (%)
+- `avgResponseTime`: 平均响应时间 (小时)
+
+---
+
+### 5.4 获取联系时间线
+
+获取指定天数内的联系趋势数据。
+
+**接口地址**: `GET /analytics/timeline`
+
+**认证**: 需要 Bearer Token
+
+**查询参数**:
+
+| 参数名 | 类型 | 必填 | 默认值 | 说明 |
+|--------|------|------|--------|------|
+| `days` | number | 否 | 30 | 查询天数（1-90）|
+
+**请求示例**:
+
+```bash
+curl "http://localhost:3000/api/v1/analytics/timeline?days=7" \
+  -H "Authorization: Bearer <your_jwt_token>"
+```
+
+**成功响应** (200):
+
+```json
+{
+  "success": true,
+  "message": "联系时间线获取成功",
+  "data": [
+    {"date": "2025-10-07", "contactsCount": 0, "responsesCount": 0},
+    {"date": "2025-10-08", "contactsCount": 0, "responsesCount": 0},
+    {"date": "2025-10-09", "contactsCount": 0, "responsesCount": 0}
+  ]
+}
+```
+
+**数据说明**:
+- `date`: 日期 (YYYY-MM-DD)
+- `contactsCount`: 当天联系数
+- `responsesCount`: 当天响应数
+
+**错误响应**:
+
+- `400` - 天数参数必须在 1-90 之间
+
+---
+
 **最后更新**: 2025-11-07
-**版本**: v1.1.0
+**版本**: v1.2.0
