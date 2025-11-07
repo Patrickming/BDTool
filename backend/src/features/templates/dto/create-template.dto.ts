@@ -25,16 +25,12 @@ export type TemplateCategoryType = z.infer<typeof TemplateCategory>;
 const variableRegex = /\{\{([a-z_][a-z0-9_]*)\}\}/g;
 
 /**
- * 创建模板验证 schema
+ * 模板语言版本 schema
  */
-export const createTemplateSchema = z.object({
-  // 必填字段
-  name: z
+export const templateVersionSchema = z.object({
+  language: z
     .string()
-    .min(1, '模板名称不能为空')
-    .max(100, '模板名称不能超过 100 个字符'),
-
-  category: TemplateCategory,
+    .length(2, '语言代码必须是 2 个字符'),
 
   content: z
     .string()
@@ -51,16 +47,36 @@ export const createTemplateSchema = z.object({
         message: '模板中包含格式错误的变量，变量格式应为 {{variable_name}}',
       }
     ),
+});
 
-  // 可选字段
-  language: z
+export type TemplateVersionData = z.infer<typeof templateVersionSchema>;
+
+/**
+ * 创建模板验证 schema（多语言版本）
+ */
+export const createTemplateSchema = z.object({
+  // 必填字段
+  name: z
     .string()
-    .length(2, '语言代码必须是 2 个字符')
-    .default('en'),
+    .min(1, '模板名称不能为空')
+    .max(100, '模板名称不能超过 100 个字符'),
 
-  aiGenerated: z
-    .boolean()
-    .default(false),
+  category: TemplateCategory,
+
+  // 多语言版本数组
+  versions: z
+    .array(templateVersionSchema)
+    .min(1, '至少需要一个语言版本')
+    .refine(
+      (versions) => {
+        // 验证语言代码不重复
+        const languages = versions.map(v => v.language);
+        return languages.length === new Set(languages).size;
+      },
+      {
+        message: '每种语言只能添加一个版本',
+      }
+    ),
 });
 
 /**
