@@ -10,6 +10,7 @@ import {
   TeamOutlined,
   MessageOutlined,
   FileTextOutlined,
+  BarChartOutlined,
   SettingOutlined,
   LogoutOutlined,
   SunOutlined,
@@ -59,6 +60,12 @@ export default function AppLayout() {
       onClick: () => navigate('/templates'),
     },
     {
+      key: '/analytics',
+      icon: <BarChartOutlined />,
+      label: '数据分析',
+      onClick: () => navigate('/analytics'),
+    },
+    {
       key: '/contacts',
       icon: <MessageOutlined />,
       label: '联系记录',
@@ -99,6 +106,7 @@ export default function AppLayout() {
     const path = location.pathname;
     if (path.startsWith('/kols')) return '/kols';
     if (path.startsWith('/templates')) return '/templates';
+    if (path.startsWith('/analytics')) return '/analytics';
     if (path.startsWith('/contacts')) return '/contacts';
     if (path.startsWith('/settings')) return '/settings';
     return '/';

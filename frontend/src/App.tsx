@@ -15,6 +15,7 @@ import KOLDetail from '@/pages/KOL/KOLDetail';
 import { TemplateList } from '@/pages/Template/TemplateList';
 import { TemplateCreate } from '@/pages/Template/TemplateCreate';
 import { TemplateEdit } from '@/pages/Template/TemplateEdit';
+import { AnalyticsDashboard } from '@/pages/AnalyticsDashboard';
 import AppLayout from '@/components/Layout/AppLayout';
 import { useThemeStore } from '@/store/theme.store';
 
@@ -59,6 +60,8 @@ function App() {
             <Route path="/templates" element={<TemplateList />} />
             <Route path="/templates/create" element={<TemplateCreate />} />
             <Route path="/templates/:id/edit" element={<TemplateEdit />} />
+            {/* 分析统计路由 */}
+            <Route path="/analytics" element={<AnalyticsDashboard />} />
           </Route>
 
           {/* 404 重定向 */}

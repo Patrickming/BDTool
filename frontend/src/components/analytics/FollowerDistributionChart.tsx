@@ -1,0 +1,76 @@
+/**
+ * 粉丝数分布柱状图
+ */
+
+import React from 'react';
+import { Card, Spin } from 'antd';
+import { Column } from '@ant-design/charts';
+import type { FollowerCountDistribution } from '../../types/analytics';
+
+interface FollowerDistributionChartProps {
+  data: FollowerCountDistribution[];
+  loading?: boolean;
+}
+
+export const FollowerDistributionChart: React.FC<FollowerDistributionChartProps> = ({
+  data,
+  loading = false,
+}) => {
+  const config = {
+    data,
+    xField: 'range',
+    yField: 'count',
+    label: {
+      position: 'top' as const,
+      style: {
+        fill: '#fff',
+        opacity: 0.8,
+      },
+    },
+    xAxis: {
+      label: {
+        style: {
+          fill: '#8a8a8a',
+        },
+      },
+    },
+    yAxis: {
+      label: {
+        style: {
+          fill: '#8a8a8a',
+        },
+      },
+    },
+    columnStyle: {
+      fill: 'l(90) 0:#9945FF 1:#14F195',
+      radius: [8, 8, 0, 0],
+    },
+    theme: {
+      styleSheet: {
+        backgroundColor: 'transparent',
+      },
+    },
+  };
+
+  return (
+    <Card
+      title="粉丝数分布"
+      bordered={false}
+      style={{
+        background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+        borderRadius: '12px',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+      }}
+      headStyle={{
+        color: '#fff',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+      }}
+    >
+      <Spin spinning={loading}>
+        <div style={{ height: '300px' }}>
+          <Column {...config} />
+        </div>
+      </Spin>
+    </Card>
+  );
+};
