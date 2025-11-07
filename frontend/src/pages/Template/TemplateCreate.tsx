@@ -27,45 +27,35 @@ export const TemplateCreate: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '24px' }}>
-      <Card
-        className="animate-fade-in-up"
-        style={{
-          background: 'rgba(20, 241, 149, 0.05)',
-          border: '1px solid rgba(20, 241, 149, 0.2)',
-        }}
-      >
-        <Space direction="vertical" size="large" style={{ width: '100%' }}>
-          {/* 头部 */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <Button
-                icon={<ArrowLeftOutlined />}
-                onClick={() => navigate('/templates')}
-                size="large"
-              >
-                返回
-              </Button>
-              <Title level={2} style={{ margin: 0 }}>
-                ✨ 创建模板
-              </Title>
-            </div>
-            <Button
-              type="primary"
-              size="large"
-              icon={<SaveOutlined />}
-              onClick={handleSubmit}
-              loading={loading}
-              className="hover-lift"
-            >
-              保存模板
-            </Button>
-          </div>
+    <div style={{ padding: '24px', maxWidth: '1600px', margin: '0 auto' }}>
+      {/* 头部 */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <Button
+            icon={<ArrowLeftOutlined />}
+            onClick={() => navigate('/templates')}
+            size="large"
+          >
+            返回
+          </Button>
+          <Title level={2} style={{ margin: 0 }}>
+            ✨ 创建模板
+          </Title>
+        </div>
+        <Button
+          type="primary"
+          size="large"
+          icon={<SaveOutlined />}
+          onClick={handleSubmit}
+          loading={loading}
+          className="hover-lift"
+        >
+          保存模板
+        </Button>
+      </div>
 
-          {/* 编辑器 */}
-          <TemplateEditor form={form} />
-        </Space>
-      </Card>
+      {/* 编辑器 */}
+      <TemplateEditor form={form} />
     </div>
   );
 };
