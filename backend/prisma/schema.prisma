@@ -83,6 +83,10 @@ model Template {
   name         String
   category     String   // 'initial', 'followup', 'negotiation', 'collaboration', 'maintenance'
 
+  // 使用统计
+  useCount     Int      @default(0)    // 使用次数
+  successCount Int      @default(0)    // 成功响应次数
+
   // 时间戳
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
