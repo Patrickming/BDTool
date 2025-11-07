@@ -47,7 +47,8 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 // 未捕获异常处理
 process.on('uncaughtException', (error) => {
-  logger.error('未捕获的异常:', error);
+  console.error('未捕获的异常:', error);
+  logger.error(`未捕获的异常: ${error.message}`);
   gracefulShutdown('uncaughtException');
 });
 
