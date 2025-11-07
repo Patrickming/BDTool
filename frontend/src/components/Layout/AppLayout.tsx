@@ -146,7 +146,7 @@ export default function AppLayout() {
         }}
       />
 
-      {/* 顶部导航栏 - Solana 风格 */}
+      {/* 顶部导航栏 - 高级立体风格 */}
       <Header
         style={{
           position: 'fixed',
@@ -159,12 +159,16 @@ export default function AppLayout() {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '0 48px',
-          background: 'rgba(10, 10, 15, 0.95)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
-          boxShadow: '0 1px 0 0 rgba(153, 69, 255, 0.1)',
-          height: 64,
+          background: 'linear-gradient(180deg, rgba(15, 15, 25, 0.98) 0%, rgba(10, 10, 18, 0.95) 100%)',
+          backdropFilter: 'blur(32px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(32px) saturate(180%)',
+          borderBottom: '1px solid rgba(153, 69, 255, 0.2)',
+          boxShadow: `
+            0 4px 24px rgba(0, 0, 0, 0.5),
+            0 1px 0 0 rgba(153, 69, 255, 0.3),
+            inset 0 1px 0 0 rgba(255, 255, 255, 0.05)
+          `,
+          height: 72,
         }}
       >
         {/* 左侧：Logo */}
@@ -173,35 +177,48 @@ export default function AppLayout() {
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 10,
+            gap: 12,
             cursor: 'pointer',
-            transition: 'opacity 0.2s',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            padding: '8px 16px',
+            borderRadius: '12px',
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.8')}
-          onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(153, 69, 255, 0.08)';
+            e.currentTarget.style.transform = 'translateY(-1px)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'transparent';
+            e.currentTarget.style.transform = 'translateY(0)';
+          }}
         >
           <div
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: '6px',
+              width: 40,
+              height: 40,
+              borderRadius: '10px',
               background: 'linear-gradient(135deg, #9945FF 0%, #14F195 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 18,
+              fontSize: 20,
               fontWeight: 700,
               color: 'white',
+              boxShadow: '0 4px 16px rgba(153, 69, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+              position: 'relative',
             }}
           >
             K
           </div>
           <span
             style={{
-              fontSize: 17,
-              fontWeight: 600,
-              color: '#ffffff',
-              letterSpacing: '-0.02em',
+              fontSize: 18,
+              fontWeight: 700,
+              background: 'linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%)',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              letterSpacing: '-0.03em',
             }}
           >
             KOL BD Tool
@@ -229,24 +246,34 @@ export default function AppLayout() {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 10,
+              gap: 12,
               cursor: 'pointer',
-              padding: '6px 12px',
-              borderRadius: '8px',
-              transition: 'background 0.2s',
+              padding: '8px 16px',
+              borderRadius: '12px',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              background: 'rgba(255, 255, 255, 0.02)',
             }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)')
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = 'transparent')
-            }
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(153, 69, 255, 0.12)';
+              e.currentTarget.style.borderColor = 'rgba(153, 69, 255, 0.3)';
+              e.currentTarget.style.transform = 'translateY(-1px)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(153, 69, 255, 0.2)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
           >
             <Avatar
-              size={32}
+              size={36}
               style={{
                 background: 'linear-gradient(135deg, #9945FF 0%, #14F195 100%)',
-                fontWeight: 600,
+                fontWeight: 700,
+                fontSize: 16,
+                boxShadow: '0 2px 8px rgba(153, 69, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
               }}
             >
               {user?.fullName?.[0]?.toUpperCase()}
@@ -254,8 +281,8 @@ export default function AppLayout() {
             <span
               style={{
                 color: '#ffffff',
-                fontWeight: 500,
-                fontSize: 14,
+                fontWeight: 600,
+                fontSize: 15,
               }}
             >
               {user?.fullName}
@@ -267,9 +294,9 @@ export default function AppLayout() {
       {/* 页面内容 */}
       <Content
         style={{
-          marginTop: 64,
-          padding: '32px 48px',
-          minHeight: 'calc(100vh - 64px)',
+          marginTop: 72,
+          padding: '40px 48px',
+          minHeight: 'calc(100vh - 72px)',
           background: 'transparent',
           position: 'relative',
           zIndex: 1,

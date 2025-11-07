@@ -248,22 +248,25 @@ export default function Home() {
               onClick={() => navigate('/templates')}
               style={{
                 padding: 32,
-                background: 'rgba(255, 255, 255, 0.02)',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
-                borderRadius: '12px',
+                background: 'rgba(220, 31, 255, 0.03)',
+                border: '1px solid rgba(220, 31, 255, 0.2)',
+                borderRadius: '16px',
                 cursor: 'pointer',
-                transition: 'all 0.2s',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 height: '100%',
+                boxShadow: '0 4px 16px rgba(220, 31, 255, 0.06)',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-                e.currentTarget.style.border = '1px solid rgba(220, 31, 255, 0.3)';
+                e.currentTarget.style.background = 'rgba(220, 31, 255, 0.08)';
+                e.currentTarget.style.border = '1px solid rgba(220, 31, 255, 0.4)';
                 e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(220, 31, 255, 0.2)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
-                e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.06)';
+                e.currentTarget.style.background = 'rgba(220, 31, 255, 0.03)';
+                e.currentTarget.style.border = '1px solid rgba(220, 31, 255, 0.2)';
                 e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 16px rgba(220, 31, 255, 0.06)';
               }}
             >
               <div
@@ -297,22 +300,25 @@ export default function Home() {
               onClick={() => navigate('/analytics')}
               style={{
                 padding: 32,
-                background: 'rgba(255, 255, 255, 0.02)',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
-                borderRadius: '12px',
+                background: 'rgba(20, 241, 149, 0.03)',
+                border: '1px solid rgba(20, 241, 149, 0.2)',
+                borderRadius: '16px',
                 cursor: 'pointer',
-                transition: 'all 0.2s',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 height: '100%',
+                boxShadow: '0 4px 16px rgba(20, 241, 149, 0.06)',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-                e.currentTarget.style.border = '1px solid rgba(20, 241, 149, 0.3)';
+                e.currentTarget.style.background = 'rgba(20, 241, 149, 0.08)';
+                e.currentTarget.style.border = '1px solid rgba(20, 241, 149, 0.4)';
                 e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(20, 241, 149, 0.2)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
-                e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.06)';
+                e.currentTarget.style.background = 'rgba(20, 241, 149, 0.03)';
+                e.currentTarget.style.border = '1px solid rgba(20, 241, 149, 0.2)';
                 e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 16px rgba(20, 241, 149, 0.06)';
               }}
             >
               <div
