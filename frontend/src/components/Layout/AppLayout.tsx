@@ -60,20 +60,6 @@ export default function AppLayout() {
       label: '数据分析',
       onClick: () => navigate('/analytics'),
     },
-    {
-      key: '/contacts',
-      icon: <MessageOutlined />,
-      label: '联系记录',
-      onClick: () => navigate('/contacts'),
-      disabled: true, // 待开发功能
-    },
-    {
-      key: '/settings',
-      icon: <SettingOutlined />,
-      label: '系统设置',
-      onClick: () => navigate('/settings'),
-      disabled: true, // 待开发功能
-    },
   ];
 
   // 用户下拉菜单
@@ -102,14 +88,12 @@ export default function AppLayout() {
     if (path.startsWith('/kols')) return '/kols';
     if (path.startsWith('/templates')) return '/templates';
     if (path.startsWith('/analytics')) return '/analytics';
-    if (path.startsWith('/contacts')) return '/contacts';
-    if (path.startsWith('/settings')) return '/settings';
     return '/';
   };
 
   return (
     <Layout style={{ minHeight: '100vh', background: '#000000' }}>
-      {/* 背景渐变层 */}
+      {/* Solana 风格背景层 */}
       <div
         style={{
           position: 'fixed',
@@ -118,16 +102,90 @@ export default function AppLayout() {
           right: 0,
           bottom: 0,
           background: `
-            radial-gradient(ellipse 80% 50% at 50% -20%, rgba(153, 69, 255, 0.15), transparent),
-            radial-gradient(ellipse 60% 50% at 10% 40%, rgba(20, 241, 149, 0.08), transparent),
-            radial-gradient(ellipse 60% 50% at 90% 60%, rgba(220, 31, 255, 0.08), transparent)
+            radial-gradient(ellipse 100% 60% at 50% -10%, rgba(153, 69, 255, 0.25), transparent 50%),
+            radial-gradient(ellipse 80% 50% at 20% 50%, rgba(220, 31, 255, 0.15), transparent 50%),
+            radial-gradient(ellipse 80% 50% at 80% 50%, rgba(20, 241, 149, 0.15), transparent 50%),
+            radial-gradient(circle at 10% 80%, rgba(255, 140, 0, 0.08), transparent 40%),
+            radial-gradient(circle at 90% 20%, rgba(153, 69, 255, 0.12), transparent 40%),
+            linear-gradient(180deg, #0a0a0f 0%, #000000 100%)
           `,
           pointerEvents: 'none',
           zIndex: 0,
         }}
       />
 
-      {/* 网格纹理 */}
+      {/* 几何图形层 - 模拟 Solana 的抽象图形 */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          pointerEvents: 'none',
+          zIndex: 0,
+          overflow: 'hidden',
+        }}
+      >
+        {/* 左上角大圆 */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '-20%',
+            left: '-10%',
+            width: '50%',
+            height: '50%',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(153, 69, 255, 0.15) 0%, transparent 70%)',
+            filter: 'blur(80px)',
+          }}
+        />
+
+        {/* 右侧渐变形状 */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '20%',
+            right: '-15%',
+            width: '60%',
+            height: '60%',
+            borderRadius: '30% 70% 70% 30% / 30% 30% 70% 70%',
+            background: 'radial-gradient(ellipse, rgba(20, 241, 149, 0.12) 0%, transparent 70%)',
+            filter: 'blur(100px)',
+            transform: 'rotate(-15deg)',
+          }}
+        />
+
+        {/* 底部紫色光晕 */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '-10%',
+            left: '30%',
+            width: '40%',
+            height: '40%',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(220, 31, 255, 0.18) 0%, transparent 70%)',
+            filter: 'blur(90px)',
+          }}
+        />
+
+        {/* 中间橙色点缀 */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '40%',
+            left: '10%',
+            width: '30%',
+            height: '30%',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(255, 140, 0, 0.08) 0%, transparent 70%)',
+            filter: 'blur(70px)',
+          }}
+        />
+      </div>
+
+      {/* 微妙的网格纹理 */}
       <div
         style={{
           position: 'fixed',
@@ -136,13 +194,13 @@ export default function AppLayout() {
           right: 0,
           bottom: 0,
           backgroundImage: `
-            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)
+            linear-gradient(rgba(153, 69, 255, 0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(153, 69, 255, 0.02) 1px, transparent 1px)
           `,
-          backgroundSize: '50px 50px',
+          backgroundSize: '80px 80px',
           pointerEvents: 'none',
           zIndex: 0,
-          opacity: 0.4,
+          opacity: 0.3,
         }}
       />
 
