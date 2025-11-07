@@ -61,11 +61,12 @@ export default function Home() {
       {/* 欢迎横幅 */}
       <div
         style={{
-          background: 'rgba(255, 255, 255, 0.02)',
-          borderRadius: '12px',
+          background: 'linear-gradient(135deg, rgba(153, 69, 255, 0.08) 0%, rgba(20, 241, 149, 0.04) 100%)',
+          borderRadius: '16px',
           padding: '48px',
           marginBottom: 40,
-          border: '1px solid rgba(255, 255, 255, 0.06)',
+          border: '1px solid rgba(153, 69, 255, 0.2)',
+          boxShadow: '0 8px 32px rgba(153, 69, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
@@ -99,9 +100,10 @@ export default function Home() {
           <Card
             bordered={false}
             style={{
-              background: 'rgba(255, 255, 255, 0.02)',
-              borderRadius: '12px',
-              border: '1px solid rgba(153, 69, 255, 0.2)',
+              background: 'rgba(153, 69, 255, 0.05)',
+              borderRadius: '16px',
+              border: '1px solid rgba(153, 69, 255, 0.3)',
+              boxShadow: '0 4px 24px rgba(153, 69, 255, 0.08)',
             }}
             bodyStyle={{ padding: 24 }}
           >
@@ -117,9 +119,10 @@ export default function Home() {
           <Card
             bordered={false}
             style={{
-              background: 'rgba(255, 255, 255, 0.02)',
-              borderRadius: '12px',
-              border: '1px solid rgba(20, 241, 149, 0.2)',
+              background: 'rgba(20, 241, 149, 0.05)',
+              borderRadius: '16px',
+              border: '1px solid rgba(20, 241, 149, 0.3)',
+              boxShadow: '0 4px 24px rgba(20, 241, 149, 0.08)',
             }}
             bodyStyle={{ padding: 24 }}
           >
@@ -135,9 +138,10 @@ export default function Home() {
           <Card
             bordered={false}
             style={{
-              background: 'rgba(255, 255, 255, 0.02)',
-              borderRadius: '12px',
-              border: '1px solid rgba(0, 212, 170, 0.2)',
+              background: 'rgba(0, 212, 170, 0.05)',
+              borderRadius: '16px',
+              border: '1px solid rgba(0, 212, 170, 0.3)',
+              boxShadow: '0 4px 24px rgba(0, 212, 170, 0.08)',
             }}
             bodyStyle={{ padding: 24 }}
           >
@@ -153,9 +157,10 @@ export default function Home() {
           <Card
             bordered={false}
             style={{
-              background: 'rgba(255, 255, 255, 0.02)',
-              borderRadius: '12px',
-              border: '1px solid rgba(220, 31, 255, 0.2)',
+              background: 'rgba(220, 31, 255, 0.05)',
+              borderRadius: '16px',
+              border: '1px solid rgba(220, 31, 255, 0.3)',
+              boxShadow: '0 4px 24px rgba(220, 31, 255, 0.08)',
             }}
             bodyStyle={{ padding: 24 }}
           >
@@ -191,22 +196,25 @@ export default function Home() {
               onClick={() => navigate('/kols')}
               style={{
                 padding: 32,
-                background: 'rgba(255, 255, 255, 0.02)',
-                border: '1px solid rgba(255, 255, 255, 0.06)',
-                borderRadius: '12px',
+                background: 'rgba(153, 69, 255, 0.03)',
+                border: '1px solid rgba(153, 69, 255, 0.2)',
+                borderRadius: '16px',
                 cursor: 'pointer',
-                transition: 'all 0.2s',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 height: '100%',
+                boxShadow: '0 4px 16px rgba(153, 69, 255, 0.06)',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
-                e.currentTarget.style.border = '1px solid rgba(153, 69, 255, 0.3)';
+                e.currentTarget.style.background = 'rgba(153, 69, 255, 0.08)';
+                e.currentTarget.style.border = '1px solid rgba(153, 69, 255, 0.4)';
                 e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(153, 69, 255, 0.2)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
-                e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.06)';
+                e.currentTarget.style.background = 'rgba(153, 69, 255, 0.03)';
+                e.currentTarget.style.border = '1px solid rgba(153, 69, 255, 0.2)';
                 e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 16px rgba(153, 69, 255, 0.06)';
               }}
             >
               <div
