@@ -2,7 +2,6 @@
  * 主应用组件
  */
 
-import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider, theme as antdTheme } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
@@ -17,21 +16,13 @@ import { TemplateCreate } from '@/pages/Template/TemplateCreate';
 import { TemplateEdit } from '@/pages/Template/TemplateEdit';
 import { AnalyticsDashboard } from '@/pages/AnalyticsDashboard';
 import AppLayout from '@/components/Layout/AppLayout';
-import { useThemeStore } from '@/store/theme.store';
 
 function App() {
-  const currentTheme = useThemeStore((state) => state.theme);
-
-  // 初始化主题
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', currentTheme);
-  }, [currentTheme]);
-
   return (
     <ConfigProvider
       locale={zhCN}
       theme={{
-        algorithm: currentTheme === 'dark' ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
+        algorithm: antdTheme.darkAlgorithm,
         token: {
           colorPrimary: '#9945FF',
           colorSuccess: '#14F195',
