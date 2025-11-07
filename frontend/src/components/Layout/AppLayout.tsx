@@ -1,9 +1,8 @@
 /**
  * 全局应用布局组件
- * 包含侧边导航栏和主题切换功能
+ * 包含顶部导航栏和主题切换功能
  */
 
-import { useState } from 'react';
 import { Layout, Menu, Button, Dropdown, Avatar, Space } from 'antd';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import {
@@ -15,18 +14,16 @@ import {
   LogoutOutlined,
   SunOutlined,
   MoonOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { useThemeStore } from '@/store/theme.store';
 import { useAuthStore } from '@/store/auth.store';
 import type { MenuProps } from 'antd';
 
-const { Sider, Header, Content } = Layout;
+const { Header, Content } = Layout;
 
 /**
- * 应用主布局组件
+ * 应用主布局组件 - 顶部导航栏
  */
 export default function AppLayout() {
   const navigate = useNavigate();
@@ -34,7 +31,6 @@ export default function AppLayout() {
   const theme = useThemeStore((state) => state.theme);
   const toggleTheme = useThemeStore((state) => state.toggleTheme);
   const { user, clearAuth } = useAuthStore();
-  const [collapsed, setCollapsed] = useState(false);
 
   // 处理登出
   const handleLogout = () => {
@@ -42,7 +38,7 @@ export default function AppLayout() {
     navigate('/login');
   };
 
-  // 侧边栏菜单项
+  // 顶部导航菜单项
   const menuItems: MenuProps['items'] = [
     {
       key: '/',
@@ -114,72 +110,37 @@ export default function AppLayout() {
       {/* 背景粒子效果 */}
       <div className="particles-bg" />
 
-      {/* 侧边导航栏 */}
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={setCollapsed}
-        trigger={null}
-        width={240}
+      {/* 顶部导航栏 */}
+      <Header
         style={{
           position: 'fixed',
-          left: 0,
           top: 0,
-          bottom: 0,
-          height: '100vh',
-          overflow: 'auto',
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 24px',
           background: 'var(--bg-glass)',
           backdropFilter: 'blur(20px)',
-          borderRight: '1px solid var(--border-secondary)',
-          zIndex: 100,
+          borderBottom: '1px solid var(--border-secondary)',
+          height: 64,
         }}
       >
-        {/* Logo 区域 */}
-        <div
-          style={{
-            height: 64,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: collapsed ? 'center' : 'flex-start',
-            padding: collapsed ? 0 : '0 24px',
-            borderBottom: '1px solid var(--border-secondary)',
-          }}
-        >
-          {!collapsed ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div
-                style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 'var(--radius-sm)',
-                  background: 'var(--gradient-primary)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 20,
-                  fontWeight: 700,
-                  color: 'white',
-                  boxShadow: 'var(--shadow-glow)',
-                }}
-                className="animate-pulse-glow"
-              >
-                K
-              </div>
-              <span
-                style={{
-                  fontSize: 18,
-                  fontWeight: 700,
-                  background: 'var(--gradient-primary)',
-                  WebkitBackgroundClip: 'text',
-                  backgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-                className="animate-gradient"
-              >
-                KOL BD Tool
-              </span>
-            </div>
-          ) : (
+        {/* 左侧：Logo + 导航菜单 */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+          {/* Logo */}
+          <div
+            onClick={() => navigate('/')}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              cursor: 'pointer',
+            }}
+          >
             <div
               style={{
                 width: 36,
@@ -192,128 +153,118 @@ export default function AppLayout() {
                 fontSize: 20,
                 fontWeight: 700,
                 color: 'white',
+                boxShadow: 'var(--shadow-glow)',
               }}
+              className="animate-pulse-glow"
             >
               K
             </div>
-          )}
+            <span
+              style={{
+                fontSize: 18,
+                fontWeight: 700,
+                background: 'var(--gradient-primary)',
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+              className="animate-gradient"
+            >
+              KOL BD Tool
+            </span>
+          </div>
+
+          {/* 导航菜单 */}
+          <Menu
+            mode="horizontal"
+            selectedKeys={[getSelectedKey()]}
+            items={menuItems}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--text-primary)',
+              minWidth: 400,
+              flex: 1,
+            }}
+          />
         </div>
 
-        {/* 导航菜单 */}
-        <Menu
-          mode="inline"
-          selectedKeys={[getSelectedKey()]}
-          items={menuItems}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: 'var(--text-primary)',
-            marginTop: 16,
-          }}
-        />
-      </Sider>
-
-      {/* 主内容区域 */}
-      <Layout style={{ marginLeft: collapsed ? 80 : 240, transition: 'margin-left 0.2s' }}>
-        {/* 顶部导航栏 */}
-        <Header
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 99,
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0 24px',
-            background: 'var(--bg-glass)',
-            backdropFilter: 'blur(20px)',
-            borderBottom: '1px solid var(--border-secondary)',
-            height: 64,
-          }}
-        >
-          {/* 左侧：折叠按钮 */}
+        {/* 右侧：主题切换和用户信息 */}
+        <Space size={16}>
+          {/* 主题切换按钮 */}
           <Button
             type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
+            icon={theme === 'dark' ? <SunOutlined /> : <MoonOutlined />}
+            onClick={toggleTheme}
             style={{
               fontSize: 18,
               width: 48,
               height: 48,
               color: 'var(--text-primary)',
             }}
+            className="hover-glow"
           />
 
-          {/* 右侧：主题切换和用户信息 */}
-          <Space size={16}>
-            {/* 主题切换按钮 */}
-            <Button
-              type="text"
-              icon={theme === 'dark' ? <SunOutlined /> : <MoonOutlined />}
-              onClick={toggleTheme}
+          {/* 用户下拉菜单 */}
+          <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+            <div
               style={{
-                fontSize: 18,
-                width: 48,
-                height: 48,
-                color: 'var(--text-primary)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                cursor: 'pointer',
+                padding: '8px 12px',
+                borderRadius: 'var(--radius-md)',
+                transition: 'background 0.3s',
               }}
-              className="hover-glow"
-            />
-
-            {/* 用户下拉菜单 */}
-            <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-              <div
+              className="hover-lift"
+            >
+              <Avatar
+                size={32}
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 12,
-                  cursor: 'pointer',
-                  padding: '8px 12px',
-                  borderRadius: 'var(--radius-md)',
-                  transition: 'background 0.3s',
+                  background: 'var(--gradient-primary)',
+                  border: '2px solid var(--border-primary)',
                 }}
-                className="hover-lift"
               >
-                <Avatar
-                  size={32}
-                  style={{
-                    background: 'var(--gradient-primary)',
-                    border: '2px solid var(--border-primary)',
-                  }}
-                >
-                  {user?.fullName?.[0]?.toUpperCase()}
-                </Avatar>
-                <span
-                  style={{
-                    color: 'var(--text-primary)',
-                    fontWeight: 500,
-                  }}
-                >
-                  {user?.fullName}
-                </span>
-              </div>
-            </Dropdown>
-          </Space>
-        </Header>
+                {user?.fullName?.[0]?.toUpperCase()}
+              </Avatar>
+              <span
+                style={{
+                  color: 'var(--text-primary)',
+                  fontWeight: 500,
+                }}
+              >
+                {user?.fullName}
+              </span>
+            </div>
+          </Dropdown>
+        </Space>
+      </Header>
 
-        {/* 页面内容 */}
-        <Content
+      {/* 页面内容 */}
+      <Content
+        style={{
+          marginTop: 64, // 为固定顶部导航栏留出空间
+          padding: '24px',
+          minHeight: 'calc(100vh - 64px)',
+        }}
+      >
+        <div
           style={{
-            margin: '24px',
-            padding: '24px',
-            minHeight: 'calc(100vh - 112px)',
+            maxWidth: 1400,
+            margin: '0 auto',
             background: 'var(--bg-card)',
             backdropFilter: 'blur(20px)',
             borderRadius: 'var(--radius-lg)',
             border: '1px solid var(--border-secondary)',
-            overflow: 'auto',
+            padding: '24px',
+            minHeight: 'calc(100vh - 112px)',
           }}
           className="animate-fade-in-up"
         >
           <Outlet />
-        </Content>
-      </Layout>
+        </div>
+      </Content>
     </Layout>
   );
 }
