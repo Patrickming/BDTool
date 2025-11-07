@@ -89,23 +89,33 @@ export const TemplateList: React.FC = () => {
       render: (category: any) => <TemplateCategoryBadge category={category} />,
     },
     {
-      title: '内容预览',
-      dataIndex: 'content',
-      key: 'content',
-      ellipsis: true,
-      render: (content: string) => (
-        <Text type="secondary" style={{ fontSize: '13px' }}>
-          {content.substring(0, 80)}
-          {content.length > 80 && '...'}
-        </Text>
+      title: '语言版本',
+      dataIndex: 'versions',
+      key: 'versions',
+      width: 150,
+      render: (versions: any[]) => (
+        <Space size={4}>
+          {versions?.map((v) => (
+            <Tag key={v.language}>{v.language.toUpperCase()}</Tag>
+          ))}
+        </Space>
       ),
     },
     {
-      title: '语言',
-      dataIndex: 'language',
-      key: 'language',
-      width: 80,
-      render: (language: string) => <Tag>{language.toUpperCase()}</Tag>,
+      title: '内容预览',
+      dataIndex: 'versions',
+      key: 'content',
+      ellipsis: true,
+      render: (versions: any[]) => {
+        const firstVersion = versions?.[0];
+        const content = firstVersion?.content || '';
+        return (
+          <Text type="secondary" style={{ fontSize: '13px' }}>
+            {content.substring(0, 80)}
+            {content.length > 80 && '...'}
+          </Text>
+        );
+      },
     },
     {
       title: '创建时间',

@@ -26,30 +26,30 @@ export const TemplateCopyModal: React.FC<TemplateCopyModalProps> = ({
   onClose,
 }) => {
   const [kols, setKols] = useState<KOL[]>([]);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('');
   const [selectedKolId, setSelectedKolId] = useState<number | null>(null);
   const [previewContent, setPreviewContent] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // 加载KOL列表
+  // 加载KOL列表并初始化
   useEffect(() => {
-    if (open) {
+    if (open && template) {
       loadKOLs();
-      // 重置状态
+      // 重置状态，默认选择第一个语言版本
+      setSelectedLanguage(template.versions?.[0]?.language || '');
       setSelectedKolId(null);
-      setPreviewContent(template?.content || '');
+      setPreviewContent(template.versions?.[0]?.content || '');
       setCopied(false);
     }
   }, [open, template]);
 
-  // 当选择KOL时，生成预览
+  // 当选择语言或KOL时，生成预览
   useEffect(() => {
-    if (selectedKolId && template) {
+    if (template && selectedLanguage) {
       generatePreview();
-    } else if (template) {
-      setPreviewContent(template.content);
     }
-  }, [selectedKolId, template]);
+  }, [selectedLanguage, selectedKolId, template]);
 
   const loadKOLs = async () => {
     try {
@@ -64,18 +64,21 @@ export const TemplateCopyModal: React.FC<TemplateCopyModalProps> = ({
   };
 
   const generatePreview = async () => {
-    if (!template || !selectedKolId) return;
+    if (!template || !selectedLanguage) return;
 
     try {
       setLoading(true);
       const result = await previewTemplate({
-        content: template.content,
-        kolId: selectedKolId,
+        templateId: template.id,
+        language: selectedLanguage,
+        kolId: selectedKolId || undefined,
       });
       setPreviewContent(result.previewContent);
     } catch (error: any) {
       message.error('生成预览失败');
-      setPreviewContent(template.content);
+      // 降级到使用本地版本内容
+      const version = template.versions.find(v => v.language === selectedLanguage);
+      setPreviewContent(version?.content || '');
     } finally {
       setLoading(false);
     }
@@ -118,9 +121,22 @@ export const TemplateCopyModal: React.FC<TemplateCopyModalProps> = ({
         <div>
           <Text strong>模板：</Text>
           <Text style={{ marginLeft: 8 }}>{template?.name}</Text>
-          <Text type="secondary" style={{ marginLeft: 16 }}>
-            语言：{template?.language === 'en' ? '英语' : template?.language === 'zh' ? '中文' : template?.language}
+        </div>
+
+        {/* 语言选择 */}
+        <div>
+          <Text strong style={{ marginBottom: 8, display: 'block' }}>
+            选择语言版本：
           </Text>
+          <Select
+            style={{ width: '100%' }}
+            value={selectedLanguage}
+            onChange={setSelectedLanguage}
+            options={template?.versions?.map((v) => ({
+              value: v.language,
+              label: v.language === 'en' ? '英语 (EN)' : v.language === 'zh' ? '中文 (ZH)' : v.language.toUpperCase(),
+            }))}
+          />
         </div>
 
         {/* KOL选择 */}
