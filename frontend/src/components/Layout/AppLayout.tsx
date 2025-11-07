@@ -129,15 +129,17 @@ export default function AppLayout() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 24px',
-          background: 'var(--bg-glass)',
-          backdropFilter: 'blur(20px)',
-          borderBottom: '1px solid var(--border-secondary)',
-          height: 64,
+          padding: '0 32px',
+          background: 'linear-gradient(135deg, rgba(26, 26, 46, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%)',
+          backdropFilter: 'blur(30px)',
+          WebkitBackdropFilter: 'blur(30px)',
+          borderBottom: '1px solid rgba(153, 69, 255, 0.2)',
+          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.3)',
+          height: 70,
         }}
       >
         {/* 左侧：Logo + 导航菜单 */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 40 }}>
           {/* Logo */}
           <div
             onClick={() => navigate('/')}
@@ -146,21 +148,25 @@ export default function AppLayout() {
               alignItems: 'center',
               gap: 12,
               cursor: 'pointer',
+              padding: '6px 12px',
+              borderRadius: 'var(--radius-md)',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
+            className="hover-lift"
           >
             <div
               style={{
-                width: 36,
-                height: 36,
+                width: 40,
+                height: 40,
                 borderRadius: 'var(--radius-sm)',
                 background: 'var(--gradient-primary)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: 20,
+                fontSize: 22,
                 fontWeight: 700,
                 color: 'white',
-                boxShadow: 'var(--shadow-glow)',
+                boxShadow: '0 0 30px rgba(153, 69, 255, 0.6)',
               }}
               className="animate-pulse-glow"
             >
@@ -168,12 +174,13 @@ export default function AppLayout() {
             </div>
             <span
               style={{
-                fontSize: 18,
+                fontSize: 20,
                 fontWeight: 700,
                 background: 'var(--gradient-primary)',
                 WebkitBackgroundClip: 'text',
                 backgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
+                letterSpacing: '0.5px',
               }}
               className="animate-gradient"
             >
@@ -190,14 +197,16 @@ export default function AppLayout() {
               background: 'transparent',
               border: 'none',
               color: 'var(--text-primary)',
-              minWidth: 400,
+              minWidth: 450,
               flex: 1,
+              fontSize: 15,
             }}
+            theme="dark"
           />
         </div>
 
         {/* 右侧：主题切换和用户信息 */}
-        <Space size={16}>
+        <Space size={12}>
           {/* 主题切换按钮 */}
           <Button
             type="text"
@@ -205,9 +214,13 @@ export default function AppLayout() {
             onClick={toggleTheme}
             style={{
               fontSize: 18,
-              width: 48,
-              height: 48,
+              width: 44,
+              height: 44,
               color: 'var(--text-primary)',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              background: 'rgba(255, 255, 255, 0.05)',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
             }}
             className="hover-glow"
           />
@@ -220,17 +233,20 @@ export default function AppLayout() {
                 alignItems: 'center',
                 gap: 12,
                 cursor: 'pointer',
-                padding: '8px 12px',
+                padding: '8px 16px',
                 borderRadius: 'var(--radius-md)',
-                transition: 'background 0.3s',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                background: 'rgba(255, 255, 255, 0.05)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               }}
               className="hover-lift"
             >
               <Avatar
-                size={32}
+                size={36}
                 style={{
                   background: 'var(--gradient-primary)',
-                  border: '2px solid var(--border-primary)',
+                  border: '2px solid rgba(153, 69, 255, 0.5)',
+                  boxShadow: '0 0 20px rgba(153, 69, 255, 0.4)',
                 }}
               >
                 {user?.fullName?.[0]?.toUpperCase()}
@@ -239,6 +255,7 @@ export default function AppLayout() {
                 style={{
                   color: 'var(--text-primary)',
                   fontWeight: 500,
+                  fontSize: 15,
                 }}
               >
                 {user?.fullName}
@@ -251,21 +268,23 @@ export default function AppLayout() {
       {/* 页面内容 */}
       <Content
         style={{
-          marginTop: 64, // 为固定顶部导航栏留出空间
-          padding: '24px',
-          minHeight: 'calc(100vh - 64px)',
+          marginTop: 70, // 为固定顶部导航栏留出空间
+          padding: '28px',
+          minHeight: 'calc(100vh - 70px)',
         }}
       >
         <div
           style={{
             maxWidth: 1400,
             margin: '0 auto',
-            background: 'var(--bg-card)',
+            background: 'linear-gradient(135deg, rgba(26, 26, 46, 0.6) 0%, rgba(22, 33, 62, 0.6) 100%)',
             backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
             borderRadius: 'var(--radius-lg)',
-            border: '1px solid var(--border-secondary)',
-            padding: '24px',
-            minHeight: 'calc(100vh - 112px)',
+            border: '1px solid rgba(153, 69, 255, 0.2)',
+            padding: '32px',
+            minHeight: 'calc(100vh - 126px)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
           }}
           className="animate-fade-in-up"
         >
