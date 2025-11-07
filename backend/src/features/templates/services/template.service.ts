@@ -37,7 +37,7 @@ export interface TemplatePreviewResponse {
  */
 export class TemplateService {
   /**
-   * 创建模板
+   * 创建模板（多语言版本）
    * @param userId - 用户 ID
    * @param createDto - 创建数据
    * @returns 创建的模板
@@ -51,25 +51,19 @@ export class TemplateService {
           userId,
           name: createDto.name,
           category: createDto.category,
-          content: createDto.content,
-          language: createDto.language || 'en',
-          aiGenerated: createDto.aiGenerated || false,
+          versions: {
+            create: createDto.versions.map(v => ({
+              language: v.language,
+              content: v.content,
+            })),
+          },
         },
-        select: {
-          id: true,
-          name: true,
-          category: true,
-          content: true,
-          language: true,
-          aiGenerated: true,
-          useCount: true,
-          successCount: true,
-          createdAt: true,
-          updatedAt: true,
+        include: {
+          versions: true,
         },
       });
 
-      logger.info(`模板创建成功: ${template.id} - ${template.name}`);
+      logger.info(`模板创建成功: ${template.id} - ${template.name} (${template.versions.length} 个语言版本)`);
       return template;
     } catch (error: any) {
       logger.error('创建模板失败:', error);
@@ -105,14 +99,13 @@ export class TemplateService {
       where.category = query.category;
     }
 
-    // 语言筛选
+    // 语言筛选（通过 versions 子查询）
     if (query.language) {
-      where.language = query.language;
-    }
-
-    // AI 生成筛选
-    if (query.aiGenerated !== undefined) {
-      where.aiGenerated = query.aiGenerated;
+      where.versions = {
+        some: {
+          language: query.language,
+        },
+      };
     }
 
     // 2. 构建排序条件
@@ -126,17 +119,8 @@ export class TemplateService {
         skip,
         take: limit,
         orderBy,
-        select: {
-          id: true,
-          name: true,
-          category: true,
-          content: true,
-          language: true,
-          aiGenerated: true,
-          useCount: true,
-          successCount: true,
-          createdAt: true,
-          updatedAt: true,
+        include: {
+          versions: true, // 包含所有语言版本
         },
       }),
       prisma.template.count({ where }),
@@ -156,7 +140,7 @@ export class TemplateService {
   }
 
   /**
-   * 根据 ID 获取模板详情
+   * 根据 ID 获取模板详情（包含所有语言版本）
    * @param userId - 用户 ID
    * @param templateId - 模板 ID
    * @returns 模板详情
@@ -170,17 +154,8 @@ export class TemplateService {
         id: templateId,
         userId, // 确保用户只能访问自己的模板
       },
-      select: {
-        id: true,
-        name: true,
-        category: true,
-        content: true,
-        language: true,
-        aiGenerated: true,
-        useCount: true,
-        successCount: true,
-        createdAt: true,
-        updatedAt: true,
+      include: {
+        versions: true, // 包含所有语言版本
       },
     });
 
@@ -193,7 +168,7 @@ export class TemplateService {
   }
 
   /**
-   * 更新模板
+   * 更新模板（支持更新多语言版本）
    * @param userId - 用户 ID
    * @param templateId - 模板 ID
    * @param updateDto - 更新数据
@@ -209,6 +184,9 @@ export class TemplateService {
         id: templateId,
         userId,
       },
+      include: {
+        versions: true,
+      },
     });
 
     if (!existing) {
@@ -216,21 +194,35 @@ export class TemplateService {
       throw new NotFoundError('模板不存在');
     }
 
-    // 2. 更新模板
+    // 2. 准备更新数据
+    const updateData: any = {};
+
+    if (updateDto.name !== undefined) {
+      updateData.name = updateDto.name;
+    }
+
+    if (updateDto.category !== undefined) {
+      updateData.category = updateDto.category;
+    }
+
+    // 如果提供了新的语言版本，更新它们
+    if (updateDto.versions && updateDto.versions.length > 0) {
+      // 删除所有现有版本并创建新版本
+      updateData.versions = {
+        deleteMany: {},
+        create: updateDto.versions.map(v => ({
+          language: v.language,
+          content: v.content,
+        })),
+      };
+    }
+
+    // 3. 更新模板
     const template = await prisma.template.update({
       where: { id: templateId },
-      data: updateDto,
-      select: {
-        id: true,
-        name: true,
-        category: true,
-        content: true,
-        language: true,
-        aiGenerated: true,
-        useCount: true,
-        successCount: true,
-        createdAt: true,
-        updatedAt: true,
+      data: updateData,
+      include: {
+        versions: true,
       },
     });
 
@@ -269,7 +261,7 @@ export class TemplateService {
   }
 
   /**
-   * 预览模板（变量替换）
+   * 预览模板（变量替换，支持多语言）
    * @param userId - 用户 ID
    * @param previewDto - 预览数据
    * @returns 预览结果
@@ -278,12 +270,28 @@ export class TemplateService {
     logger.info(`用户 ${userId} 预览模板`);
 
     try {
-      let templateContent = previewDto.content;
+      let templateContent = previewDto.content || '';
 
-      // 如果提供了 templateId，获取模板内容
+      // 如果提供了 templateId，获取指定语言的模板内容
       if (previewDto.templateId) {
         const template = await this.getTemplateById(userId, previewDto.templateId);
-        templateContent = template.content;
+
+        // 如果指定了语言，使用该语言版本
+        if (previewDto.language) {
+          const version = template.versions.find(v => v.language === previewDto.language);
+          if (version) {
+            templateContent = version.content;
+          } else {
+            throw new NotFoundError(`未找到 ${previewDto.language} 语言版本`);
+          }
+        } else {
+          // 未指定语言，使用第一个版本
+          if (template.versions.length > 0) {
+            templateContent = template.versions[0].content;
+          } else {
+            throw new BadRequestError('模板没有任何语言版本');
+          }
+        }
       }
 
       // 构建变量映射

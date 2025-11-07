@@ -73,7 +73,7 @@ model KOL {
   @@index([contentCategory])
 }
 
-// 模板表
+// 模板表（主表 - 多语言模板容器）
 model Template {
   id           Int      @id @default(autoincrement())
   userId       Int
@@ -82,23 +82,36 @@ model Template {
   // 模板数据
   name         String
   category     String   // 'initial', 'followup', 'negotiation', 'collaboration', 'maintenance'
-  content      String
-  language     String   @default("en")
-  aiGenerated  Boolean  @default(false)
-
-  // 使用统计
-  useCount     Int      @default(0)
-  successCount Int      @default(0) // KOL 回复的次数
 
   // 时间戳
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
   // 关系
+  versions     TemplateVersion[] // 多语言版本
   contactLogs  ContactLog[]
 
   @@index([userId])
   @@index([category])
+}
+
+// 模板语言版本表
+model TemplateVersion {
+  id         Int      @id @default(autoincrement())
+  templateId Int
+  template   Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  // 语言版本数据
+  language   String   // 'en', 'zh', 'ja', etc.
+  content    String
+
+  // 时间戳
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([templateId, language]) // 每个模板的每种语言只能有一个版本
+  @@index([templateId])
+  @@index([language])
 }
 
 // 联系记录表
