@@ -140,7 +140,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({ form, initialVal
           value={version.content}
           onChange={(e) => handleContentChange(version.language, e.target.value)}
           placeholder={`输入 ${SUPPORTED_LANGUAGES.find(l => l.value === version.language)?.label} 模板内容，可以使用变量，例如: Hello {{username}}!...`}
-          rows={22}
+          rows={30}
           style={{
             fontFamily: 'monospace',
             fontSize: '14px',
