@@ -140,7 +140,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({ form, initialVal
           value={version.content}
           onChange={(e) => handleContentChange(version.language, e.target.value)}
           placeholder={`输入 ${SUPPORTED_LANGUAGES.find(l => l.value === version.language)?.label} 模板内容，可以使用变量，例如: Hello {{username}}!...`}
-          rows={18}
+          rows={22}
           style={{
             fontFamily: 'monospace',
             fontSize: '14px',
@@ -153,7 +153,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({ form, initialVal
 
   return (
     <Row gutter={16}>
-      <Col xs={24} lg={18}>
+      <Col xs={24} lg={20}>
         <Card
           title="模板信息"
           style={{
@@ -227,7 +227,7 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({ form, initialVal
         </Card>
       </Col>
 
-      <Col xs={24} lg={6}>
+      <Col xs={24} lg={4}>
         <VariableHelper onInsert={handleInsertVariable} />
       </Col>
     </Row>
