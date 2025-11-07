@@ -133,7 +133,7 @@ export const TemplateList: React.FC = () => {
             type="link"
             size="small"
             icon={<EyeOutlined />}
-            onClick={() => navigate(`/templates/${record.id}`)}
+            onClick={() => navigate(`/templates/${record.id}/edit`)}
           >
             查看
           </Button>
