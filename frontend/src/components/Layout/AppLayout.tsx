@@ -108,9 +108,43 @@ export default function AppLayout() {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      {/* 背景粒子效果 */}
-      <div className="particles-bg" />
+    <Layout style={{ minHeight: '100vh', background: '#000000' }}>
+      {/* 背景渐变层 */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `
+            radial-gradient(ellipse 80% 50% at 50% -20%, rgba(153, 69, 255, 0.15), transparent),
+            radial-gradient(ellipse 60% 50% at 10% 40%, rgba(20, 241, 149, 0.08), transparent),
+            radial-gradient(ellipse 60% 50% at 90% 60%, rgba(220, 31, 255, 0.08), transparent)
+          `,
+          pointerEvents: 'none',
+          zIndex: 0,
+        }}
+      />
+
+      {/* 网格纹理 */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: `
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)
+          `,
+          backgroundSize: '50px 50px',
+          pointerEvents: 'none',
+          zIndex: 0,
+          opacity: 0.4,
+        }}
+      />
 
       {/* 顶部导航栏 - Solana 风格 */}
       <Header
@@ -236,7 +270,9 @@ export default function AppLayout() {
           marginTop: 64,
           padding: '32px 48px',
           minHeight: 'calc(100vh - 64px)',
-          background: 'radial-gradient(ellipse at top, rgba(153, 69, 255, 0.03) 0%, #000000 50%)',
+          background: 'transparent',
+          position: 'relative',
+          zIndex: 1,
         }}
       >
         <div
