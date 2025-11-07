@@ -1,0 +1,268 @@
+/**
+ * 模板列表页面
+ */
+
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Card,
+  Table,
+  Button,
+  Input,
+  Select,
+  Space,
+  Row,
+  Col,
+  Modal,
+  Typography,
+  Tag,
+} from 'antd';
+import {
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  SearchOutlined,
+} from '@ant-design/icons';
+import { useTemplateStore } from '@/store/template.store';
+import { TemplateCategoryBadge } from '@/components/Template/TemplateCategoryBadge';
+import { TEMPLATE_CATEGORY_CONFIG, type Template } from '@/types/template';
+import dayjs from 'dayjs';
+
+const { Title, Text } = Typography;
+
+export const TemplateList: React.FC = () => {
+  const navigate = useNavigate();
+  const {
+    templates,
+    loading,
+    pagination,
+    queryParams,
+    fetchTemplates,
+    deleteTemplate,
+    setQueryParams,
+  } = useTemplateStore();
+
+  useEffect(() => {
+    fetchTemplates();
+  }, [queryParams]);
+
+  const handleDelete = (template: Template) => {
+    Modal.confirm({
+      title: '确认删除',
+      content: `确定要删除模板 "${template.name}" 吗？此操作不可恢复。`,
+      okText: '删除',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk: () => deleteTemplate(template.id),
+    });
+  };
+
+  const columns = [
+    {
+      title: '模板名称',
+      dataIndex: 'name',
+      key: 'name',
+      width: 250,
+      render: (name: string) => (
+        <Text strong style={{ fontSize: '14px' }}>
+          {name}
+        </Text>
+      ),
+    },
+    {
+      title: '分类',
+      dataIndex: 'category',
+      key: 'category',
+      width: 130,
+      render: (category: any) => <TemplateCategoryBadge category={category} />,
+    },
+    {
+      title: '内容预览',
+      dataIndex: 'content',
+      key: 'content',
+      ellipsis: true,
+      render: (content: string) => (
+        <Text type="secondary" style={{ fontSize: '13px' }}>
+          {content.substring(0, 80)}
+          {content.length > 80 && '...'}
+        </Text>
+      ),
+    },
+    {
+      title: '语言',
+      dataIndex: 'language',
+      key: 'language',
+      width: 80,
+      render: (language: string) => <Tag>{language.toUpperCase()}</Tag>,
+    },
+    {
+      title: '使用统计',
+      key: 'stats',
+      width: 120,
+      render: (_: any, record: Template) => {
+        const successRate =
+          record.useCount > 0 ? ((record.successCount / record.useCount) * 100).toFixed(0) : 0;
+        return (
+          <Space direction="vertical" size={0}>
+            <Text style={{ fontSize: '12px' }}>使用: {record.useCount}次</Text>
+            <Text style={{ fontSize: '12px' }}>成功率: {successRate}%</Text>
+          </Space>
+        );
+      },
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      width: 150,
+      render: (date: string) => (
+        <Text type="secondary" style={{ fontSize: '12px' }}>
+          {dayjs(date).format('YYYY-MM-DD HH:mm')}
+        </Text>
+      ),
+    },
+    {
+      title: '操作',
+      key: 'actions',
+      width: 180,
+      fixed: 'right' as const,
+      render: (_: any, record: Template) => (
+        <Space>
+          <Button
+            type="link"
+            size="small"
+            icon={<EyeOutlined />}
+            onClick={() => navigate(`/templates/${record.id}`)}
+          >
+            查看
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            icon={<EditOutlined />}
+            onClick={() => navigate(`/templates/${record.id}/edit`)}
+          >
+            编辑
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            danger
+            icon={<DeleteOutlined />}
+            onClick={() => handleDelete(record)}
+          >
+            删除
+          </Button>
+        </Space>
+      ),
+    },
+  ];
+
+  return (
+    <div style={{ padding: '24px' }}>
+      <Card
+        className="animate-fade-in-up"
+        style={{
+          background: 'rgba(153, 69, 255, 0.05)',
+          border: '1px solid rgba(153, 69, 255, 0.2)',
+        }}
+      >
+        <Row justify="space-between" align="middle" style={{ marginBottom: '24px' }}>
+          <Col>
+            <Title level={2} style={{ margin: 0 }}>
+              📝 模板管理
+            </Title>
+          </Col>
+          <Col>
+            <Button
+              type="primary"
+              size="large"
+              icon={<PlusOutlined />}
+              onClick={() => navigate('/templates/create')}
+              className="hover-lift"
+            >
+              创建模板
+            </Button>
+          </Col>
+        </Row>
+
+        {/* 筛选区域 */}
+        <Row gutter={16} style={{ marginBottom: '16px' }}>
+          <Col xs={24} sm={12} md={8}>
+            <Input
+              placeholder="搜索模板名称或内容..."
+              prefix={<SearchOutlined />}
+              value={queryParams.search}
+              onChange={(e) => setQueryParams({ search: e.target.value })}
+              allowClear
+              size="large"
+            />
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <Select
+              placeholder="选择分类"
+              value={queryParams.category}
+              onChange={(value) => setQueryParams({ category: value })}
+              allowClear
+              size="large"
+              style={{ width: '100%' }}
+            >
+              {Object.entries(TEMPLATE_CATEGORY_CONFIG).map(([key, config]) => (
+                <Select.Option key={key} value={key}>
+                  <span style={{ marginRight: '8px' }}>{config.icon}</span>
+                  {config.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Col>
+          <Col xs={24} sm={12} md={5}>
+            <Select
+              placeholder="排序方式"
+              value={queryParams.sortBy}
+              onChange={(value) => setQueryParams({ sortBy: value })}
+              size="large"
+              style={{ width: '100%' }}
+            >
+              <Select.Option value="createdAt">创建时间</Select.Option>
+              <Select.Option value="updatedAt">更新时间</Select.Option>
+              <Select.Option value="useCount">使用次数</Select.Option>
+              <Select.Option value="name">名称</Select.Option>
+            </Select>
+          </Col>
+          <Col xs={24} sm={12} md={5}>
+            <Select
+              placeholder="排序方向"
+              value={queryParams.sortOrder}
+              onChange={(value) => setQueryParams({ sortOrder: value })}
+              size="large"
+              style={{ width: '100%' }}
+            >
+              <Select.Option value="desc">降序</Select.Option>
+              <Select.Option value="asc">升序</Select.Option>
+            </Select>
+          </Col>
+        </Row>
+
+        {/* 表格 */}
+        <Table
+          columns={columns}
+          dataSource={templates}
+          rowKey="id"
+          loading={loading}
+          scroll={{ x: 1200 }}
+          pagination={{
+            current: pagination.page,
+            pageSize: pagination.limit,
+            total: pagination.total,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total) => `共 ${total} 条`,
+            onChange: (page, pageSize) =>
+              setQueryParams({ page, limit: pageSize }),
+          }}
+        />
+      </Card>
+    </div>
+  );
+};
