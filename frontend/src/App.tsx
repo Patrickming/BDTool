@@ -12,6 +12,9 @@ import Register from '@/pages/Register';
 import KOLList from '@/pages/KOL/KOLList';
 import KOLImport from '@/pages/KOL/KOLImport';
 import KOLDetail from '@/pages/KOL/KOLDetail';
+import { TemplateList } from '@/pages/Template/TemplateList';
+import { TemplateCreate } from '@/pages/Template/TemplateCreate';
+import { TemplateEdit } from '@/pages/Template/TemplateEdit';
 import AppLayout from '@/components/Layout/AppLayout';
 import { useThemeStore } from '@/store/theme.store';
 
@@ -52,6 +55,10 @@ function App() {
             <Route path="/kols" element={<KOLList />} />
             <Route path="/kols/import" element={<KOLImport />} />
             <Route path="/kols/:id" element={<KOLDetail />} />
+            {/* 模板管理路由 */}
+            <Route path="/templates" element={<TemplateList />} />
+            <Route path="/templates/create" element={<TemplateCreate />} />
+            <Route path="/templates/:id/edit" element={<TemplateEdit />} />
           </Route>
 
           {/* 404 重定向 */}
