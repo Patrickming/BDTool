@@ -125,10 +125,11 @@ export default function AppLayout() {
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '0 48px',
-          background: 'rgba(0, 0, 0, 0.8)',
+          background: 'rgba(10, 10, 15, 0.95)',
           backdropFilter: 'blur(24px)',
           WebkitBackdropFilter: 'blur(24px)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+          boxShadow: '0 1px 0 0 rgba(153, 69, 255, 0.1)',
           height: 64,
         }}
       >
@@ -235,7 +236,7 @@ export default function AppLayout() {
           marginTop: 64,
           padding: '32px 48px',
           minHeight: 'calc(100vh - 64px)',
-          background: '#000000',
+          background: 'radial-gradient(ellipse at top, rgba(153, 69, 255, 0.03) 0%, #000000 50%)',
         }}
       >
         <div
