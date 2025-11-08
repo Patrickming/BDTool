@@ -323,7 +323,6 @@ saveEditsBtn.addEventListener("click", () => {
 
   // 保存到 storage
   chrome.storage.local.set({ pendingKOLs: localKOLs }, () => {
-    alert("修改已保存");
     dataModal.style.display = "none";
     updateUI();
   });
