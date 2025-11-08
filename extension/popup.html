@@ -93,22 +93,95 @@
   <body>
     <h1>🎯 Twitter KOL 捕获工具</h1>
 
-    <div id="status" class="status">
-      <div>状态：<span id="statusText">就绪</span></div>
-      <div class="count" id="count">0</div>
-      <div>已收集 KOL</div>
+    <!-- 页面检测提示 -->
+    <div id="pageDetection" class="status">
+      <div>当前页面：<span id="pageType">检测中...</span></div>
     </div>
 
-    <button id="extractBtn" class="btn-primary">捕获 KOL 数据</button>
+    <!-- 本地数据状态 -->
+    <div id="status" class="status">
+      <div>本地数据：<span id="statusText">无数据</span></div>
+      <div class="count" id="count">0</div>
+      <div>待上传 KOL</div>
+    </div>
 
-    <button id="clearBtn" class="btn-secondary">清空数据</button>
+    <!-- 捕获按钮 -->
+    <button id="extractBtn" class="btn-primary" disabled>捕获 KOL 数据</button>
+
+    <!-- 查看和上传按钮 -->
+    <div style="display: flex; gap: 8px">
+      <button id="viewBtn" class="btn-secondary" style="flex: 1" disabled>
+        查看数据
+      </button>
+      <button id="uploadBtn" class="btn-secondary" style="flex: 1; background: #28a745; color: white; border: none" disabled>
+        上传到数据库
+      </button>
+    </div>
+
+    <!-- 清空按钮 -->
+    <button id="clearBtn" class="btn-secondary">清空本地数据</button>
+
+    <!-- 数据查看和编辑弹窗 -->
+    <div
+      id="dataModal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        padding: 20px;
+      "
+    >
+      <div
+        style="
+          background: #1e2329;
+          color: #ffffff;
+          border-radius: 12px;
+          padding: 20px;
+          max-height: 80vh;
+          overflow-y: auto;
+          position: relative;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        "
+      >
+        <button
+          id="closeModalBtn"
+          style="
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+          "
+        >
+          ×
+        </button>
+
+        <h3 style="margin-top: 0; color: #667eea">📊 待上传 KOL 数据</h3>
+
+        <div id="kolListContainer" style="margin: 16px 0"></div>
+
+        <button id="saveEditsBtn" class="btn-primary" style="margin-top: 16px">
+          保存修改
+        </button>
+      </div>
+    </div>
 
     <div class="instructions">
       <strong>使用说明</strong>
       <ol>
-        <li>在 Twitter 用户主页点击"捕获 KOL 数据"</li>
-        <li>数据将自动保存到后端系统</li>
-        <li>可在系统中查看已捕获的 KOL 列表</li>
+        <li>访问 Twitter KOL 主页（例如: x.com/VitalikButerin）</li>
+        <li>点击"捕获 KOL 数据"保存到本地</li>
+        <li>点击"查看数据"填写质量评分、内容分类等</li>
+        <li>点击"上传到数据库"提交到系统</li>
       </ol>
     </div>
 
