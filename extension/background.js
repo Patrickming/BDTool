@@ -31,18 +31,17 @@ async function uploadKOLs(kols) {
         body: JSON.stringify({
           username: kol.username,
           displayName: kol.displayName,
+          twitterId: kol.username, // 使用 username 作为 twitterId
           bio: kol.bio,
           followerCount: kol.followerCount,
           followingCount: kol.followingCount,
           profileImgUrl: kol.profileImgUrl,
           verified: kol.verified,
-          platform: "twitter",
-          platformId: kol.username,
           // 手动填写的字段
           qualityScore: kol.qualityScore,
-          category: kol.category,
-          tags: kol.tags,
+          contentCategory: kol.contentCategory,
           status: kol.status,
+          customNotes: kol.customNotes,
         }),
       });
 

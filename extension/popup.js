@@ -52,11 +52,25 @@ async function detectCurrentPage() {
       return;
     }
 
-    if (tab.url.includes("twitter.com") || tab.url.includes("x.com")) {
-      // 检测是否为个人主页 (例如: x.com/VitalikButerin)
-      const match = tab.url.match(/\/([\w]+)$/);
-      if (match && !["home", "explore", "notifications", "messages"].includes(match[1])) {
-        pageType.textContent = `✅ Twitter 主页 (@${match[1]})`;
+    // 严格检测 URL 格式: https://x.com/用户ID 或 https://twitter.com/用户ID
+    const userPagePattern = /^https:\/\/(x\.com|twitter\.com)\/([\w]+)$/;
+    const match = tab.url.match(userPagePattern);
+
+    if (match) {
+      const username = match[2];
+      // 排除 Twitter 的功能页面
+      if (
+        ![
+          "home",
+          "explore",
+          "notifications",
+          "messages",
+          "search",
+          "settings",
+          "compose",
+        ].includes(username)
+      ) {
+        pageType.textContent = `✅ Twitter 主页 (@${username})`;
         pageDetectionEl.classList.add("active");
         extractBtn.disabled = false;
       } else {
@@ -65,7 +79,7 @@ async function detectCurrentPage() {
         extractBtn.disabled = true;
       }
     } else {
-      pageType.textContent = "❌ 非 Twitter 页面";
+      pageType.textContent = "❌ 非 KOL 主页";
       pageDetectionEl.classList.remove("active");
       extractBtn.disabled = true;
     }
@@ -124,15 +138,17 @@ extractBtn.addEventListener("click", async () => {
             const kolData = {
               ...response.data,
               // 添加需要手动填写的字段（默认值）
-              qualityScore: null, // 质量评分
-              category: null, // 内容分类
-              tags: [], // 标签
-              status: "新添加", // 状态
+              qualityScore: null, // 质量评分 (0-100)
+              contentCategory: null, // 内容分类 (枚举值)
+              status: "new", // 状态 (默认 new)
+              customNotes: "", // 自定义备注
               capturedAt: new Date().toISOString(),
             };
 
             // 检查是否已存在
-            const exists = localKOLs.some(k => k.username === kolData.username);
+            const exists = localKOLs.some(
+              (k) => k.username === kolData.username
+            );
             if (exists) {
               alert(`@${kolData.username} 已在待上传列表中`);
               statusText.textContent = "已存在";
@@ -191,7 +207,11 @@ function renderKOLList() {
     html += `
       <div style="margin-bottom: 16px; padding: 12px; background: #2b3139; border-radius: 8px; border-left: 4px solid #667eea;">
         <div style="display: flex; align-items: center; margin-bottom: 8px;">
-          ${kol.profileImgUrl ? `<img src="${kol.profileImgUrl}" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 12px;">` : ''}
+          ${
+            kol.profileImgUrl
+              ? `<img src="${kol.profileImgUrl}" style="width: 40px; height: 40px; border-radius: 50%; margin-right: 12px;">`
+              : ""
+          }
           <div style="flex: 1;">
             <div style="color: #fff; font-weight: bold;">@${kol.username}</div>
             <div style="color: #999; font-size: 12px;">${kol.displayName}</div>
@@ -213,8 +233,8 @@ function renderKOLList() {
                 id="quality_${index}"
                 min="1"
                 max="5"
-                value="${kol.qualityScore || ''}"
-                placeholder="1-5"
+                value="${kol.qualityScore || ""}"
+                placeholder="0-100"
                 style="width: 100%; padding: 6px; background: #1e2329; border: 1px solid #444; border-radius: 4px; color: #fff;"
               />
             </div>
@@ -227,31 +247,37 @@ function renderKOLList() {
                 style="width: 100%; padding: 6px; background: #1e2329; border: 1px solid #444; border-radius: 4px; color: #fff;"
               >
                 <option value="">请选择</option>
-                <option value="技术开发" ${kol.category === '技术开发' ? 'selected' : ''}>技术开发</option>
-                <option value="项目方" ${kol.category === '项目方' ? 'selected' : ''}>项目方</option>
-                <option value="投资机构" ${kol.category === '投资机构' ? 'selected' : ''}>投资机构</option>
-                <option value="意见领袖" ${kol.category === '意见领袖' ? 'selected' : ''}>意见领袖</option>
-                <option value="媒体资讯" ${kol.category === '媒体资讯' ? 'selected' : ''}>媒体资讯</option>
-                <option value="其他" ${kol.category === '其他' ? 'selected' : ''}>其他</option>
+                <option value="contract_trading" ${
+                  kol.contentCategory === "contract_trading" ? "selected" : ""
+                }>合约交易分析</option>
+                <option value="crypto_trading" ${
+                  kol.contentCategory === "crypto_trading" ? "selected" : ""
+                }>代币交易分析</option>
+                <option value="web3" ${
+                  kol.contentCategory === "web3" ? "selected" : ""
+                }>Web3 通用</option>
+                <option value="unknown" ${
+                  kol.contentCategory === "unknown" ? "selected" : ""
+                }>未分类</option>
               </select>
             </div>
           </div>
 
           <div>
             <label style="color: #999; font-size: 12px; display: block; margin-bottom: 4px;">
-              标签（逗号分隔）
+              自定义备注
             </label>
-            <input
-              type="text"
-              id="tags_${index}"
-              value="${kol.tags?.join(',') || ''}"
-              placeholder="例如: DeFi,以太坊,开发者"
-              style="width: 100%; padding: 6px; background: #1e2329; border: 1px solid #444; border-radius: 4px; color: #fff;"
-            />
+            <textarea
+              id="notes_${index}"
+              placeholder="添加备注信息..."
+              style="width: 100%; padding: 6px; background: #1e2329; border: 1px solid #444; border-radius: 4px; color: #fff; min-height: 60px; resize: vertical;"
+            >${kol.customNotes || ""}</textarea>
           </div>
 
           <div style="margin-top: 8px; display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 12px; color: #999;">状态: ${kol.status}</span>
+            <span style="font-size: 12px; color: #999;">状态: ${
+              kol.status
+            }</span>
             <button
               onclick="removeKOL(${index})"
               style="padding: 4px 12px; background: #3a1a1a; color: #ff6b6b; border: 1px solid #ff6b6b; border-radius: 4px; cursor: pointer; font-size: 12px;"
@@ -268,7 +294,7 @@ function renderKOLList() {
 }
 
 // 移除 KOL（全局函数）
-window.removeKOL = function(index) {
+window.removeKOL = function (index) {
   if (confirm(`确定移除 @${localKOLs[index].username}?`)) {
     localKOLs.splice(index, 1);
     collectedCount = localKOLs.length;
@@ -288,11 +314,11 @@ saveEditsBtn.addEventListener("click", () => {
   localKOLs.forEach((kol, index) => {
     const qualityInput = document.getElementById(`quality_${index}`);
     const categoryInput = document.getElementById(`category_${index}`);
-    const tagsInput = document.getElementById(`tags_${index}`);
+    const notesInput = document.getElementById(`notes_${index}`);
 
     kol.qualityScore = qualityInput.value ? parseInt(qualityInput.value) : null;
-    kol.category = categoryInput.value || null;
-    kol.tags = tagsInput.value ? tagsInput.value.split(',').map(t => t.trim()).filter(t => t) : [];
+    kol.contentCategory = categoryInput.value || null;
+    kol.customNotes = notesInput.value.trim() || "";
   });
 
   // 保存到 storage
@@ -322,9 +348,13 @@ uploadBtn.addEventListener("click", async () => {
   }
 
   // 验证必填字段
-  const incomplete = localKOLs.filter(kol => !kol.qualityScore || !kol.category);
+  const incomplete = localKOLs.filter(
+    (kol) => !kol.qualityScore || !kol.contentCategory
+  );
   if (incomplete.length > 0) {
-    alert(`有 ${incomplete.length} 个 KOL 未填写完整信息（质量评分和内容分类为必填项）\n请点击"查看数据"完成填写`);
+    alert(
+      `有 ${incomplete.length} 个 KOL 未填写完整信息（质量评分和内容分类为必填项）\n请点击"查看数据"完成填写`
+    );
     return;
   }
 
@@ -355,7 +385,7 @@ uploadBtn.addEventListener("click", async () => {
             statusEl.classList.add("active");
           });
         } else {
-          alert(`上传失败: ${response?.message || '未知错误'}`);
+          alert(`上传失败: ${response?.message || "未知错误"}`);
         }
       }
     );
