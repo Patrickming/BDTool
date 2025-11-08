@@ -50,7 +50,12 @@ async function uploadKOLs(kols) {
         console.log(`✅ 成功上传: @${kol.username}`);
         successCount++;
       } else {
-        const error = await response.json();
+        let error;
+        try {
+          error = await response.json();
+        } catch (e) {
+          error = { message: `HTTP ${response.status}: ${response.statusText}` };
+        }
         console.error(`❌ 上传失败 @${kol.username}:`, error);
 
         // 如果是重复数据，也算成功
@@ -59,13 +64,15 @@ async function uploadKOLs(kols) {
           successCount++;
         } else {
           failedCount++;
-          errors.push(`@${kol.username}: ${error.message}`);
+          const errorMsg = error.message || error.error || `HTTP ${response.status}`;
+          errors.push(`@${kol.username}: ${errorMsg}`);
         }
       }
     } catch (error) {
       console.error(`❌ 上传异常 @${kol.username}:`, error);
       failedCount++;
-      errors.push(`@${kol.username}: ${error.message}`);
+      const errorMsg = error.message || String(error);
+      errors.push(`@${kol.username}: ${errorMsg}`);
     }
   }
 

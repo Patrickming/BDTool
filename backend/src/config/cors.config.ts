@@ -20,6 +20,12 @@ export const corsOptions: CorsOptions = {
       return;
     }
 
+    // 允许 Chrome 扩展（chrome-extension:// 开头的源）
+    if (origin.startsWith('chrome-extension://')) {
+      callback(null, true);
+      return;
+    }
+
     // 检查 origin 是否在允许列表中
     if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
       callback(null, true);
