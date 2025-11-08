@@ -16,7 +16,7 @@ import {
   Modal,
   message,
 } from 'antd';
-import { PlusOutlined, UploadOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { PlusOutlined, UploadOutlined, ReloadOutlined, SearchOutlined, DownloadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import KOLTable from '../../components/KOL/KOLTable';
 import { useKOLStore } from '../../store/kol.store';
@@ -27,10 +27,11 @@ import {
   SortOrderOptions,
 } from '../../types/kol';
 import type { KOLQueryParams, CreateKOLDto } from '../../types/kol';
+import { exportKOLsToCSV } from '../../utils/export';
 
 const KOLList: React.FC = () => {
   const navigate = useNavigate();
-  const { loading, fetchKOLs, queryParams, setQueryParams, resetQueryParams, createKOL } = useKOLStore();
+  const { loading, fetchKOLs, queryParams, setQueryParams, resetQueryParams, createKOL, kols, pagination } = useKOLStore();
   const [form] = Form.useForm();
   const [createForm] = Form.useForm();
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -72,6 +73,22 @@ const KOLList: React.FC = () => {
     const params = { ...queryParams, page, limit: pageSize };
     setQueryParams(params);
     fetchKOLs(params);
+  };
+
+  // 导出 KOL 列表
+  const handleExport = () => {
+    if (kols.length === 0) {
+      message.warning('当前没有可导出的 KOL 数据');
+      return;
+    }
+
+    try {
+      exportKOLsToCSV(kols);
+      message.success(`成功导出 ${kols.length} 个 KOL 数据`);
+    } catch (error: any) {
+      console.error('导出失败:', error);
+      message.error('导出失败，请重试');
+    }
   };
 
   // 创建 KOL
@@ -125,6 +142,14 @@ const KOLList: React.FC = () => {
         </Col>
         <Col>
           <Space>
+            <Button
+              type="default"
+              icon={<DownloadOutlined />}
+              onClick={handleExport}
+              disabled={kols.length === 0}
+            >
+              导出 CSV ({pagination?.total || 0})
+            </Button>
             <Button
               type="default"
               icon={<UploadOutlined />}
