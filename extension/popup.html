@@ -93,6 +93,15 @@
   <body>
     <h1>🎯 Twitter KOL 捕获工具</h1>
 
+    <!-- Token 配置状态 -->
+    <div id="tokenStatus" class="status">
+      <div style="font-size: 11px; margin-bottom: 4px;">认证状态</div>
+      <div id="tokenStatusText" style="font-size: 12px; color: #ff6b6b;">❌ 未配置 Token</div>
+      <button id="configTokenBtn" style="margin-top: 8px; padding: 6px 12px; font-size: 11px; width: 100%; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer;">
+        配置 Token
+      </button>
+    </div>
+
     <!-- 页面检测提示 -->
     <div id="pageDetection" class="status">
       <div>当前页面：<span id="pageType">检测中...</span></div>
@@ -171,6 +180,72 @@
 
         <button id="saveEditsBtn" class="btn-primary" style="margin-top: 16px">
           保存修改
+        </button>
+      </div>
+    </div>
+
+    <!-- Token 配置弹窗 -->
+    <div
+      id="tokenModal"
+      style="
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        padding: 20px;
+      "
+    >
+      <div
+        style="
+          background: #1e2329;
+          color: #ffffff;
+          border-radius: 12px;
+          padding: 20px;
+          max-height: 80vh;
+          overflow-y: auto;
+          position: relative;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        "
+      >
+        <button
+          id="closeTokenModalBtn"
+          style="
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+          "
+        >
+          ×
+        </button>
+
+        <h3 style="margin-top: 0; color: #667eea">🔑 配置 Extension Token</h3>
+
+        <div style="margin: 16px 0">
+          <label style="color: #999; font-size: 12px; display: block; margin-bottom: 8px;">
+            Extension Token <span style="color: #ff6b6b;">*</span>
+          </label>
+          <textarea
+            id="tokenInput"
+            placeholder="请粘贴从系统获取的 Token..."
+            style="width: 100%; padding: 12px; background: #1e2329; border: 1px solid #444; border-radius: 4px; color: #fff; min-height: 80px; resize: vertical; font-family: Monaco, monospace; font-size: 11px;"
+          ></textarea>
+          <div style="margin-top: 8px; font-size: 11px; color: #999;">
+            提示：登录系统后，访问「插件内容」页面获取 Token
+          </div>
+        </div>
+
+        <button id="saveTokenBtn" class="btn-primary" style="margin-top: 16px">
+          保存 Token
         </button>
       </div>
     </div>

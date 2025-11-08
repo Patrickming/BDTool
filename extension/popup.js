@@ -9,6 +9,15 @@ const countEl = document.getElementById("count");
 const pageDetectionEl = document.getElementById("pageDetection");
 const pageType = document.getElementById("pageType");
 
+// Token 相关元素
+const tokenStatusEl = document.getElementById("tokenStatus");
+const tokenStatusText = document.getElementById("tokenStatusText");
+const configTokenBtn = document.getElementById("configTokenBtn");
+const tokenModal = document.getElementById("tokenModal");
+const closeTokenModalBtn = document.getElementById("closeTokenModalBtn");
+const tokenInput = document.getElementById("tokenInput");
+const saveTokenBtn = document.getElementById("saveTokenBtn");
+
 // 弹窗元素
 const dataModal = document.getElementById("dataModal");
 const closeModalBtn = document.getElementById("closeModalBtn");
@@ -18,20 +27,44 @@ const saveEditsBtn = document.getElementById("saveEditsBtn");
 // 状态管理
 let collectedCount = 0;
 let localKOLs = []; // 本地待上传的 KOL 数据
+let extensionToken = null; // Extension Token
 
 // 初始化：恢复状态 + 检测页面
 async function initialize() {
   // 恢复本地数据
-  chrome.storage.local.get(["pendingKOLs"], (result) => {
+  chrome.storage.local.get(["pendingKOLs", "extensionToken"], (result) => {
     if (result.pendingKOLs && result.pendingKOLs.length > 0) {
       localKOLs = result.pendingKOLs;
       collectedCount = localKOLs.length;
       updateUI();
     }
+
+    // 恢复 Token
+    if (result.extensionToken) {
+      extensionToken = result.extensionToken;
+      updateTokenUI(true);
+    } else {
+      updateTokenUI(false);
+    }
   });
 
   // 检测当前页面
   await detectCurrentPage();
+}
+
+// 更新 Token UI
+function updateTokenUI(hasToken) {
+  if (hasToken) {
+    tokenStatusText.textContent = "✅ Token 已配置";
+    tokenStatusText.style.color = "#51cf66";
+    tokenStatusEl.classList.add("active");
+    configTokenBtn.textContent = "重新配置";
+  } else {
+    tokenStatusText.textContent = "❌ 未配置 Token";
+    tokenStatusText.style.color = "#ff6b6b";
+    tokenStatusEl.classList.remove("active");
+    configTokenBtn.textContent = "配置 Token";
+  }
 }
 
 // 执行初始化
@@ -416,7 +449,7 @@ function updateUI() {
   // 更新按钮状态
   if (collectedCount > 0) {
     viewBtn.disabled = false;
-    uploadBtn.disabled = false;
+    uploadBtn.disabled = !extensionToken; // 只有配置了 Token 才能上传
     statusText.textContent = `有 ${collectedCount} 个待上传`;
   } else {
     viewBtn.disabled = true;
@@ -424,3 +457,41 @@ function updateUI() {
     statusText.textContent = "无数据";
   }
 }
+
+// Token 配置按钮
+configTokenBtn.addEventListener("click", () => {
+  tokenModal.style.display = "flex";
+  tokenModal.style.alignItems = "center";
+  tokenModal.style.justifyContent = "center";
+  tokenInput.value = extensionToken || "";
+});
+
+// 关闭 Token 弹窗
+closeTokenModalBtn.addEventListener("click", () => {
+  tokenModal.style.display = "none";
+});
+
+tokenModal.addEventListener("click", (e) => {
+  if (e.target === tokenModal) {
+    tokenModal.style.display = "none";
+  }
+});
+
+// 保存 Token
+saveTokenBtn.addEventListener("click", () => {
+  const token = tokenInput.value.trim();
+
+  if (!token) {
+    alert("请输入 Token");
+    return;
+  }
+
+  // 保存到 storage
+  chrome.storage.local.set({ extensionToken: token }, () => {
+    extensionToken = token;
+    updateTokenUI(true);
+    tokenModal.style.display = "none";
+    alert("Token 配置成功");
+    updateUI(); // 更新上传按钮状态
+  });
+});

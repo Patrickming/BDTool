@@ -15,6 +15,7 @@ import { TemplateList } from '@/pages/Template/TemplateList';
 import { TemplateCreate } from '@/pages/Template/TemplateCreate';
 import { TemplateEdit } from '@/pages/Template/TemplateEdit';
 import { AnalyticsDashboard } from '@/pages/AnalyticsDashboard';
+import Extension from '@/pages/Extension';
 import AppLayout from '@/components/Layout/AppLayout';
 
 function App() {
@@ -53,6 +54,8 @@ function App() {
             <Route path="/templates/:id/edit" element={<TemplateEdit />} />
             {/* 分析统计路由 */}
             <Route path="/analytics" element={<AnalyticsDashboard />} />
+            {/* 插件管理路由 */}
+            <Route path="/extension" element={<Extension />} />
           </Route>
 
           {/* 404 重定向 */}

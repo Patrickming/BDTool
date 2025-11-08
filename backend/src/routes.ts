@@ -8,6 +8,7 @@ import userRoutes from './routes/user.routes';
 import kolRoutes from '@features/kol/routes/kol.routes';
 import templateRoutes from '@features/templates/routes/template.routes';
 import analyticsRoutes from '@features/analytics/routes/analytics.routes';
+import extensionRoutes from './routes/extension.routes';
 
 const router = Router();
 
@@ -40,6 +41,12 @@ router.use('/templates', templateRoutes);
  * /api/v1/analytics/*
  */
 router.use('/analytics', analyticsRoutes);
+
+/**
+ * 插件管理路由
+ * /api/v1/extension/*
+ */
+router.use('/extension', extensionRoutes);
 
 /**
  * 联系记录路由（待实现）

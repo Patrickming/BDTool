@@ -22,10 +22,11 @@ model User {
   updatedAt      DateTime     @updatedAt
 
   // 关系
-  kols        KOL[]
-  templates   Template[]
-  contactLogs ContactLog[]
-  tags        Tag[]
+  kols           KOL[]
+  templates      Template[]
+  contactLogs    ContactLog[]
+  tags           Tag[]
+  extensionToken ExtensionToken?
 
   @@index([email])
 }
@@ -209,4 +210,23 @@ model KOLTag {
   @@id([kolId, tagId]) // 复合主键
   @@index([kolId])
   @@index([tagId])
+}
+
+// 插件 Token 表
+model ExtensionToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Token 数据
+  token     String   @unique // 随机生成的唯一 Token
+  expiresAt DateTime? // 过期时间（复制后 2 小时）
+  isActive  Boolean  @default(false) // 是否已激活（复制后激活）
+
+  // 时间戳
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([token])
 }
