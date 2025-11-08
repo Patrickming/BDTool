@@ -1,97 +1,82 @@
-// Background Script: 数据收集和 API 调用
+// Background Script: 数据上传
 
 // API 配置
 const API_BASE_URL = "http://localhost:3000/api/v1";
 
-// 监听来自 content script 和 popup 的消息
+// 监听来自 popup 的消息
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "collectKOL") {
-    collectKOL(message.kol);
+  if (message.action === "uploadKOLs") {
+    uploadKOLs(message.kols).then(sendResponse);
+    return true; // 保持消息通道开启
   }
 });
 
-// 收集 KOL 数据并保存到后端
-async function collectKOL(kolData) {
-  console.log("📥 收到 KOL 数据:", kolData);
+// 批量上传 KOL 到数据库
+async function uploadKOLs(kols) {
+  console.log(`📤 准备上传 ${kols.length} 个 KOL 到数据库...`);
 
-  try {
-    // 1. 保存到本地存储(用于显示计数)
-    const result = await chrome.storage.local.get(["collectedKOLs", "kolIds"]);
+  let successCount = 0;
+  let failedCount = 0;
+  const errors = [];
 
-    let allKOLs = result.collectedKOLs || [];
-    let kolIds = new Set(result.kolIds || []);
+  for (const kol of kols) {
+    try {
+      console.log(`📤 上传: @${kol.username}`);
 
-    // 去重检查
-    const kolId = kolData.username;
-    if (kolIds.has(kolId)) {
-      console.log("⏭️ KOL 已存在，跳过:", kolId);
-      return;
-    }
-
-    // 2. 发送到后端 API
-    console.log("📤 发送到后端 API...");
-    const response = await fetch(`${API_BASE_URL}/kols`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: kolData.username,
-        displayName: kolData.displayName,
-        bio: kolData.bio,
-        followerCount: kolData.followerCount,
-        followingCount: kolData.followingCount,
-        profileImgUrl: kolData.profileImgUrl,
-        verified: kolData.verified,
-        platform: "twitter",
-        platformId: kolData.username,
-      }),
-    });
-
-    if (response.ok) {
-      const savedKOL = await response.json();
-      console.log("✅ 成功保存到后端:", savedKOL);
-
-      // 3. 保存到本地
-      kolIds.add(kolId);
-      allKOLs.push(kolData);
-
-      await chrome.storage.local.set({
-        collectedKOLs: allKOLs,
-        kolIds: Array.from(kolIds),
+      const response = await fetch(`${API_BASE_URL}/kols`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: kol.username,
+          displayName: kol.displayName,
+          bio: kol.bio,
+          followerCount: kol.followerCount,
+          followingCount: kol.followingCount,
+          profileImgUrl: kol.profileImgUrl,
+          verified: kol.verified,
+          platform: "twitter",
+          platformId: kol.username,
+          // 手动填写的字段
+          qualityScore: kol.qualityScore,
+          category: kol.category,
+          tags: kol.tags,
+          status: kol.status,
+        }),
       });
 
-      // 4. 通知 popup 更新计数
-      chrome.runtime.sendMessage({
-        action: "updateCount",
-        count: allKOLs.length,
-      });
+      if (response.ok) {
+        const savedKOL = await response.json();
+        console.log(`✅ 成功上传: @${kol.username}`);
+        successCount++;
+      } else {
+        const error = await response.json();
+        console.error(`❌ 上传失败 @${kol.username}:`, error);
 
-      console.log(`✅ 新增 1 个 KOL，总计 ${allKOLs.length} 个`);
-    } else {
-      const error = await response.json();
-      console.error("❌ 后端保存失败:", error);
-
-      // 如果是重复数据错误，也视为成功
-      if (response.status === 409 || error.message?.includes("已存在")) {
-        console.log("⏭️ KOL 已存在于后端");
-
-        // 仍然保存到本地
-        kolIds.add(kolId);
-        allKOLs.push(kolData);
-
-        await chrome.storage.local.set({
-          collectedKOLs: allKOLs,
-          kolIds: Array.from(kolIds),
-        });
-
-        chrome.runtime.sendMessage({
-          action: "updateCount",
-          count: allKOLs.length,
-        });
+        // 如果是重复数据，也算成功
+        if (response.status === 409 || error.message?.includes("已存在")) {
+          console.log(`⏭️ @${kol.username} 已存在于数据库`);
+          successCount++;
+        } else {
+          failedCount++;
+          errors.push(`@${kol.username}: ${error.message}`);
+        }
       }
+    } catch (error) {
+      console.error(`❌ 上传异常 @${kol.username}:`, error);
+      failedCount++;
+      errors.push(`@${kol.username}: ${error.message}`);
     }
-  } catch (error) {
-    console.error("❌ 收集 KOL 失败:", error);
   }
+
+  console.log(`✅ 上传完成: 成功 ${successCount}, 失败 ${failedCount}`);
+
+  return {
+    success: failedCount === 0,
+    successCount,
+    failedCount,
+    errors,
+    message: failedCount > 0 ? `部分上传失败: ${errors.join(', ')}` : '全部上传成功',
+  };
 }
