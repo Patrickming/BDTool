@@ -187,11 +187,13 @@ export class AnalyticsService {
     });
 
     // 粉丝数分布统计
-    const followerRanges = {
-      '1k-5k': 0,
-      '5k-10k': 0,
-      '10k-30k': 0,
-      '30k-50k': 0,
+    const followerRanges: Record<string, number> = {
+      '0-1k': 0,
+      '1k-10k': 0,
+      '10k-50k': 0,
+      '50k-100k': 0,
+      '100k-500k': 0,
+      '500k以上': 0,
     };
 
     // 质量分分布统计
@@ -211,14 +213,18 @@ export class AnalyticsService {
     kols.forEach((kol) => {
       // 粉丝数统计
       const followers = kol.followerCount || 0;
-      if (followers >= 1000 && followers < 5000) {
-        followerRanges['1k-5k']++;
-      } else if (followers >= 5000 && followers < 10000) {
-        followerRanges['5k-10k']++;
-      } else if (followers >= 10000 && followers < 30000) {
-        followerRanges['10k-30k']++;
-      } else if (followers >= 30000 && followers <= 50000) {
-        followerRanges['30k-50k']++;
+      if (followers < 1000) {
+        followerRanges['0-1k']++;
+      } else if (followers >= 1000 && followers < 10000) {
+        followerRanges['1k-10k']++;
+      } else if (followers >= 10000 && followers < 50000) {
+        followerRanges['10k-50k']++;
+      } else if (followers >= 50000 && followers < 100000) {
+        followerRanges['50k-100k']++;
+      } else if (followers >= 100000 && followers < 500000) {
+        followerRanges['100k-500k']++;
+      } else {
+        followerRanges['500k以上']++;
       }
 
       // 质量分统计

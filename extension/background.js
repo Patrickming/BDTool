@@ -32,7 +32,9 @@ async function uploadKOLs(kols) {
 
   let successCount = 0;
   let failedCount = 0;
+  let duplicateCount = 0;
   const errors = [];
+  const duplicates = [];
 
   for (const kol of kols) {
     try {
@@ -80,15 +82,18 @@ async function uploadKOLs(kols) {
             success: false,
             successCount,
             failedCount: kols.length - successCount,
+            duplicateCount,
             errors: ["Token 已过期或无效，请重新配置"],
+            duplicates,
             message: "Token 已过期或无效，请在插件中重新配置 Token",
           };
         }
 
-        // 如果是重复数据，也算成功
-        if (response.status === 409 || error.message?.includes("已存在")) {
-          console.log(`⏭️ @${kol.username} 已存在于数据库`);
-          successCount++;
+        // 如果是重复数据，单独统计
+        if (response.status === 400 && error.message?.includes("已存在")) {
+          console.log(`⚠️ @${kol.username} 已存在于数据库中`);
+          duplicateCount++;
+          duplicates.push(`@${kol.username}`);
         } else {
           failedCount++;
           const errorMsg = error.message || error.error || `HTTP ${response.status}`;
@@ -103,13 +108,37 @@ async function uploadKOLs(kols) {
     }
   }
 
-  console.log(`✅ 上传完成: 成功 ${successCount}, 失败 ${failedCount}`);
+  console.log(`✅ 上传完成: 成功 ${successCount}, 重复 ${duplicateCount}, 失败 ${failedCount}`);
+
+  // 构建详细的消息
+  let message = "";
+  if (successCount > 0) {
+    message += `成功上传 ${successCount} 个`;
+  }
+  if (duplicateCount > 0) {
+    if (message) message += ", ";
+    message += `${duplicateCount} 个已存在 (${duplicates.join(', ')})`;
+  }
+  if (failedCount > 0) {
+    if (message) message += ", ";
+    message += `${failedCount} 个失败`;
+  }
+  if (!message) {
+    message = "没有数据需要上传";
+  }
+
+  // 如果有重复，添加提示
+  if (duplicateCount > 0) {
+    message += "\n\n提示：重复的 KOL 未修改，如需修改请到系统中操作";
+  }
 
   return {
     success: failedCount === 0,
     successCount,
     failedCount,
+    duplicateCount,
     errors,
-    message: failedCount > 0 ? `部分上传失败: ${errors.join(', ')}` : '全部上传成功',
+    duplicates,
+    message,
   };
 }
