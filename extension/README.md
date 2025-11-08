@@ -2,222 +2,216 @@
 
 > Twitter KOL 一键捕获浏览器插件
 
-## 📖 功能介绍
+## 功能介绍
 
-这是一个 Chrome 浏览器扩展，配合 KOL BD Tool 系统使用，用于在浏览 Twitter 时快速捕获 KOL 信息并保存到系统中。
+这是一个 Chrome 浏览器扩展，配合 KOL BD Tool 系统使用，用于在浏览 Twitter 时快速捕获 KOL 信息并自动保存到系统中。
 
 ### 核心功能
 
 1. **一键捕获 KOL**
-   - 在 Twitter 个人主页添加"添加到系统"按钮
+   - 在 Twitter 个人主页点击插件图标
    - 自动提取用户资料（用户名、显示名、粉丝数、简介等）
    - 一键保存到 KOL BD Tool 系统
+   - 无需登录，直接使用
 
-2. **批量导入**
-   - 从关注列表批量捕获用户
-   - 从粉丝列表批量捕获用户
-   - 支持一次导入多个 KOL
+2. **自动数据提取**
+   - 用户名（username）
+   - 显示名称（displayName）
+   - 个人简介（bio）
+   - 粉丝数（followerCount）
+   - 关注数（followingCount）
+   - 头像 URL（profileImgUrl）
+   - 认证状态（verified）
 
 3. **状态显示**
-   - 显示今日已捕获数量
-   - 显示系统 KOL 总数
+   - 显示已捕获 KOL 数量
+   - 实时页面检测
+   - 捕获状态提示
 
-## 🚀 安装方法
+## 安装方法
 
 ### 前置要求
 
-- Chrome 浏览器（版本 88+）
+- Chrome 浏览器 88+
 - KOL BD Tool 后端服务正在运行（http://localhost:3000）
-- 有效的登录 Token
 
 ### 安装步骤
 
-1. **下载插件代码**
-   ```bash
-   # 插件代码位于 extension/ 目录
-   ```
-
-2. **打开 Chrome 扩展程序页面**
+1. **打开 Chrome 扩展程序页面**
    - 在 Chrome 地址栏输入：`chrome://extensions/`
    - 或通过菜单：`更多工具` → `扩展程序`
 
-3. **启用开发者模式**
+2. **启用开发者模式**
    - 点击右上角的"开发者模式"开关
 
-4. **加载未打包的扩展程序**
+3. **加载未打包的扩展程序**
    - 点击"加载已解压的扩展程序"
-   - 选择 `extension/` 目录
+   - 选择 `/home/pdm/DEV/projects/BDTool/extension` 目录
    - 插件将出现在扩展程序列表中
 
-5. **固定插件图标**
+4. **固定插件图标**
    - 点击 Chrome 工具栏的拼图图标
    - 找到"KOL BD Tool"
    - 点击图钉图标将其固定到工具栏
 
-## 🔧 使用指南
+## 使用指南
 
-### 首次使用
+### 捕获 KOL
 
-1. **获取 Token**
-   - 登录 KOL BD Tool 系统（http://localhost:5173）
-   - 打开浏览器开发者工具（F12）
-   - 在 Console 中输入：`localStorage.getItem('token')`
-   - 复制返回的 Token
-
-2. **设置 Token**
-   - 点击插件图标打开弹出窗口
-   - 粘贴 Token 到输入框
-   - 点击"保存 Token"
-
-3. **验证登录**
-   - 如果显示"✅ 已登录"，说明设置成功
-
-### 捕获单个 KOL
-
-1. 访问任意 Twitter 用户主页
+1. **访问 Twitter 用户主页**
    - 例如：`https://twitter.com/elonmusk`
+   - 或：`https://x.com/jack`
 
-2. 方法 A：使用页面按钮
-   - 在用户操作栏找到"📸 添加到系统"按钮
-   - 点击按钮即可捕获
+2. **点击插件图标**
+   - 确认显示"✅ Twitter 个人主页"
+   - 点击"📸 捕获当前页面"按钮
 
-3. 方法 B：使用插件弹窗
-   - 点击插件图标
-   - 点击"📸 捕获当前用户"按钮
+3. **查看结果**
+   - 状态显示"提取成功"表示已保存
+   - 计数器自动更新
+   - 数据已自动保存到 KOL BD Tool 系统
 
-4. 查看结果
-   - 按钮会显示"✅ 已添加"表示成功
-   - 失败会显示"❌ 失败"并弹出错误信息
+4. **验证数据**
+   - 访问 KOL BD Tool 前端：http://localhost:5173/kols
+   - 检查新增的 KOL 是否出现在列表中
 
-### 批量捕获
+## 技术实现
 
-1. 访问关注/粉丝列表
-   - 例如：`https://twitter.com/elonmusk/following`
+### 架构说明
 
-2. 滚动加载更多用户
-   - 向下滚动加载想要捕获的用户
+- **Manifest V3**：使用最新的 Chrome 扩展 API
+- **DOM 提取**：直接从 Twitter 页面 DOM 提取用户数据
+- **Chrome Storage API**：本地存储已捕获的 KOL 数据
+- **无需认证**：直接调用后端 API，无需 Token
 
-3. 打开插件弹窗
-   - 点击插件图标
-   - 页面类型会显示"✅ 关注/粉丝列表"
-
-4. 点击批量捕获
-   - 点击"📦 批量捕获"按钮
-   - 系统会自动提取并导入所有可见用户
-
-## 📋 提取的数据字段
-
-插件会自动提取以下信息：
-
-| 字段 | 说明 | 示例 |
-|------|------|------|
-| username | Twitter 用户名 | `elonmusk` |
-| displayName | 显示名称 | `Elon Musk` |
-| bio | 个人简介 | `CEO of Tesla and SpaceX` |
-| followerCount | 粉丝数 | `150000000` |
-| followingCount | 关注数 | `500` |
-| verified | 认证状态 | `true` |
-| profileImgUrl | 头像 URL | `https://...` |
-
-## ⚙️ 配置说明
-
-### 修改 API 地址
-
-如果后端服务不在 localhost:3000，需要修改配置：
-
-1. 打开 `extension/utils/config.js`
-2. 修改 `API_BASE_URL` 值
-3. 重新加载插件
-
-### 调试模式
-
-查看插件日志：
-
-1. 打开 `chrome://extensions/`
-2. 找到"KOL BD Tool"
-3. 点击"检查视图"中的链接
-4. 在 Console 中查看日志
-
-## ❓ 常见问题
-
-### Q: 插件无法加载？
-A: 确保启用了"开发者模式"，并选择了正确的 `extension/` 目录。
-
-### Q: Token 无效？
-A: 重新登录系统获取新 Token，Token 有效期为 7 天。
-
-### Q: 无法连接到服务器？
-A: 确保后端服务正在运行（http://localhost:3000），检查 CORS 配置。
-
-### Q: 按钮没有出现？
-A: 等待页面完全加载，刷新页面重试。某些页面可能需要 2-3 秒才能注入按钮。
-
-### Q: 捕获失败？
-A: 检查是否在正确的页面（个人主页），查看控制台错误信息。
-
-### Q: 批量捕获只捕获了部分用户？
-A: 插件只能捕获当前页面上可见的用户。滚动加载更多用户后再次点击批量捕获。
-
-## 🛠️ 开发指南
-
-### 项目结构
+### 核心文件
 
 ```
 extension/
-├── manifest.json           # 插件配置
-├── icons/                  # 插件图标
-├── popup/                  # 弹出窗口
-│   ├── popup.html
-│   ├── popup.css
-│   └── popup.js
-├── content/                # 内容脚本
-│   ├── content.js         # 主逻辑
-│   ├── twitter-scraper.js # 数据提取
-│   └── styles.css         # 注入样式
-├── background/             # 后台脚本
-│   └── service-worker.js
-├── utils/                  # 工具函数
-│   ├── api.js
-│   ├── storage.js
-│   └── config.js
-└── README.md               # 本文件
+├── manifest.json                   # 扩展配置文件
+├── popup.html                      # 弹窗界面
+├── popup.js                        # 弹窗逻辑
+├── content-twitter-extractor.js    # Twitter 数据提取
+├── background.js                   # 后台服务和 API 调用
+├── icons/                          # 图标资源
+└── README.md                       # 本文件
 ```
 
-### 修改和测试
+### 关键技术点
 
-1. 修改代码后，在 `chrome://extensions/` 点击刷新图标
-2. 或使用快捷键：Ctrl+R（Windows/Linux）或 Cmd+R（Mac）
-3. 刷新 Twitter 页面查看效果
+#### 1. Twitter 数据提取
 
-### 添加新功能
+从 Twitter 页面 DOM 提取用户信息：
 
-编辑以下文件：
-- **UI 修改**：`popup/popup.html` 和 `popup/popup.css`
-- **逻辑修改**：`popup/popup.js` 或 `content/content.js`
-- **数据提取**：`content/twitter-scraper.js`
-- **API 调用**：`utils/api.js`
+```javascript
+// 提取用户名
+const urlMatch = window.location.href.match(/\/([\w]+)(?:\/|$|\?)/);
 
-## 📝 更新日志
+// 提取显示名称
+const displayNameEl = document.querySelector('[data-testid="UserName"] span');
+
+// 提取粉丝数（支持 K, M, B 单位）
+function parseNumber(text) {
+  const match = text.match(/([\d.]+)([KMB])?/i);
+  // 转换为数字...
+}
+```
+
+#### 2. 后端 API 调用
+
+直接调用后端 API，无需认证：
+
+```javascript
+await fetch(`${API_BASE_URL}/kols`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(kolData),
+});
+```
+
+#### 3. 去重处理
+
+基于用户名去重，避免重复添加：
+
+```javascript
+const kolId = kolData.username;
+if (!kolIds.has(kolId)) {
+  kolIds.add(kolId);
+  allKOLs.push(kolData);
+}
+```
+
+## 数据安全
+
+- ✅ 所有数据存储在本地（Chrome Storage）
+- ✅ 仅访问 Twitter 和本地后端 API
+- ✅ 不收集任何个人数据
+- ✅ 开源代码，可自行审查
+
+## 常见问题
+
+### Q: 插件无法加载？
+
+A: 确保启用了"开发者模式"，并选择了正确的 `extension/` 目录。
+
+### Q: 无法连接到服务器？
+
+A: 确保后端服务正在运行（http://localhost:3000），检查控制台错误信息。
+
+### Q: 提取失败？
+
+A: 请确保：
+1. 在 Twitter 个人主页（不是时间线或搜索页）
+2. 页面已完全加载
+3. URL 格式正确（例如：twitter.com/username）
+
+### Q: 重复添加怎么办？
+
+A: 插件会自动去重，已存在的 KOL 会被跳过。后端也会进行二次去重检查。
+
+## 调试方法
+
+### 查看插件日志
+
+1. 打开 `chrome://extensions/`
+2. 找到"KOL BD Tool"
+3. 点击"检查视图" → `service worker` 或 `popup.html`
+4. 在 Console 中查看日志
+
+### 查看 Content Script 日志
+
+1. 在 Twitter 页面按 F12
+2. 切换到 Console 标签
+3. 查找 `[KOL BD Tool]` 或 `✅` 开头的日志
+
+### 测试 API 连接
+
+在浏览器 Console 中执行：
+
+```javascript
+// 测试后端连接
+fetch("http://localhost:3000/api/v1/kols?limit=1")
+  .then((r) => r.json())
+  .then(console.log);
+```
+
+## 更新日志
 
 ### v1.0.0 (2025-11-08)
+
 - ✅ 初始版本发布
 - ✅ 一键捕获 KOL 功能
-- ✅ 批量导入功能
-- ✅ Token 认证系统
-- ✅ 统计信息显示
+- ✅ 自动数据提取
+- ✅ 去重处理
+- ✅ 无需认证直接使用
 
-## 🔒 隐私和安全
-
-- 插件仅在 Twitter 页面运行
-- 所有数据仅发送到您配置的后端服务器
-- Token 仅存储在本地（Chrome Storage）
-- 不收集任何个人数据
-
-## 📄 许可证
+## 许可证
 
 私有项目 - 保留所有权利
 
-## 👥 支持
+## 支持
 
 如有问题请联系开发团队或查看主项目 README。
 

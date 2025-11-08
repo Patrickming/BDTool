@@ -2,47 +2,26 @@
   "manifest_version": 3,
   "name": "KOL BD Tool - Twitter Assistant",
   "version": "1.0.0",
-  "description": "一键捕获 Twitter KOL 信息并保存到 KOL BD Tool 系统",
-  "permissions": [
-    "storage",
-    "activeTab",
-    "scripting"
-  ],
+  "description": "自动捕获 Twitter KOL 资料并保存到 KOL BD Tool 系统",
+  "permissions": ["storage", "activeTab", "scripting"],
   "host_permissions": [
     "https://twitter.com/*",
     "https://x.com/*",
-    "http://localhost:3000/*",
-    "http://localhost:5173/*"
+    "http://localhost:3000/*"
   ],
-  "content_scripts": [
-    {
-      "matches": [
-        "https://twitter.com/*",
-        "https://x.com/*"
-      ],
-      "js": [
-        "content/content.js"
-      ],
-      "css": [
-        "content/styles.css"
-      ],
-      "run_at": "document_idle"
-    }
-  ],
-  "background": {
-    "service_worker": "background/service-worker.js"
-  },
-  "action": {
-    "default_popup": "popup/popup.html",
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
-    }
-  },
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
   }
 }
