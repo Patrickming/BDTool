@@ -23,10 +23,17 @@
    - 头像 URL（profileImgUrl）
    - 认证状态（verified）
 
-3. **状态显示**
+3. **Extension Token 认证**
+   - 使用独立的 Extension Token 认证
+   - 安全的 SHA-256 哈希算法
+   - 在前端系统中一键生成和复制
+   - 自动验证和过期提示
+
+4. **状态显示**
    - 显示已捕获 KOL 数量
    - 实时页面检测
    - 捕获状态提示
+   - 重复检测智能提示
 
 ## 安装方法
 
@@ -81,8 +88,8 @@
 
 - **Manifest V3**：使用最新的 Chrome 扩展 API
 - **DOM 提取**：直接从 Twitter 页面 DOM 提取用户数据
-- **Chrome Storage API**：本地存储已捕获的 KOL 数据
-- **无需认证**：直接调用后端 API，无需 Token
+- **Chrome Storage API**：本地存储 Extension Token 和捕获统计
+- **Extension Token 认证**：使用独立的 Token 系统，与 JWT 分离
 
 ### 核心文件
 
@@ -119,13 +126,14 @@ function parseNumber(text) {
 
 #### 2. 后端 API 调用
 
-直接调用后端 API，无需认证：
+使用 Extension Token 认证：
 
 ```javascript
 await fetch(`${API_BASE_URL}/kols`, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
+    "X-Extension-Token": extensionToken,  // Extension Token 认证
   },
   body: JSON.stringify(kolData),
 });
@@ -199,13 +207,19 @@ fetch("http://localhost:3000/api/v1/kols?limit=1")
 
 ## 更新日志
 
+### v1.2.0 (2025-11-08)
+
+- ✅ Extension Token 认证系统
+- ✅ 重复检测智能提示
+- ✅ 详细的上传结果消息（成功/重复/失败）
+- ✅ Token 过期自动提示
+
 ### v1.0.0 (2025-11-08)
 
 - ✅ 初始版本发布
 - ✅ 一键捕获 KOL 功能
 - ✅ 自动数据提取
 - ✅ 去重处理
-- ✅ 无需认证直接使用
 
 ## 许可证
 

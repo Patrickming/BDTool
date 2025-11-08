@@ -1,5 +1,171 @@
 # 更新日志
 
+## [2025-11-08] - Extension Token 双认证系统 + 粉丝数分布优化
+
+### 🔐 Extension Token 认证系统
+
+#### 功能概述
+实现了浏览器插件专用的 Token 认证系统，支持 JWT 和 Extension Token 双认证模式，确保插件安全高效地与后端通信。
+
+#### 新增功能
+
+**1. Extension Token 管理 API**
+- ✅ `GET /api/v1/extension/token` - 获取当前用户的 Extension Token
+- ✅ `POST /api/v1/extension/token/generate` - 生成新的 Extension Token
+- ✅ `POST /api/v1/extension/token/activate` - 激活 Extension Token
+- ✅ Token 自动生成（SHA-256 哈希）
+- ✅ Token 状态管理（active/inactive）
+- ✅ 用户隔离（每个用户独立的 Token）
+
+**2. 双认证中间件**
+- ✅ 创建 `authenticateExtensionOrJWT` 中间件
+- ✅ 支持 JWT Bearer Token 认证（Web 应用）
+- ✅ 支持 Extension Token 认证（`X-Extension-Token` Header）
+- ✅ 自动降级：优先 JWT，失败则尝试 Extension Token
+- ✅ 统一的 `req.user` 接口
+
+**3. 路由集成**
+- ✅ Extension Token 管理路由（`/api/v1/extension/*`）
+- ✅ KOL 上传路由支持双认证（`POST /api/v1/kols`）
+- ✅ 其他路由保持 JWT 认证不变
+
+**4. 前端集成**
+- ✅ Extension 配置页面（Token 显示、复制、生成）
+- ✅ Token 状态显示（激活/未激活）
+- ✅ 一键复制 Token 功能
+- ✅ 今日捕获统计显示
+
+**5. Chrome Extension 集成**
+- ✅ Extension Token 存储（Chrome Storage API）
+- ✅ 自动 Token 验证
+- ✅ 上传请求使用 Extension Token
+- ✅ Token 过期提示
+
+#### 数据库变更
+- ✅ `User` 模型新增字段：
+  - `extensionToken: String?` - Extension Token（可选）
+  - `extensionTokenActive: Boolean` - Token 激活状态
+- ✅ 数据库迁移已完成
+
+#### 文件修改
+- **后端：**
+  - `/backend/src/controllers/extension.controller.ts` - 新增
+  - `/backend/src/routes/extension.routes.ts` - 新增
+  - `/backend/src/middleware/extension-auth.middleware.ts` - 新增
+  - `/backend/src/features/kol/routes/kol.routes.ts` - 更新（POST 路由支持双认证）
+  - `/backend/prisma/schema.prisma` - 更新 User 模型
+- **前端：**
+  - `/frontend/src/pages/Extension.tsx` - 新增
+  - `/frontend/src/services/extension.service.ts` - 新增
+  - `/frontend/src/types/extension.ts` - 新增
+- **插件：**
+  - `/extension/background.js` - 更新（支持 Extension Token）
+
+---
+
+### 📊 粉丝数分布范围优化
+
+#### 问题
+原有的粉丝数分布范围（1k-50k）过窄，无法正确统计大多数 KOL 数据。
+
+#### 解决方案
+- ✅ 扩展粉丝数统计范围：
+  - `0-1k` - 小型账号
+  - `1k-10k` - 微影响力账号
+  - `10k-50k` - 中等影响力账号
+  - `50k-100k` - 高影响力账号
+  - `100k-500k` - 大型 KOL
+  - `500k以上` - 顶级 KOL
+
+#### 影响范围
+- ✅ 后端：`/backend/src/features/analytics/services/analytics.service.ts`
+- ✅ Analytics API 返回新的分布数据
+- ✅ 前端图表自动适配新范围
+
+---
+
+### 🐛 重复检测提示优化
+
+#### 问题
+Chrome 插件上传重复 KOL 时显示"成功上传0个"，没有明确提示重复。
+
+#### 解决方案
+- ✅ 分离重复统计（`duplicateCount`、`duplicates[]`）
+- ✅ 检测后端 400 状态码和"已存在"消息
+- ✅ 构建详细提示消息：
+  - 成功上传数量
+  - 重复数量及用户名列表
+  - 失败数量
+  - 重复提示引导语
+
+#### 文件修改
+- `/extension/background.js` - 优化消息构建逻辑（lines 93-133）
+
+---
+
+### 🔧 Bug 修复
+
+**1. Import Path 错误**
+- ✅ 修复 `extension.routes.ts` 导入路径（`@middlewares` → `../middleware`）
+- ✅ 修复 `extension.controller.ts` 导入路径（`@database` → `../database`）
+
+**2. req.user 属性不一致**
+- ✅ 统一使用 `req.user.id`（之前部分代码使用 `userId`）
+- ✅ 修复 `extension-auth.middleware.ts` 设置 `req.user` 格式
+
+**3. Middleware 名称错误**
+- ✅ 修复 `extension.routes.ts` 导入 `requireAuth`（之前错误使用 `authenticateJWT`）
+
+---
+
+### 📁 新增文件
+
+**后端：**
+- `/backend/src/controllers/extension.controller.ts` - Extension Token 控制器
+- `/backend/src/routes/extension.routes.ts` - Extension Token 路由
+- `/backend/src/middleware/extension-auth.middleware.ts` - 双认证中间件
+
+**前端：**
+- `/frontend/src/pages/Extension.tsx` - Extension 配置页面
+- `/frontend/src/services/extension.service.ts` - Extension API 服务
+- `/frontend/src/types/extension.ts` - Extension 类型定义
+
+---
+
+### 📝 技术细节
+
+**1. Token 生成算法**
+```typescript
+const randomBytes = crypto.randomBytes(32);
+const token = crypto.createHash('sha256')
+  .update(randomBytes)
+  .digest('hex');
+```
+
+**2. 双认证流程**
+```
+1. 检查 Authorization Header（JWT）
+   ├─ 有效 → 设置 req.user，继续
+   └─ 无效 → 继续步骤 2
+
+2. 检查 X-Extension-Token Header
+   ├─ 有效 → 设置 req.user，继续
+   └─ 无效 → 返回 401
+```
+
+**3. 重复检测逻辑**
+```javascript
+if (response.status === 400 && error.message?.includes("已存在")) {
+  duplicateCount++;
+  duplicates.push(`@${kol.username}`);
+} else {
+  failedCount++;
+  errors.push(errorMsg);
+}
+```
+
+---
+
 ## [2025-01-07] - 功能 3 模板管理系统设计 + 顶部导航栏修正
 
 ### 📋 功能 3 - 模板管理系统设计
