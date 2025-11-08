@@ -349,14 +349,28 @@ export default function Home() {
 
           <Col xs={24} sm={12} lg={6}>
             <div
+              onClick={() => navigate('/extension')}
               style={{
                 padding: 32,
-                background: 'rgba(255, 255, 255, 0.01)',
-                border: '1px solid rgba(255, 255, 255, 0.04)',
-                borderRadius: '12px',
-                cursor: 'not-allowed',
-                opacity: 0.5,
+                background: 'rgba(255, 140, 0, 0.03)',
+                border: '1px solid rgba(255, 140, 0, 0.2)',
+                borderRadius: '16px',
+                cursor: 'pointer',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 height: '100%',
+                boxShadow: '0 4px 16px rgba(255, 140, 0, 0.06)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 140, 0, 0.08)';
+                e.currentTarget.style.border = '1px solid rgba(255, 140, 0, 0.4)';
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(255, 140, 0, 0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(255, 140, 0, 0.03)';
+                e.currentTarget.style.border = '1px solid rgba(255, 140, 0, 0.2)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 16px rgba(255, 140, 0, 0.06)';
               }}
             >
               <div
@@ -364,22 +378,24 @@ export default function Home() {
                   width: 48,
                   height: 48,
                   borderRadius: '8px',
-                  background: 'rgba(138, 138, 138, 0.2)',
+                  background: 'linear-gradient(135deg, #FF8C00 0%, #FFA500 100%)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   marginBottom: 20,
                 }}
               >
-                <PhoneOutlined style={{ fontSize: 24, color: 'rgba(255, 255, 255, 0.4)' }} />
+                <RocketOutlined style={{ fontSize: 24, color: 'white' }} />
               </div>
               <Title level={4} style={{ margin: 0, marginBottom: 12, fontSize: 20, color: '#fff', fontWeight: 600 }}>
-                联系记录
+                插件内容
               </Title>
-              <Text style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: 14, display: 'block', marginBottom: 16 }}>
-                历史记录，统计分析
+              <Text style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14, display: 'block', marginBottom: 16 }}>
+                浏览器插件，快速捕获 KOL
               </Text>
-              <Text style={{ color: 'rgba(255, 255, 255, 0.3)', fontSize: 14 }}>即将推出</Text>
+              <Text style={{ color: '#FF8C00', fontSize: 14, fontWeight: 500 }}>
+                立即使用 <ArrowRightOutlined />
+              </Text>
             </div>
           </Col>
         </Row>

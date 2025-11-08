@@ -15,6 +15,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 async function uploadKOLs(kols) {
   console.log(`📤 准备上传 ${kols.length} 个 KOL 到数据库...`);
 
+  // 获取 Extension Token
+  const result = await chrome.storage.local.get(["extensionToken"]);
+  const extensionToken = result.extensionToken;
+
+  if (!extensionToken) {
+    console.error("❌ 未配置 Extension Token");
+    return {
+      success: false,
+      successCount: 0,
+      failedCount: kols.length,
+      errors: [],
+      message: "未配置 Extension Token，请先在插件中配置 Token",
+    };
+  }
+
   let successCount = 0;
   let failedCount = 0;
   const errors = [];
@@ -27,6 +42,7 @@ async function uploadKOLs(kols) {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Extension-Token": extensionToken, // 使用 Extension Token 认证
         },
         body: JSON.stringify({
           username: kol.username,
@@ -57,6 +73,17 @@ async function uploadKOLs(kols) {
           error = { message: `HTTP ${response.status}: ${response.statusText}` };
         }
         console.error(`❌ 上传失败 @${kol.username}:`, error);
+
+        // Token 认证失败或过期
+        if (response.status === 401) {
+          return {
+            success: false,
+            successCount,
+            failedCount: kols.length - successCount,
+            errors: ["Token 已过期或无效，请重新配置"],
+            message: "Token 已过期或无效，请在插件中重新配置 Token",
+          };
+        }
 
         // 如果是重复数据，也算成功
         if (response.status === 409 || error.message?.includes("已存在")) {
