@@ -18,8 +18,8 @@ const STATUS_COLORS: Record<string, string> = {
   'replied': '#52c41a',
   'negotiating': '#faad14',
   'cooperating': '#14F195',
+  'cooperated': '#2f54eb',
   'rejected': '#ff4d4f',
-  'not_interested': '#d9d9d9',
 };
 
 const STATUS_NAMES: Record<string, string> = {
@@ -28,8 +28,8 @@ const STATUS_NAMES: Record<string, string> = {
   'replied': '已回复',
   'negotiating': '洽谈中',
   'cooperating': '合作中',
+  'cooperated': '已合作',
   'rejected': '已拒绝',
-  'not_interested': '无兴趣',
 };
 
 export const StatusDistributionChart: React.FC<StatusDistributionChartProps> = ({

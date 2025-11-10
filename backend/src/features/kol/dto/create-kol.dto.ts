@@ -32,8 +32,8 @@ export const KOLStatus = z.enum([
   'replied',        // 已回复
   'negotiating',    // 协商中
   'cooperating',    // 合作中
+  'cooperated',     // 已合作
   'rejected',       // 已拒绝
-  'not_interested', // 不感兴趣
 ]);
 
 export type KOLStatusType = z.infer<typeof KOLStatus>;

@@ -49,7 +49,7 @@ export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
   loadingTemplates: false,
   loadingTimeline: false,
 
-  timelineDays: 30,
+  timelineDays: 7,
 
   // 获取概览统计数据
   fetchOverviewStats: async () => {
