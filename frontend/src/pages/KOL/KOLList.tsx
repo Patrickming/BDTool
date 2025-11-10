@@ -53,7 +53,7 @@ const KOLList: React.FC = () => {
       maxQualityScore: values.maxQualityScore || undefined,
       minFollowerCount: values.minFollowerCount || undefined,
       maxFollowerCount: values.maxFollowerCount || undefined,
-      verified: values.verified || undefined,
+      verified: values.verified !== undefined ? values.verified : undefined,
       sortBy: values.sortBy || 'createdAt',
       sortOrder: values.sortOrder || 'desc',
     };
@@ -65,7 +65,7 @@ const KOLList: React.FC = () => {
   const handleReset = () => {
     form.resetFields();
     resetQueryParams();
-    fetchKOLs(queryParams);
+    fetchKOLs();
   };
 
   // 分页变化
