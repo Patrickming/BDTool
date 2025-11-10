@@ -3,7 +3,7 @@
   "name": "KOL BD Tool - Twitter Assistant",
   "version": "1.0.0",
   "description": "自动捕获 Twitter KOL 资料并保存到 KOL BD Tool 系统",
-  "permissions": ["storage", "activeTab", "scripting"],
+  "permissions": ["storage", "activeTab", "scripting", "sidePanel"],
   "host_permissions": [
     "https://twitter.com/*",
     "https://x.com/*",
@@ -18,8 +18,10 @@
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png"
-    },
-    "default_popup": "popup.html"
+    }
+  },
+  "side_panel": {
+    "default_path": "side_panel.html"
   },
   "background": {
     "service_worker": "background.js"
