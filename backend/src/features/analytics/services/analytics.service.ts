@@ -79,23 +79,29 @@ export class AnalyticsService {
       },
     });
 
-    // 3. 本周联系数
-    const contactedThisWeek = await prisma.contactLog.count({
+    // 3. 本周联系数 - 基于 KOL 状态 'contacted' 且在本周内更新的
+    const contactedThisWeek = await prisma.kOL.count({
       where: {
         userId,
-        sentAt: { gte: weekStart },
+        status: 'contacted',
+        updatedAt: { gte: weekStart },
       },
     });
 
-    // 4. 总体响应率
-    const totalContacts = await prisma.contactLog.count({
-      where: { userId },
-    });
-
-    const totalResponses = await prisma.contactLog.count({
+    // 4. 总体响应率 - (已回复 + 协商中 + 合作中) / 总联系数
+    // 总联系数 = 所有非 'new' 状态的 KOL
+    const totalContacts = await prisma.kOL.count({
       where: {
         userId,
-        repliedAt: { not: null },
+        status: { not: 'new' },
+      },
+    });
+
+    // 响应数 = replied + negotiating + cooperating 状态的 KOL
+    const totalResponses = await prisma.kOL.count({
+      where: {
+        userId,
+        status: { in: ['replied', 'negotiating', 'cooperating'] },
       },
     });
 
@@ -103,19 +109,20 @@ export class AnalyticsService {
       ? Math.round((totalResponses / totalContacts) * 100 * 10) / 10  // 保留一位小数
       : 0;
 
-    // 5. 本周响应率
-    const weeklyContacts = await prisma.contactLog.count({
+    // 5. 本周响应率 - 本周新增的响应 / 本周联系数
+    const weeklyContacts = await prisma.kOL.count({
       where: {
         userId,
-        sentAt: { gte: weekStart },
+        status: 'contacted',
+        updatedAt: { gte: weekStart },
       },
     });
 
-    const weeklyResponses = await prisma.contactLog.count({
+    const weeklyResponses = await prisma.kOL.count({
       where: {
         userId,
-        sentAt: { gte: weekStart },
-        repliedAt: { not: null },
+        status: { in: ['replied', 'negotiating', 'cooperating'] },
+        updatedAt: { gte: weekStart },
       },
     });
 
@@ -123,7 +130,7 @@ export class AnalyticsService {
       ? Math.round((weeklyResponses / weeklyContacts) * 100 * 10) / 10
       : 0;
 
-    // 6. 活跃合作数
+    // 6. 活跃合作数 - 合作中状态的 KOL 数量
     const activePartnerships = await prisma.kOL.count({
       where: {
         userId,
@@ -131,32 +138,13 @@ export class AnalyticsService {
       },
     });
 
-    // 7. 待跟进数（已联系或已回复，但最后联系超过3天）
-    const threeDaysAgo = new Date(now);
-    threeDaysAgo.setDate(now.getDate() - 3);
-
-    // 获取需要跟进的 KOL（已联系或已回复状态）
-    const kolsNeedingFollowup = await prisma.kOL.findMany({
+    // 7. 待跟进数 - 已回复状态的 KOL 数量
+    const pendingFollowups = await prisma.kOL.count({
       where: {
         userId,
-        status: { in: ['contacted', 'replied'] },
+        status: 'replied',
       },
-      select: { id: true },
     });
-
-    // 对每个 KOL 检查最后联系时间
-    let pendingFollowups = 0;
-    for (const kol of kolsNeedingFollowup) {
-      const lastContact = await prisma.contactLog.findFirst({
-        where: { kolId: kol.id },
-        orderBy: { sentAt: 'desc' },
-        select: { sentAt: true },
-      });
-
-      if (lastContact && lastContact.sentAt < threeDaysAgo) {
-        pendingFollowups++;
-      }
-    }
 
     const stats: OverviewStats = {
       totalKols,
@@ -345,10 +333,10 @@ export class AnalyticsService {
   /**
    * 获取联系时间线数据
    * @param userId - 用户 ID
-   * @param days - 查询天数（默认 30 天）
+   * @param days - 查询天数（默认 7 天）
    * @returns 时间线数据
    */
-  async getContactTimeline(userId: number, days: number = 30): Promise<ContactTimelinePoint[]> {
+  async getContactTimeline(userId: number, days: number = 7): Promise<ContactTimelinePoint[]> {
     logger.info(`用户 ${userId} 获取联系时间线（${days} 天）`);
 
     const startDate = new Date();

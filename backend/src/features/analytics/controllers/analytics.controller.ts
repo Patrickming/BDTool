@@ -62,7 +62,7 @@ export class AnalyticsController {
     logger.info(`用户 ${req.user?.id} 请求联系时间线`);
 
     // 获取查询参数（天数）
-    const days = parseInt(req.query.days as string) || 30;
+    const days = parseInt(req.query.days as string) || 7;
 
     // 验证天数范围（1-90天）
     if (days < 1 || days > 90) {

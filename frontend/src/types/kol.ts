@@ -11,8 +11,8 @@ export enum KOLStatus {
   REPLIED = 'replied',
   NEGOTIATING = 'negotiating',
   COOPERATING = 'cooperating',
+  COOPERATED = 'cooperated',
   REJECTED = 'rejected',
-  NOT_INTERESTED = 'not_interested',
 }
 
 /**
@@ -27,8 +27,8 @@ export const KOLStatusConfig: Record<
   [KOLStatus.REPLIED]: { label: '已回复', color: 'green' },
   [KOLStatus.NEGOTIATING]: { label: '协商中', color: 'purple' },
   [KOLStatus.COOPERATING]: { label: '合作中', color: 'cyan' },
+  [KOLStatus.COOPERATED]: { label: '已合作', color: 'geekblue' },
   [KOLStatus.REJECTED]: { label: '已拒绝', color: 'red' },
-  [KOLStatus.NOT_INTERESTED]: { label: '不感兴趣', color: 'default' },
 };
 
 /**
