@@ -34,6 +34,12 @@ env/
 *.sqlite3
 instance/
 
+# Database Backups (重要：不要提交备份文件到 Git)
+backups/
+*.bak
+*_backup*.db
+backup*.db
+
 # Environment Variables
 .env
 .env.local

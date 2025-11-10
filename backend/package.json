@@ -19,7 +19,10 @@
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
-    "db:reset": "prisma migrate reset"
+    "db:backup": "bash ../backup-db.sh",
+    "db:health": "tsx scripts/health-check.ts",
+    "db:reset": "echo '⚠️  危险操作！将删除所有数据。请先备份: pnpm db:backup' && echo '确认执行请运行: pnpm db:reset:force' && exit 1",
+    "db:reset:force": "bash -c 'read -p \"⚠️  确认删除所有数据？输入 YES 继续: \" confirm && if [ \"$confirm\" = \"YES\" ]; then prisma migrate reset; else echo \"❌ 操作已取消\"; fi'"
   },
   "keywords": [
     "kol",
