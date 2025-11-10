@@ -1,5 +1,301 @@
 # 更新日志
 
+## [2025-11-09] - v1.4.0 功能完成
+
+### 🔧 KOL 管理 Bug 修复
+
+#### Bug 1: 重置按钮不自动刷新列表
+**问题描述**: 点击重置按钮后，筛选条件被重置，但列表没有自动刷新。
+
+**根本原因**: React 状态更新是异步的，`resetQueryParams()` 后立即调用 `fetchKOLs(queryParams)` 使用的是旧的参数值。
+
+**解决方案**: 修改为 `fetchKOLs()`，让它使用 store 中已更新的参数。
+
+**修改文件**: [frontend/src/pages/KOL/KOLList.tsx](../frontend/src/pages/KOL/KOLList.tsx#L65-L69)
+
+```typescript
+const handleReset = () => {
+  form.resetFields();
+  resetQueryParams();
+  fetchKOLs();  // 不传参数，使用 store 的最新状态
+};
+```
+
+---
+
+#### Bug 2: 认证状态筛选失败
+**问题描述**: 选择"未认证"（false）时，筛选器不生效。
+
+**根本原因**: JavaScript `||` 运算符将 `false` 视为假值，导致 `false || undefined` 返回 `undefined`。
+
+**解决方案**: 使用显式的 undefined 检查。
+
+**修改文件**: [frontend/src/pages/KOL/KOLList.tsx](../frontend/src/pages/KOL/KOLList.tsx#L56)
+
+```typescript
+// 之前: verified: values.verified || undefined
+// 修改为:
+verified: values.verified !== undefined ? values.verified : undefined,
+```
+
+---
+
+#### Bug 3: 搜索功能报错
+**问题描述**: 搜索用户名时，后端返回 500 错误：
+```
+Unknown argument `mode`. Did you mean `lte`?
+```
+
+**根本原因**: SQLite 数据库不支持 Prisma 的 `mode: 'insensitive'` 参数（该参数仅支持 PostgreSQL 和 MongoDB）。
+
+**解决方案**: 移除 `mode` 参数，搜索变为大小写敏感（SQLite 默认行为）。
+
+**修改文件**: [backend/src/features/kol/services/kol.service.ts](../backend/src/features/kol/services/kol.service.ts#L226-L231)
+
+```typescript
+// 之前:
+{ username: { contains: search, mode: 'insensitive' } }
+
+// 修改为:
+{ username: { contains: search } }
+```
+
+**影响**: 搜索现在大小写敏感。如需不敏感搜索，需迁移到 PostgreSQL 或使用 LOWER() 函数。
+
+---
+
+### 📊 数据分析功能优化
+
+#### 变更 1: 修复计算逻辑（使用 KOL 状态）
+**问题**: 之前的数据分析基于 `contactLog` 表计算，但实际业务中 KOL 的状态变化才是关键指标。
+
+**解决方案**: 重写所有分析计算，改为基于 `kol` 表的 `status` 字段。
+
+**核心指标重新定义**:
+
+1. **本周联系数**:
+   ```sql
+   COUNT(kol WHERE status='contacted' AND updatedAt >= 7_days_ago)
+   ```
+
+2. **总体响应率**:
+   ```sql
+   (replied + negotiating + cooperating) / (所有非 new 状态) × 100%
+   ```
+
+3. **本周响应率**:
+   ```sql
+   本周(replied + negotiating + cooperating) / 本周contacted × 100%
+   ```
+
+4. **待跟进数**:
+   ```sql
+   COUNT(kol WHERE status='replied')
+   ```
+
+5. **活跃合作数**:
+   ```sql
+   COUNT(kol WHERE status='cooperating')
+   ```
+
+**修改文件**: [backend/src/features/analytics/services/analytics.service.ts](../backend/src/features/analytics/services/analytics.service.ts#L82-L147)
+
+---
+
+#### 变更 2: 时间线默认改为 7 天
+**问题**: 原默认 30 天数据过多，不利于关注近期活动。
+
+**解决方案**: 将默认值从 30 天改为 7 天。
+
+**修改文件**:
+- [backend/src/features/analytics/controllers/analytics.controller.ts](../backend/src/features/analytics/controllers/analytics.controller.ts#L65) - 参数默认值
+- [frontend/src/store/analytics.store.ts](../frontend/src/store/analytics.store.ts#L52) - 前端 store 初始值
+
+---
+
+#### 变更 3: KOL 状态调整
+**新增状态**: `cooperated` (已合作) - 表示合作已完成
+**移除状态**: `not_interested` (不感兴趣) - 该状态不常用
+
+**修改文件**:
+- [backend/src/features/kol/dto/create-kol.dto.ts](../backend/src/features/kol/dto/create-kol.dto.ts#L29-L37) - Zod 枚举
+- [frontend/src/types/kol.ts](../frontend/src/types/kol.ts) - TypeScript 枚举和配置
+- [frontend/src/components/analytics/StatusDistributionChart.tsx](../frontend/src/components/analytics/StatusDistributionChart.tsx) - 图表颜色和标签
+
+**状态列表**:
+```typescript
+'new'          // 新增
+'contacted'    // 已联系
+'replied'      // 已回复
+'negotiating'  // 洽谈中
+'cooperating'  // 合作中
+'cooperated'   // 已合作 ✨ 新增
+'rejected'     // 已拒绝
+// 'not_interested' ❌ 已移除
+```
+
+---
+
+### 🌐 翻译服务集成（DeepL API）
+
+#### 功能概述
+集成 DeepL 翻译服务，支持中英文互译，为国际化 KOL 沟通提供支持。
+
+#### 实现内容
+
+**1. 后端 API**
+- ✅ `GET /api/v1/translation/status` - 获取翻译服务健康状态
+- ✅ `POST /api/v1/translation/translate` - 翻译文本（中→英 或 英→中）
+- ✅ `POST /api/v1/translation/detect` - 检测文本语言
+
+**核心特性**:
+- 使用量统计（已用字符数 / 配额）
+- 健康检查（API 可用性检测）
+- 自动语言检测
+- 错误处理和降级
+
+**配置**:
+```bash
+# .env 文件
+DEEPL_API_KEY=your-deepl-api-key
+```
+
+**修改/新增文件**:
+- `/backend/src/features/translation/` - 翻译服务模块
+  - `controllers/translation.controller.ts` - 控制器
+  - `services/translation.service.ts` - 业务逻辑
+  - `routes/translation.routes.ts` - 路由
+
+**2. 前端集成**
+- ✅ 翻译服务 API 封装
+- ✅ 翻译按钮 UI 组件
+- ✅ 实时翻译结果显示
+- ✅ 错误提示优化
+
+**修改/新增文件**:
+- `/frontend/src/services/translation.service.ts` - API 服务
+- `/frontend/src/types/translation.ts` - 类型定义
+
+**3. 使用场景**
+- 模板内容翻译（将中文模板翻译为英文发送给 KOL）
+- KOL 简介翻译（理解外语 KOL 的 bio）
+- 回复内容翻译（快速理解 KOL 回复）
+
+**4. 技术特点**
+- 专业翻译质量（DeepL > Google Translate）
+- 实时 API 调用
+- 健康监控
+- 使用量追踪
+
+#### 相关文档
+- ✅ [翻译服务配置指南](./翻译服务配置指南.md) - 详细配置和使用说明
+
+---
+
+### 🗄️ 数据库安全系统
+
+#### 功能概述
+实现自动化数据库备份系统，保障数据安全，支持快速恢复。
+
+#### 实现内容
+
+**1. 自动备份脚本**
+- ✅ Shell 脚本：`/backend/scripts/backup-db.sh`
+- ✅ 自动备份 SQLite 数据库文件
+- ✅ 保留最近 7 天的备份
+- ✅ 自动清理过期备份
+- ✅ 备份文件命名：`dev_YYYYMMDD_HHMMSS.db`
+
+**使用方法**:
+```bash
+cd /home/pdm/DEV/projects/BDTool/backend
+./scripts/backup-db.sh
+```
+
+**2. Cron 定时任务**
+- ✅ 每天凌晨 4:00 自动备份
+- ✅ WSL 环境兼容性优化
+- ✅ 日志记录到 `/tmp/backup-db.log`
+
+**Crontab 配置**:
+```cron
+0 4 * * * /home/pdm/DEV/projects/BDTool/backend/scripts/backup-db.sh >> /tmp/backup-db.log 2>&1
+```
+
+**3. 健康检查脚本**
+- ✅ `pnpm db:health` - 检查数据库连接
+- ✅ 验证表结构
+- ✅ 统计各表记录数
+
+**4. 备份与恢复文档**
+- ✅ [DATABASE_BACKUP_RECOVERY.md](./DATABASE_BACKUP_RECOVERY.md)
+- 包含：
+  - 备份策略说明
+  - 恢复步骤详解
+  - 常见问题解决
+  - WSL 环境配置
+
+#### 技术特点
+- 无需停机备份
+- 自动化管理
+- 保留策略（7 天滚动）
+- 跨平台支持（Linux / WSL）
+
+---
+
+### 🔌 Chrome 插件优化 - 侧边栏（Side Panel）
+
+#### 功能变更
+从传统的 Popup 弹窗改为 Side Panel 侧边栏设计。
+
+#### 优势
+- ✅ 固定在浏览器右侧，不会遮挡页面内容
+- ✅ 始终可见，无需反复打开插件
+- ✅ 更大的显示空间
+- ✅ 更符合工作流（边浏览边操作）
+
+#### 技术实现
+使用 Manifest V3 的 Side Panel API：
+
+```json
+// manifest.json
+{
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "permissions": ["sidePanel"]
+}
+```
+
+**修改文件**:
+- `/extension/manifest.json` - 添加 sidePanel 配置
+- `/extension/sidepanel.html` - 侧边栏 UI（原 popup.html）
+- `/extension/sidepanel.js` - 侧边栏逻辑（原 popup.js）
+
+#### UI 改进
+- 更清晰的布局
+- 实时统计显示
+- 更大的按钮和文字
+- 更好的可读性
+
+---
+
+### 📝 文档更新
+
+#### 新增文档
+- ✅ [翻译服务配置指南.md](./翻译服务配置指南.md) - DeepL API 配置和使用
+- ✅ [DATABASE_BACKUP_RECOVERY.md](./DATABASE_BACKUP_RECOVERY.md) - 数据库备份与恢复
+- ✅ `/backend/scripts/analytics-debug.ts` - 数据分析调试工具
+
+#### 更新文档
+- ✅ 主项目 [README.md](../README.md) - 更新功能列表和路线图
+- ✅ [backend/README.md](../backend/README.md) - 更新 API 端点列表
+- ✅ [frontend/README.md](../frontend/README.md) - 更新功能清单
+- ✅ [extension/README.md](../extension/README.md) - 更新侧边栏说明
+- ✅ 本文件 [CHANGELOG.md](./CHANGELOG.md) - 记录所有变更
+
+---
+
 ## [2025-11-08] - CSV 导出功能完成
 
 ### 📥 KOL CSV 导出功能

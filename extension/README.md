@@ -8,13 +8,19 @@
 
 ### 核心功能
 
-1. **一键捕获 KOL**
-   - 在 Twitter 个人主页点击插件图标
+1. **侧边栏（Side Panel）UI**
+   - Manifest V3 Side Panel API
+   - 固定在浏览器右侧，不遮挡页面内容
+   - 始终可见，无需反复打开插件
+   - 实时更新捕获统计
+
+2. **一键捕获 KOL**
+   - 在 Twitter 个人主页点击"捕获当前页面"
    - 自动提取用户资料（用户名、显示名、粉丝数、简介等）
    - 一键保存到 KOL BD Tool 系统
-   - 无需登录，直接使用
+   - 使用 Extension Token 认证
 
-2. **自动数据提取**
+3. **自动数据提取**
    - 用户名（username）
    - 显示名称（displayName）
    - 个人简介（bio）
@@ -23,17 +29,17 @@
    - 头像 URL（profileImgUrl）
    - 认证状态（verified）
 
-3. **Extension Token 认证**
+4. **Extension Token 认证**
    - 使用独立的 Extension Token 认证
    - 安全的 SHA-256 哈希算法
    - 在前端系统中一键生成和复制
    - 自动验证和过期提示
 
-4. **状态显示**
-   - 显示已捕获 KOL 数量
-   - 实时页面检测
-   - 捕获状态提示
-   - 重复检测智能提示
+5. **智能状态显示**
+   - 今日捕获 KOL 数量统计
+   - 实时页面类型检测
+   - 捕获成功/失败提示
+   - 重复检测智能提示（显示重复的用户名列表）
 
 ## 安装方法
 
@@ -95,10 +101,10 @@
 
 ```
 extension/
-├── manifest.json                   # 扩展配置文件
-├── popup.html                      # 弹窗界面
-├── popup.js                        # 弹窗逻辑
-├── content-twitter-extractor.js    # Twitter 数据提取
+├── manifest.json                   # 扩展配置文件（Manifest V3）
+├── sidepanel.html                  # 侧边栏界面
+├── sidepanel.js                    # 侧边栏逻辑
+├── content.js                      # Twitter 数据提取脚本
 ├── background.js                   # 后台服务和 API 调用
 ├── icons/                          # 图标资源
 └── README.md                       # 本文件
@@ -207,6 +213,13 @@ fetch("http://localhost:3000/api/v1/kols?limit=1")
 
 ## 更新日志
 
+### v1.3.0 (2025-11-09)
+
+- ✅ 侧边栏（Side Panel）UI 设计
+- ✅ Manifest V3 Side Panel API 集成
+- ✅ 固定侧边栏，始终可见
+- ✅ 优化 UI 布局和交互
+
 ### v1.2.0 (2025-11-08)
 
 - ✅ Extension Token 认证系统
@@ -232,4 +245,4 @@ fetch("http://localhost:3000/api/v1/kols?limit=1")
 ---
 
 **Powered by KOL BD Tool**
-*最后更新：2025-11-08*
+*最后更新：2025-11-09*
