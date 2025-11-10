@@ -225,8 +225,8 @@ export class KOLService {
     // 搜索条件（用户名或显示名）
     if (search) {
       where.OR = [
-        { username: { contains: search, mode: 'insensitive' } },
-        { displayName: { contains: search, mode: 'insensitive' } },
+        { username: { contains: search } },
+        { displayName: { contains: search } },
       ];
     }
 
