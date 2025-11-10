@@ -9,6 +9,7 @@ import kolRoutes from '@features/kol/routes/kol.routes';
 import templateRoutes from '@features/templates/routes/template.routes';
 import analyticsRoutes from '@features/analytics/routes/analytics.routes';
 import extensionRoutes from './routes/extension.routes';
+import { translationRoutes } from '@features/translation/routes/translation.routes';
 
 const router = Router();
 
@@ -47,6 +48,12 @@ router.use('/analytics', analyticsRoutes);
  * /api/v1/extension/*
  */
 router.use('/extension', extensionRoutes);
+
+/**
+ * 翻译服务路由
+ * /api/v1/translation/*
+ */
+router.use('/translation', translationRoutes);
 
 /**
  * 联系记录路由（待实现）

@@ -7,6 +7,7 @@ import { Form, Input, Select, Row, Col, Card, Button, Space, Tabs, message } fro
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { TEMPLATE_CATEGORY_CONFIG, type TemplateVersionData } from '@/types/template';
 import { VariableHelper } from './VariableHelper';
+import { TranslationButton } from '../Translation/TranslationButton';
 
 const { TextArea } = Input;
 
@@ -103,6 +104,22 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({ form, initialVal
     form.setFieldsValue({ versions: newVersions });
   };
 
+  // 处理翻译完成
+  const handleTranslated = (translatedText: string, targetLanguage: string) => {
+    // 如果目标语言已存在，更新内容
+    if (versions.some(v => v.language === targetLanguage)) {
+      handleContentChange(targetLanguage, translatedText);
+      setActiveLanguage(targetLanguage);
+    } else {
+      // 如果目标语言不存在，添加新语言版本
+      const newVersions = [...versions, { language: targetLanguage, content: translatedText }];
+      setVersions(newVersions);
+      form.setFieldsValue({ versions: newVersions });
+      setActiveLanguage(targetLanguage);
+      message.success(`已自动添加 ${targetLanguage.toUpperCase()} 语言版本`);
+    }
+  };
+
   // 获取可添加的语言列表（排除已有的）
   const availableLanguages = SUPPORTED_LANGUAGES.filter(
     lang => !versions.some(v => v.language === lang.value)
@@ -126,29 +143,42 @@ export const TemplateEditor: React.FC<TemplateEditorProps> = ({ form, initialVal
       </Space>
     ),
     children: (
-      <Form.Item
-        name={['versions', versions.indexOf(version), 'content']}
-        rules={[
-          { required: true, message: '请输入模板内容' },
-          { max: 5000, message: '模板内容不能超过5000个字符' },
-        ]}
-      >
-        <TextArea
-          ref={(ref) => {
-            if (ref) textAreaRefs.current[version.language] = ref;
-          }}
-          value={version.content}
-          onChange={(e) => handleContentChange(version.language, e.target.value)}
-          placeholder={`输入 ${SUPPORTED_LANGUAGES.find(l => l.value === version.language)?.label} 模板内容，可以使用变量，例如: Hello {{username}}!...`}
-          autoSize={{ minRows: 20, maxRows: 30 }}
-          style={{
-            fontFamily: 'monospace',
-            fontSize: '14px',
-            background: 'rgba(0, 0, 0, 0.02)',
-            minHeight: '400px',
-          }}
-        />
-      </Form.Item>
+      <>
+        {/* 翻译按钮 */}
+        <div style={{ marginBottom: '12px', textAlign: 'right' }}>
+          <TranslationButton
+            sourceText={version.content}
+            sourceLanguage={version.language}
+            onTranslated={handleTranslated}
+            size="small"
+            disabled={!version.content?.trim()}
+          />
+        </div>
+
+        <Form.Item
+          name={['versions', versions.indexOf(version), 'content']}
+          rules={[
+            { required: true, message: '请输入模板内容' },
+            { max: 5000, message: '模板内容不能超过5000个字符' },
+          ]}
+        >
+          <TextArea
+            ref={(ref) => {
+              if (ref) textAreaRefs.current[version.language] = ref;
+            }}
+            value={version.content}
+            onChange={(e) => handleContentChange(version.language, e.target.value)}
+            placeholder={`输入 ${SUPPORTED_LANGUAGES.find(l => l.value === version.language)?.label} 模板内容，可以使用变量，例如: Hello {{username}}!...`}
+            autoSize={{ minRows: 20, maxRows: 30 }}
+            style={{
+              fontFamily: 'monospace',
+              fontSize: '14px',
+              background: 'rgba(0, 0, 0, 0.02)',
+              minHeight: '400px',
+            }}
+          />
+        </Form.Item>
+      </>
     ),
   }));
 
