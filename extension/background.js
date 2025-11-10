@@ -3,6 +3,11 @@
 // API 配置
 const API_BASE_URL = "http://localhost:3000/api/v1";
 
+// 点击扩展图标时打开侧边栏
+chrome.action.onClicked.addListener((tab) => {
+  chrome.sidePanel.open({ windowId: tab.windowId });
+});
+
 // 监听来自 popup 的消息
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "uploadKOLs") {
