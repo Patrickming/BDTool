@@ -77,3 +77,10 @@ export const previewTemplate = async (data: PreviewTemplateDto): Promise<Templat
   }>('/templates/preview', data);
   return response.data.data;
 };
+
+/**
+ * 调整模板顺序
+ */
+export const reorderTemplate = async (id: number, direction: 'up' | 'down'): Promise<void> => {
+  await api.post(`/templates/${id}/reorder`, { direction });
+};

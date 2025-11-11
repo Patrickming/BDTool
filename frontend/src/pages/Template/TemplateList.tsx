@@ -24,6 +24,8 @@ import {
   EyeOutlined,
   SearchOutlined,
   CopyOutlined,
+  UpOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
 import { useTemplateStore } from '@/store/template.store';
 import { TemplateCategoryBadge } from '@/components/Template/TemplateCategoryBadge';
@@ -42,6 +44,7 @@ export const TemplateList: React.FC = () => {
     queryParams,
     fetchTemplates,
     deleteTemplate,
+    reorderTemplate,
     setQueryParams,
   } = useTemplateStore();
 
@@ -67,6 +70,14 @@ export const TemplateList: React.FC = () => {
       cancelText: '取消',
       onOk: () => deleteTemplate(template.id),
     });
+  };
+
+  const handleMoveUp = async (template: Template) => {
+    await reorderTemplate(template.id, 'up');
+  };
+
+  const handleMoveDown = async (template: Template) => {
+    await reorderTemplate(template.id, 'down');
   };
 
   const columns = [
@@ -116,6 +127,32 @@ export const TemplateList: React.FC = () => {
           </Text>
         );
       },
+    },
+    {
+      title: '排序',
+      key: 'order',
+      width: 80,
+      align: 'center' as const,
+      render: (_: any, record: Template, index: number) => (
+        <Space direction="vertical" size={0}>
+          <Button
+            type="text"
+            size="small"
+            icon={<UpOutlined />}
+            onClick={() => handleMoveUp(record)}
+            disabled={index === 0}
+            style={{ padding: '0 4px' }}
+          />
+          <Button
+            type="text"
+            size="small"
+            icon={<DownOutlined />}
+            onClick={() => handleMoveDown(record)}
+            disabled={index === templates.length - 1}
+            style={{ padding: '0 4px' }}
+          />
+        </Space>
+      ),
     },
     {
       title: '操作',
@@ -220,6 +257,7 @@ export const TemplateList: React.FC = () => {
               size="large"
               style={{ width: '100%' }}
             >
+              <Select.Option value="displayOrder">自定义排序</Select.Option>
               <Select.Option value="createdAt">创建时间</Select.Option>
               <Select.Option value="updatedAt">更新时间</Select.Option>
               <Select.Option value="useCount">使用次数</Select.Option>

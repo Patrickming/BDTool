@@ -46,11 +46,21 @@ export class TemplateService {
     logger.info(`用户 ${userId} 开始创建模板: ${createDto.name}`);
 
     try {
+      // 获取当前用户最大的 displayOrder，新模板放在最后
+      const maxOrderTemplate = await prisma.template.findFirst({
+        where: { userId },
+        orderBy: { displayOrder: 'desc' },
+        select: { displayOrder: true },
+      });
+
+      const nextOrder = maxOrderTemplate ? maxOrderTemplate.displayOrder + 1 : 0;
+
       const template = await prisma.template.create({
         data: {
           userId,
           name: createDto.name,
           category: createDto.category,
+          displayOrder: nextOrder,
           versions: {
             create: createDto.versions.map(v => ({
               language: v.language,
@@ -385,6 +395,76 @@ export class TemplateService {
     const matches = template.matchAll(regex);
     const variables = Array.from(matches, (match) => `{{${match[1]}}}`);
     return Array.from(new Set(variables)); // 去重
+  }
+
+  /**
+   * 调整模板顺序
+   * @param userId - 用户 ID
+   * @param templateId - 模板 ID
+   * @param direction - 移动方向 ('up' | 'down')
+   * @throws NotFoundError - 模板不存在
+   */
+  async reorderTemplate(userId: number, templateId: number, direction: 'up' | 'down'): Promise<void> {
+    logger.info(`用户 ${userId} 调整模板 ${templateId} 顺序: ${direction}`);
+
+    // 1. 获取当前模板
+    const currentTemplate = await prisma.template.findFirst({
+      where: {
+        id: templateId,
+        userId,
+      },
+    });
+
+    if (!currentTemplate) {
+      logger.warn(`模板 ${templateId} 不存在或无权访问`);
+      throw new NotFoundError('模板不存在');
+    }
+
+    // 2. 获取用户的所有模板，按 displayOrder 排序
+    const allTemplates = await prisma.template.findMany({
+      where: { userId },
+      orderBy: { displayOrder: 'asc' },
+      select: { id: true, displayOrder: true },
+    });
+
+    // 3. 找到当前模板的索引
+    const currentIndex = allTemplates.findIndex(t => t.id === templateId);
+
+    if (currentIndex === -1) {
+      throw new NotFoundError('模板不存在');
+    }
+
+    // 4. 计算目标索引
+    let targetIndex: number;
+    if (direction === 'up') {
+      if (currentIndex === 0) {
+        logger.info('已经是第一个，无法上移');
+        return; // 已经是第一个，无法上移
+      }
+      targetIndex = currentIndex - 1;
+    } else {
+      if (currentIndex === allTemplates.length - 1) {
+        logger.info('已经是最后一个，无法下移');
+        return; // 已经是最后一个，无法下移
+      }
+      targetIndex = currentIndex + 1;
+    }
+
+    // 5. 交换 displayOrder
+    const targetTemplate = allTemplates[targetIndex];
+
+    await prisma.$transaction([
+      prisma.template.update({
+        where: { id: currentTemplate.id },
+        data: { displayOrder: targetTemplate.displayOrder },
+      }),
+      prisma.template.update({
+        where: { id: targetTemplate.id },
+        data: { displayOrder: currentTemplate.displayOrder },
+      }),
+    ]);
+
+    logger.info(`模板顺序调整成功: ${templateId} ${direction}`);
   }
 }
 

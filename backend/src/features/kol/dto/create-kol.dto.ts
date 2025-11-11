@@ -49,6 +49,8 @@ export const KOLLanguage = z.enum([
   'de',  // 德语
   'ru',  // 俄语
   'hi',  // 印地语
+  'es',  // 西班牙语
+  'pt',  // 葡萄牙语
 ]);
 
 export type KOLLanguageType = z.infer<typeof KOLLanguage>;

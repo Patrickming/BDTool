@@ -65,6 +65,8 @@ export enum KOLLanguage {
   DE = 'de',
   RU = 'ru',
   HI = 'hi',
+  ES = 'es',
+  PT = 'pt',
 }
 
 /**
@@ -78,6 +80,8 @@ export const LanguageConfig: Record<KOLLanguage, { label: string; flag: string }
   [KOLLanguage.DE]: { label: '德语', flag: '🇩🇪' },
   [KOLLanguage.RU]: { label: '俄语', flag: '🇷🇺' },
   [KOLLanguage.HI]: { label: '印地语', flag: '🇮🇳' },
+  [KOLLanguage.ES]: { label: '西班牙语', flag: '🇪🇸' },
+  [KOLLanguage.PT]: { label: '葡萄牙语', flag: '🇵🇹' },
 };
 
 /**

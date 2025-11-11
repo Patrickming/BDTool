@@ -68,7 +68,7 @@ export interface TemplateQueryParams {
   aiGenerated?: boolean;
   page?: number;
   limit?: number;
-  sortBy?: 'createdAt' | 'updatedAt' | 'useCount' | 'name';
+  sortBy?: 'displayOrder' | 'createdAt' | 'updatedAt' | 'useCount' | 'name';
   sortOrder?: 'asc' | 'desc';
 }
 
