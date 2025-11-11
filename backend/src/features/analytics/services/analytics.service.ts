@@ -260,73 +260,49 @@ export class AnalyticsService {
   }
 
   /**
-   * 获取模板效果统计
+   * 获取模板分类统计
    * @param userId - 用户 ID
-   * @returns 模板效果列表
+   * @returns 模板分类统计列表
    */
   async getTemplateEffectiveness(userId: number): Promise<TemplateEffectiveness[]> {
-    logger.info(`用户 ${userId} 获取模板效果统计`);
+    logger.info(`用户 ${userId} 获取模板分类统计`);
 
     const templates = await prisma.template.findMany({
       where: { userId },
       select: {
-        id: true,
-        name: true,
         category: true,
-        useCount: true,
-        successCount: true,
       },
     });
 
-    const effectiveness: TemplateEffectiveness[] = [];
+    // 初始化所有分类为 0
+    const categoryMap: Record<string, number> = {
+      'initial': 0,
+      'followup': 0,
+      'negotiation': 0,
+      'collaboration': 0,
+      'maintenance': 0,
+    };
 
-    for (const template of templates) {
-      // 计算响应率
-      const responseRate = template.useCount > 0
-        ? Math.round((template.successCount / template.useCount) * 100 * 10) / 10
-        : 0;
-
-      // 计算平均响应时间（小时）
-      const contacts = await prisma.contactLog.findMany({
-        where: {
-          userId,
-          templateId: template.id,
-          repliedAt: { not: null },
-        },
-        select: {
-          sentAt: true,
-          repliedAt: true,
-        },
-      });
-
-      let avgResponseTime: number | null = null;
-      if (contacts.length > 0) {
-        const totalHours = contacts.reduce((sum, contact) => {
-          const sentAt = new Date(contact.sentAt);
-          const repliedAt = new Date(contact.repliedAt!);
-          const diffMs = repliedAt.getTime() - sentAt.getTime();
-          const diffHours = diffMs / (1000 * 60 * 60);
-          return sum + diffHours;
-        }, 0);
-
-        avgResponseTime = Math.round((totalHours / contacts.length) * 10) / 10;
+    // 统计各分类的数量
+    templates.forEach((template) => {
+      const category = template.category || 'unknown';
+      if (category in categoryMap) {
+        categoryMap[category]++;
       }
+    });
 
-      effectiveness.push({
-        id: template.id,
-        name: template.name,
-        category: template.category,
-        useCount: template.useCount,
-        responseCount: template.successCount,
-        responseRate,
-        avgResponseTime,
-      });
-    }
+    // 转换为数组格式，返回所有分类（包括数量为0的）
+    const effectiveness: TemplateEffectiveness[] = Object.entries(categoryMap).map(([category, count]) => ({
+      id: 0, // 不需要ID
+      name: '', // 不需要名称
+      category,
+      useCount: count, // 使用 useCount 字段存储数量
+      responseCount: 0, // 不需要
+      responseRate: 0, // 不需要
+      avgResponseTime: null, // 不需要
+    }));
 
-    // 按响应率降序排序
-    effectiveness.sort((a, b) => b.responseRate - a.responseRate);
-
-    logger.info(`用户 ${userId} 模板效果统计获取成功，共 ${effectiveness.length} 个模板`);
+    logger.info(`用户 ${userId} 模板分类统计获取成功，共 ${effectiveness.length} 个分类`);
     return effectiveness;
   }
 
