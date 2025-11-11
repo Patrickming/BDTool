@@ -8,168 +8,239 @@ KOL BD Tool 是一个专为 KCEX 交易所 BD 团队打造的全栈 Web 应用�
 
 ## ✨ 核心功能
 
-### 1. **话术模板管理**（计划中）
+### 1. **KOL 管理系统** ✅
 
-- 创建、编辑和组织沟通模板
-- 支持变量替换（如 `{{username}}`、`{{follower_count}}`）
-- AI 驱动的模板生成（OpenAI/Claude 集成）
-- 模板效果跟踪（回复率统计）
-- 多语言支持
+- ✅ KOL 完整 CRUD 操作（创建、查看、编辑、删除）
+- ✅ 批量导入（支持 4 种 URL 格式）
+- ✅ 高级搜索与筛选（用户名、粉丝数、质量分、状态、分类、语言、认证状态）
+- ✅ 多字段排序（创建时间、更新时间、粉丝数、质量分）
+- ✅ 质量评分系统（0-100 分，手动设置）
+- ✅ 7 种状态管理（新添加/已联系/已回复/洽谈中/合作中/已合作/已拒绝）
+- ✅ 内容分类（合约交易分析/代币交易分析/Web3 通用/未分类）
+- ✅ 9 种语言支持（英语、日语、韩语、法语、德语、俄语、印地语、西班牙语、葡萄牙语）
+- ✅ CSV 导出功能（17 列完整数据）
+- ✅ 用户数据隔离
 
-### 2. **KOL 发现与筛选**
+### 2. **话术模板管理** ✅
 
-- 手动导入（批量用户名输入）
-- 种子扩展（从现有 KOL 发现新 KOL）
-- 自动质量评分（0-100 分）
-- 内容分析与分类
-- 智能筛选条件：
-  - 粉丝数（1k-50k）
-  - 内容类型（合约交易 > 加密交易 > Web3）
-  - 语言（排除中文、土耳其语、中东语言、波斯语）
-  - 活跃度（7 天内必须有推文）
+- ✅ 模板完整 CRUD 操作
+- ✅ 14 种变量替换（KOL 变量、用户变量、系统变量）
+- ✅ 5 种模板分类（初次联系、跟进、谈判、合作、维护）
+- ✅ 实时预览功能（变量替换效果）
+- ✅ 使用统计追踪
+- ✅ 自定义排序（上下移动）
+- ✅ 搜索和筛选功能
+- ✅ 多语言支持
 
-### 3. **CRM 系统**
+### 3. **数据分析仪表盘** ✅
 
-- 完整的 KOL 数据库与档案
-- 联系历史时间线
-- 状态管理（新添加/已联系/已回复/协商中/合作中/已拒绝）
-- 标签系统
-- 笔记和自定义字段
-- 高级搜索与筛选
+- ✅ 首页实时统计卡片（4 个关键指标）
+- ✅ 概览统计（8 个核心指标：KOL 总数、模板数量、联系次数、活跃合作等）
+- ✅ KOL 分布图表（5 个维度）
+  - 粉丝数分布（柱状图，6 个范围段）
+  - 质量分分布（环形图，4 个等级）
+  - 内容分类分布（柱状图）
+  - 状态分布（环形图）
+  - 语言分布（折线图）
+- ✅ 模板效果分析（按分类统计）
+- ✅ 联系时间线（双轴折线图）
+- ✅ 自定义时间范围（7/30/60/90 天）
+- ✅ 实时数据刷新
 
-### 4. **数据分析面板** ✅
+### 4. **Chrome 浏览器插件** ✅
 
-- ✅ 每周统计（联系数、回复率）
-- ✅ KOL 分布图表（粉丝数、质量分、分类、状态）
-- ✅ 模板效果分析
-- ✅ 基于 KOL 状态的实时数据计算
-- ✅ 自定义时间范围（默认 7 天）
-- ✅ CSV 导出功能
-
-### 5. **浏览器插件** ✅
-
-- ✅ 从 Twitter 页面快速捕获 KOL 信息
-- ✅ Extension Token 双认证系统
-- ✅ 侧边栏（Side Panel）UI
+- ✅ Manifest V3 架构
+- ✅ 侧边栏（Side Panel）UI 设计
+- ✅ 一键捕获 Twitter KOL 资料
+- ✅ 自动提取用户名、粉丝数、简介、头像等
+- ✅ Extension Token 认证系统（独立于 JWT）
+- ✅ 2 小时倒计时机制
+- ✅ 本地数据编辑（质量评分、分类、备注）
+- ✅ 批量上传到系统
+- ✅ 自动去重检测
 - ✅ 今日捕获统计
-- ✅ 重复检测提示
 
-### 6. **翻译服务** ✅
+### 5. **翻译服务** ✅
 
-- ✅ DeepL API 集成
-- ✅ 支持多语言互译
-- ✅ API 健康检查
-- ✅ 使用量统计
+- ✅ DeepL API 专业翻译
+- ✅ 中英文互译
 - ✅ 自动语言检测
+- ✅ API 健康状态检查
+- ✅ 使用量统计追踪
 
-### 7. **数据库安全** ✅
+### 6. **数据库安全** ✅
 
-- ✅ 自动备份系统（Cron 定时任务）
+- ✅ 自动备份系统（Cron 定时任务，每天凌晨 4 点）
+- ✅ 备份保留策略（最近 7 天）
 - ✅ 健康检查脚本
-- ✅ 备份与恢复文档
-- ✅ WSL 环境优化
+- ✅ 完整的备份与恢复文档
+- ✅ WSL 环境兼容性优化
 
 ## 🏗️ 技术栈
 
 ### 前端
 
-- **框架：** React 18 + TypeScript + Vite
-- **UI 库：** Ant Design 5.x
+- **框架：** React 18 + TypeScript + Vite 5
+- **UI 库：** Ant Design 5.x（深色主题 + Solana 风格）
 - **状态管理：** Zustand
 - **HTTP 客户端：** Axios
 - **路由：** React Router v6
+- **图表：** Recharts 2.x
+- **数据导出：** Papa Parse 5.5.3
 - **包管理器：** pnpm
 
 ### 后端
 
 - **框架：** Express.js + TypeScript
-- **数据库：** PostgreSQL（生产）/ SQLite（开发）
+- **数据库：** SQLite（开发）/ PostgreSQL（生产，待部署）
 - **ORM：** Prisma 6.0
 - **验证：** Zod
 - **认证：** JWT + bcrypt
 - **日志：** Pino
+- **定时任务：** Cron
+- **翻译：** DeepL API
+- **文件处理：** Archiver（插件打包）
 
-### 浏览器插件（计划中）
+### Chrome 浏览器插件
 
-- **平台：** Chrome Extension（Manifest V3）
-- **语言：** JavaScript/TypeScript
+- **架构：** Manifest V3
+- **语言：** JavaScript
+- **UI：** 侧边栏（Side Panel）
+- **存储：** Chrome Storage API
+- **认证：** Extension Token（SHA-256）
 - **集成：** REST API 与后端通信
 
-### 翻译服务
+### 开发工具
 
-- **DeepL API：** 专业翻译服务
-- **使用场景：** 中英互译、自动语言检测
-- **特点：** 高质量翻译、API 健康监控
-
-### AI 集成（计划中）
-
-- **OpenAI API：** GPT-4 用于模板生成
-- **Anthropic Claude API：** 备用 AI 提供商
-- **使用场景：** 模板生成、内容分析
+- **TypeScript：** 5.x
+- **构建工具：** Vite（前端）、tsx（后端开发）
+- **代码质量：** ESLint + Prettier
+- **Git：** 版本控制
+- **环境：** Node.js 18+、pnpm 8+
 
 ## 📁 项目结构
 
 ```
 BDTool/
-├── docs/                        # 完整文档
-│   ├── API.md                  # API 文档
-│   ├── DEVELOPMENT.md          # 开发日志与更新记录
-│   ├── 开发任务.md              # 任务跟踪文档
-│   └── 测试报告.md              # 集成测试报告
+├── docs/                          # 完整文档
+│   ├── API.md                    # API 文档
+│   ├── CHANGELOG.md              # 更新日志
+│   ├── DEVELOPMENT.md            # 开发日志与更新记录
+│   ├── DATABASE_BACKUP_RECOVERY.md # 数据库备份与恢复指南
+│   ├── 翻译服务配置指南.md         # DeepL 翻译配置文档
+│   └── 开发任务.md                # 任务跟踪文档
 │
-├── frontend/                    # React 前端应用
-│   ├── public/
+├── frontend/                      # React 前端应用
+│   ├── public/                   # 静态资源
 │   ├── src/
-│   │   ├── components/         # 可复用 UI 组件
-│   │   │   ├── Effects/        # 视觉效果组件
-│   │   │   ├── KOL/            # KOL 相关组件
-│   │   │   └── Navbar.tsx      # 导航栏
-│   │   ├── pages/              # 页面组件
-│   │   │   ├── Home.tsx        # 首页
-│   │   │   ├── Login.tsx       # 登录页
-│   │   │   ├── Register.tsx    # 注册页
-│   │   │   ├── KOLList.tsx     # KOL 列表
-│   │   │   └── KOLImport.tsx   # 批量导入
-│   │   ├── services/           # API 服务层
-│   │   ├── store/              # Zustand 状态管理
-│   │   ├── styles/             # 全局样式
-│   │   ├── types/              # TypeScript 类型定义
-│   │   └── utils/              # 工具函数
+│   │   ├── components/           # 可复用 UI 组件
+│   │   │   ├── analytics/        # 数据分析图表组件
+│   │   │   ├── Effects/          # 视觉效果组件
+│   │   │   ├── KOL/              # KOL 相关组件
+│   │   │   ├── Layout/           # 布局组件（AppLayout）
+│   │   │   ├── Template/         # 模板相关组件
+│   │   │   ├── Translation/      # 翻译相关组件
+│   │   │   └── Navbar.tsx        # 导航栏（已废弃）
+│   │   ├── pages/                # 页面组件
+│   │   │   ├── KOL/              # KOL 管理页面
+│   │   │   │   ├── KOLList.tsx   # KOL 列表
+│   │   │   │   └── KOLImport.tsx # 批量导入
+│   │   │   ├── Template/         # 模板管理页面
+│   │   │   │   ├── TemplateList.tsx    # 模板列表
+│   │   │   │   ├── TemplateCreate.tsx  # 创建模板
+│   │   │   │   └── TemplateEdit.tsx    # 编辑模板
+│   │   │   ├── Home.tsx          # 首页
+│   │   │   ├── Login.tsx         # 登录页
+│   │   │   ├── Register.tsx      # 注册页
+│   │   │   ├── AnalyticsDashboard.tsx # 数据分析仪表盘
+│   │   │   └── Extension.tsx     # 插件配置页面
+│   │   ├── services/             # API 服务层
+│   │   │   ├── auth.service.ts   # 认证服务
+│   │   │   ├── kol.service.ts    # KOL 服务
+│   │   │   ├── template.service.ts # 模板服务
+│   │   │   ├── analytics.service.ts # 分析服务
+│   │   │   ├── translation.service.ts # 翻译服务
+│   │   │   └── extension.service.ts # 插件服务
+│   │   ├── store/                # Zustand 状态管理
+│   │   │   ├── auth.store.ts     # 认证状态
+│   │   │   ├── kol.store.ts      # KOL 状态
+│   │   │   ├── template.store.ts # 模板状态
+│   │   │   ├── analytics.store.ts # 分析状态
+│   │   │   └── theme.store.ts    # 主题状态
+│   │   ├── styles/               # 全局样式
+│   │   │   ├── theme.css         # 主题系统
+│   │   │   └── global.css        # 全局样式
+│   │   ├── types/                # TypeScript 类型定义
+│   │   │   ├── kol.ts            # KOL 类型
+│   │   │   ├── template.ts       # 模板类型
+│   │   │   ├── analytics.ts      # 分析类型
+│   │   │   ├── translation.ts    # 翻译类型
+│   │   │   └── extension.ts      # 插件类型
+│   │   ├── utils/                # 工具函数
+│   │   │   └── export.ts         # CSV 导出工具
+│   │   └── lib/                  # 第三方库配置
+│   │       └── axios.ts          # Axios 配置
+│   ├── .env.example              # 环境变量示例
 │   ├── package.json
-│   └── tsconfig.json
+│   ├── tsconfig.json
+│   └── vite.config.ts            # Vite 配置
 │
-├── backend/                     # Express.js 后端应用
+├── backend/                       # Express.js 后端应用
 │   ├── prisma/
-│   │   ├── schema.prisma       # 数据库模型定义
-│   │   ├── migrations/         # 数据库迁移记录
-│   │   └── seed.ts             # 种子数据
+│   │   ├── schema.prisma         # 数据库模型定义
+│   │   ├── migrations/           # 数据库迁移记录
+│   │   └── seed.ts               # 种子数据
 │   ├── src/
-│   │   ├── features/           # 功能模块
-│   │   │   ├── auth/          # 认证模块
-│   │   │   ├── kol/           # KOL 管理
-│   │   │   ├── template/      # 模板管理
-│   │   │   ├── analytics/     # 数据分析
-│   │   │   └── translation/   # 翻译服务
-│   │   ├── middleware/         # 中间件（认证、错误处理）
-│   │   ├── utils/              # 工具函数
-│   │   ├── config/             # 配置管理
-│   │   └── server.ts           # 应用入口
-│   ├── scripts/                # 工具脚本
-│   │   ├── backup-db.sh       # 数据库备份脚本
-│   │   └── analytics-debug.ts # 数据分析调试工具
-│   ├── .env.example            # 环境变量示例
+│   │   ├── features/             # 功能模块（按功能组织）
+│   │   │   ├── auth/             # 认证模块
+│   │   │   │   ├── controllers/  # 控制器
+│   │   │   │   ├── services/     # 业务逻辑
+│   │   │   │   ├── routes/       # 路由
+│   │   │   │   └── dto/          # 数据传输对象
+│   │   │   ├── kol/              # KOL 管理模块
+│   │   │   ├── templates/        # 模板管理模块
+│   │   │   ├── analytics/        # 数据分析模块
+│   │   │   ├── translation/      # 翻译服务模块
+│   │   │   ├── ai/               # AI 集成模块（待开发）
+│   │   │   └── contacts/         # 联系记录模块（待开发）
+│   │   ├── middleware/           # 中间件
+│   │   │   ├── auth.middleware.ts # JWT 认证
+│   │   │   ├── extension-auth.middleware.ts # 插件双认证
+│   │   │   ├── error.middleware.ts # 错误处理
+│   │   │   └── rate-limit.middleware.ts # 速率限制
+│   │   ├── utils/                # 工具函数
+│   │   │   ├── logger.ts         # 日志工具（Pino）
+│   │   │   └── response.ts       # 响应格式化
+│   │   ├── config/               # 配置管理
+│   │   │   └── database.ts       # 数据库配置
+│   │   ├── routes/               # 顶层路由
+│   │   │   ├── index.ts          # 路由汇总
+│   │   │   └── extension.routes.ts # Extension Token 路由
+│   │   └── server.ts             # 应用入口
+│   ├── scripts/                  # 工具脚本
+│   │   ├── backup-db.sh          # 数据库备份脚本
+│   │   ├── health-check.ts       # 健康检查脚本
+│   │   ├── fix-template-order.ts # 模板顺序修复脚本
+│   │   └── analytics-debug.ts    # 数据分析调试工具
+│   ├── .env.example              # 环境变量示例
 │   ├── package.json
 │   └── tsconfig.json
 │
-├── extension/                   # Chrome 浏览器插件
-│   ├── manifest.json           # 插件配置（Manifest V3）
-│   ├── sidepanel.html          # 侧边栏页面
-│   ├── sidepanel.js            # 侧边栏逻辑
-│   ├── background.js           # 后台服务
-│   └── content.js              # 内容脚本
+├── extension/                     # Chrome 浏览器插件（Manifest V3）
+│   ├── manifest.json             # 插件配置
+│   ├── sidepanel.html            # 侧边栏页面
+│   ├── sidepanel.js              # 侧边栏逻辑
+│   ├── background.js             # 后台服务 Worker
+│   ├── content.js                # 内容脚本（注入 Twitter 页面）
+│   ├── icons/                    # 插件图标
+│   │   ├── icon16.png
+│   │   ├── icon48.png
+│   │   └── icon128.png
+│   └── styles.css                # 侧边栏样式
 │
 ├── .gitignore
-└── README.md                    # 本文件
+├── package.json                  # 根目录 package.json（工作区配置）
+└── README.md                     # 本文件
 ```
 
 ## 📋 当前实现状态
@@ -339,65 +410,120 @@ BDTool/
 
 ### 前置要求
 
-- Node.js 18+
-- pnpm 8+
-- PostgreSQL 14+（或使用 SQLite 开发）
+- **Node.js** 18+
+- **pnpm** 8+ （包管理器）
+- **SQLite**（开发环境，无需额外安装）
+- **PostgreSQL** 14+（生产环境可选）
 
 ### 后端设置
 
 ```bash
-# 进入后端目录
+# 1. 克隆项目（如果还没有）
+git clone <repository-url>
+cd BDTool
+
+# 2. 进入后端目录
 cd backend
 
-# 安装依赖
+# 3. 安装依赖
 pnpm install
 
-# 配置环境变量
+# 4. 配置环境变量
 cp .env.example .env
-# 编辑 .env 文件，填写你的配置
+# 编辑 .env 文件，至少需要配置：
+#   - JWT_SECRET（至少 32 个字符的随机字符串）
+#   - DEEPL_API_KEY（可选，用于翻译功能）
 
-# 生成 Prisma Client
-pnpm db:generate
+# 5. 生成 Prisma Client
+npx prisma generate
 
-# 运行数据库迁移
-pnpm db:migrate
+# 6. 运行数据库迁移（创建表结构）
+npx prisma migrate dev
 
-# 启动开发服务器
+# 7. 启动开发服务器
 pnpm dev
+# 或使用 NODE_ENV 显式指定环境：
+# NODE_ENV=development pnpm dev
 ```
 
-后端将在 `http://localhost:3000` 启动
+**后端服务启动后：**
+- 主服务地址：`http://localhost:3000`
+- 健康检查：`http://localhost:3000/health`
+- API 基础路径：`http://localhost:3000/api/v1`
 
-- 健康检查端点：`http://localhost:3000/health`
-- API 文档：`http://localhost:3000/api/v1`
+**可用的后端命令：**
+```bash
+pnpm dev              # 启动开发服务器（热重载）
+pnpm build            # 编译 TypeScript 到 dist/
+pnpm start            # 运行编译后的生产版本
+pnpm db:studio        # 打开 Prisma Studio（数据库可视化工具）
+pnpm db:migrate       # 运行数据库迁移
+pnpm db:generate      # 生成 Prisma Client
+pnpm db:backup        # 手动备份数据库
+pnpm db:health        # 检查数据库连接健康状态
+pnpm lint             # ESLint 代码检查
+pnpm format           # Prettier 代码格式化
+```
 
 ### 前端设置
 
 ```bash
-# 进入前端目录
+# 1. 进入前端目录（从项目根目录）
 cd frontend
 
-# 安装依赖
+# 2. 安装依赖
 pnpm install
 
-# 启动开发服务器
+# 3. 启动开发服务器
 pnpm dev
 ```
 
-前端将在以下地址启动：
-
+**前端服务启动后：**
 - 主要地址：`http://localhost:5173`
-- 备用地址：`http://localhost:5174`
+- 备用地址：`http://localhost:5174`（如果 5173 被占用）
 
-### 数据库管理（可选）
-
+**可用的前端命令：**
 ```bash
-# 打开 Prisma Studio（可视化数据库管理工具）
-cd backend
-pnpm db:studio
+pnpm dev              # 启动 Vite 开发服务器（热重载）
+pnpm build            # 构建生产版本到 dist/
+pnpm preview          # 预览生产构建
+pnpm lint             # ESLint 代码检查
 ```
 
-Prisma Studio 将在 `http://localhost:5555` 启动
+### Chrome 浏览器插件安装
+
+```bash
+# 插件文件位于项目的 /extension 目录
+
+# 1. 打开 Chrome 浏览器
+# 2. 访问 chrome://extensions/
+# 3. 开启右上角的"开发者模式"
+# 4. 点击"加载已解压的扩展程序"
+# 5. 选择项目中的 /extension 文件夹
+# 6. 插件安装完成！点击插件图标打开侧边栏
+
+# 注意：修改插件代码后，需要在 chrome://extensions/ 页面点击"重新加载"按钮
+```
+
+### 数据库管理工具（可选）
+
+```bash
+# Prisma Studio - 可视化数据库管理工具
+cd backend
+npx prisma studio
+
+# 工具将在 http://localhost:5555 启动
+# 可以可视化查看和编辑所有数据表
+```
+
+### 首次使用流程
+
+1. **启动后端服务**：`cd backend && pnpm dev`
+2. **启动前端服务**：`cd frontend && pnpm dev`
+3. **访问前端**：打开浏览器访问 `http://localhost:5173`
+4. **注册账号**：点击"注册"按钮，填写邮箱、密码和姓名
+5. **登录系统**：使用注册的账号登录
+6. **开始使用**：导入 KOL、创建模板、查看数据分析
 
 ## 📖 使用指南
 
@@ -550,55 +676,125 @@ A: 当前版本暂不支持密码重置功能，请联系管理员或重新注�
 
 ## 🔐 环境变量配置
 
-### 后端 (.env)
+### 后端环境变量 (backend/.env)
+
+创建 `backend/.env` 文件（基于 `.env.example`）：
 
 ```bash
-# 数据库连接
-# SQLite（开发环境）
-DATABASE_URL="file:./dev.db"
-
-# PostgreSQL（生产环境）
-# DATABASE_URL="postgresql://user:password@localhost:5432/kol_bd_tool"
-
-# JWT 密钥（至少 32 个字符）
-JWT_SECRET="your-super-secret-jwt-key-min-32-chars"
-
-# JWT 过期时间（单位：秒）
-JWT_EXPIRES_IN="604800"  # 7 天
+# ==================== 应用配置 ====================
+# 运行环境：development（开发）/ production（生产）
+NODE_ENV=development
 
 # 服务器端口
 PORT=3000
 
-# CORS 允许的来源（多个用逗号分隔）
-CORS_ORIGIN="http://localhost:5173,http://localhost:5174"
+# ==================== 数据库配置 ====================
+# 开发环境使用 SQLite（无需额外安装）
+DATABASE_URL="file:./dev.db"
 
-# 日志级别（debug, info, warn, error）
-LOG_LEVEL="info"
+# 生产环境使用 PostgreSQL（推荐）
+# DATABASE_URL="postgresql://username:password@localhost:5432/kol_bd_tool"
+# 注意：切换数据库后需要重新运行 prisma migrate
 
-# DeepL 翻译 API 密钥（用于翻译功能）
-DEEPL_API_KEY="your-deepl-api-key"
+# ==================== JWT 认证配置 ====================
+# JWT 密钥（必须修改！至少 32 个字符的随机字符串）
+# 生成方式：node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+JWT_SECRET=your-super-secret-jwt-key-at-least-32-characters-long-change-this
 
-# AI API 密钥（可选，用于模板生成）
-OPENAI_API_KEY="sk-..."
-ANTHROPIC_API_KEY="sk-ant-..."
+# JWT 过期时间（7d = 7天，1h = 1小时，30m = 30分钟）
+JWT_EXPIRES_IN=7d
+
+# ==================== CORS 配置 ====================
+# 允许的前端来源（多个源用逗号分隔，不要加空格）
+CORS_ORIGIN=http://localhost:5173,http://localhost:5174
+
+# ==================== 翻译服务配置 ====================
+# DeepL API 密钥（可选，用于翻译功能）
+# 申请地址：https://www.deepl.com/pro-api
+# 免费额度：每月 50 万字符
+# 获取密钥：DeepL Account -> API Keys
+#
+# 注意 API 密钥格式：
+#   - Free 版本密钥以 :fx 结尾（示例：abc123:fx）
+#   - Pro 版本密钥不带后缀（示例：abc123）
+DEEPL_API_KEY=your-deepl-api-key-here:fx
+
+# ==================== 日志配置 ====================
+# 日志级别：debug / info / warn / error
+# 开发环境建议使用 debug 或 info
+# 生产环境建议使用 warn 或 error
+LOG_LEVEL=info
+
+# ==================== 限流配置 ====================
+# API 限流时间窗口（毫秒）
+RATE_LIMIT_WINDOW_MS=900000  # 15分钟
+
+# 时间窗口内最大请求数
+RATE_LIMIT_MAX_REQUESTS=100
+
+# ==================== AI 集成配置（可选，未来功能）====================
+# OpenAI API 密钥（用于 GPT-4 集成）
+# OPENAI_API_KEY=sk-...
+
+# Anthropic API 密钥（用于 Claude 集成）
+# ANTHROPIC_API_KEY=sk-ant-...
 ```
 
-### 前端 (.env)
+**必须配置的环境变量：**
+- `JWT_SECRET` - **必须修改为随机字符串！** 这关系到系统安全性
+- `DATABASE_URL` - 开发环境保持默认即可
 
-前端使用 Vite 代理，无需额外配置环境变量。
+**可选配置：**
+- `DEEPL_API_KEY` - 如果需要使用翻译功能，需要申请 DeepL API 密钥
+- 其他配置保持默认值即可
 
-如需自定义后端 API 地址，可在 `frontend/vite.config.ts` 中修改：
+**生成安全的 JWT_SECRET：**
+```bash
+# 方法1：使用 Node.js
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
+# 方法2：使用 OpenSSL
+openssl rand -hex 32
+
+# 方法3：在线生成器
+# 访问：https://generate-secret.vercel.app/32
+```
+
+### 前端环境变量 (frontend/.env)
+
+**前端无需配置环境变量！**
+
+前端使用 Vite 代理功能，自动将 `/api` 开头的请求转发到后端。配置位于 `frontend/vite.config.ts`：
 
 ```typescript
-server: {
-  proxy: {
-    '/api': {
-      target: 'http://localhost:3000',  // 修改为你的后端地址
-      changeOrigin: true,
+export default defineConfig({
+  server: {
+    port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',  // 后端地址
+        changeOrigin: true,
+      },
     },
   },
-},
+});
 ```
+
+**如需修改后端地址：**
+1. 打开 `frontend/vite.config.ts`
+2. 修改 `proxy.'/api'.target` 为你的后端地址
+3. 重启前端服务：`pnpm dev`
+
+### Extension Token 配置
+
+Extension Token 用于浏览器插件与后端的安全通信，**无需手动配置**。
+
+**使用流程：**
+1. 登录 Web 应用后，访问"插件内容"页面
+2. 系统自动生成 Extension Token
+3. 点击"复制/刷新 Token"按钮激活 Token（有效期 2 小时）
+4. 在插件侧边栏中粘贴 Token
+5. Token 过期后，重复步骤 3-4 即可刷新
 
 ## 🛡️ 安全考虑
 
