@@ -16,6 +16,7 @@ interface StatCardProps {
   trend?: 'up' | 'down';
   trendValue?: number;
   valueStyle?: React.CSSProperties;
+  description?: string; // 计算说明
 }
 
 export const StatCard: React.FC<StatCardProps> = ({
@@ -28,6 +29,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   trend,
   trendValue,
   valueStyle,
+  description,
 }) => {
   return (
     <Card
@@ -84,6 +86,18 @@ export const StatCard: React.FC<StatCardProps> = ({
                 <span style={{ marginLeft: '4px' }}>
                   {Math.abs(trendValue)}%
                 </span>
+              </div>
+            )}
+            {description && (
+              <div
+                style={{
+                  marginTop: '8px',
+                  fontSize: '11px',
+                  color: '#666',
+                  lineHeight: '1.4',
+                }}
+              >
+                {description}
               </div>
             )}
           </div>

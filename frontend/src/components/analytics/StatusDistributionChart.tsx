@@ -98,6 +98,8 @@ export const StatusDistributionChart: React.FC<StatusDistributionChartProps> = (
                       borderRadius: '8px',
                       color: '#fff',
                     }}
+                    labelStyle={{ color: '#fff' }}
+                    itemStyle={{ color: '#fff' }}
                     formatter={(value: number, name: string) => [`${value} 个`, name]}
                   />
                   <Legend
