@@ -186,10 +186,10 @@ export class AnalyticsService {
 
     // 质量分分布统计
     const qualityLevels = {
-      '85以上': 0,
-      '75-84': 0,
-      '65-74': 0,
-      '65以下': 0,
+      '高质量': 0,
+      '良好': 0,
+      '一般': 0,
+      '较差': 0,
     };
 
     // 内容分类分布统计
@@ -218,13 +218,13 @@ export class AnalyticsService {
       // 质量分统计
       const score = kol.qualityScore || 0;
       if (score >= 85) {
-        qualityLevels['85以上']++;
+        qualityLevels['高质量']++;
       } else if (score >= 75) {
-        qualityLevels['75-84']++;
+        qualityLevels['良好']++;
       } else if (score >= 65) {
-        qualityLevels['65-74']++;
+        qualityLevels['一般']++;
       } else {
-        qualityLevels['65以下']++;
+        qualityLevels['较差']++;
       }
 
       // 内容分类统计

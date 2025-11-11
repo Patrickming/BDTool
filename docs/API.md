@@ -1348,10 +1348,10 @@ curl "http://localhost:3000/api/v1/templates?page=1&limit=10&category=initial&so
       {"range": "30k-50k", "count": 0}
     ],
     "byQualityScore": [
-      {"level": "85以上", "count": 2},
-      {"level": "75-84", "count": 5},
-      {"level": "65-74", "count": 2},
-      {"level": "65以下", "count": 0}
+      {"level": "高质量", "count": 2},
+      {"level": "良好", "count": 5},
+      {"level": "一般", "count": 2},
+      {"level": "较差", "count": 0}
     ],
     "byContentCategory": [
       {"category": "crypto_trading", "count": 7},
@@ -1366,7 +1366,7 @@ curl "http://localhost:3000/api/v1/templates?page=1&limit=10&category=initial&so
 
 **分布维度**:
 - `byFollowerCount`: 按粉丝数分布 (1k-5k, 5k-10k, 10k-30k, 30k-50k)
-- `byQualityScore`: 按质量分分布 (85以上, 75-84, 65-74, 65以下)
+- `byQualityScore`: 按质量分分布 (高质量 85+, 良好 75-84, 一般 65-74, 较差 <65)
 - `byContentCategory`: 按内容分类分布
 - `byStatus`: 按状态分布
 
