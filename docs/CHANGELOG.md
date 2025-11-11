@@ -1,5 +1,194 @@
 # 更新日志
 
+## [2025-11-11] - v1.5.0 首页数据对接与多项优化
+
+### 🏠 首页统计数据对接真实 API
+
+#### 功能概述
+将首页的 4 个统计卡片从硬编码的 0 值更新为从后端 API 获取的真实数据。
+
+#### 实现内容
+
+**1. 后端 API 扩展**
+- ✅ 扩展 `OverviewStats` 接口，新增 2 个字段：
+  - `totalTemplates` - 总模板数
+  - `totalContacts` - 总联系数（除新添加外的所有 KOL）
+- ✅ 重新排序字段，将最重要的 4 个统计数据放在前面
+- ✅ 添加模板总数查询逻辑
+
+**2. 前端集成**
+- ✅ 添加状态管理（stats 和 loadingStats）
+- ✅ 实现数据获取 useEffect hook
+- ✅ 更新 4 个统计卡片使用真实数据：
+  - **KOL 总数** → `stats.totalKols`
+  - **模板数量** → `stats.totalTemplates`
+  - **联系次数** → `stats.totalContacts`（所有状态不为 'new' 的 KOL 数量）
+  - **活跃合作** → `stats.activePartnerships`（状态为 'cooperating' 的 KOL 数量）
+- ✅ 添加加载状态显示（loading 动画）
+- ✅ 添加错误处理和用户提示
+
+**修改文件**:
+- `/backend/src/features/analytics/services/analytics.service.ts` - 更新接口和实现
+- `/frontend/src/types/analytics.ts` - 同步类型定义
+- `/frontend/src/pages/Home.tsx` - 集成 API 调用和状态管理
+
+---
+
+### 🌐 语言支持扩展
+
+#### 功能概述
+为 KOL 管理系统增加西班牙语和葡萄牙语支持，满足国际化需求。
+
+#### 实现内容
+- ✅ 后端 DTO 更新（扩展 KOLLanguage 枚举）
+- ✅ 前端类型定义更新（扩展语言枚举和配置）
+- ✅ 插件支持新语言选项
+- ✅ KOL 创建表单添加语言字段
+- ✅ 数据分析语言分布支持新语言
+
+**语言列表**:
+```typescript
+- en: 英语 🇺🇸
+- ja: 日语 🇯🇵
+- ko: 韩语 🇰🇷
+- fr: 法语 🇫🇷
+- de: 德语 🇩🇪
+- ru: 俄语 🇷🇺
+- hi: 印地语 🇮🇳
+- es: 西班牙语 🇪🇸 ✨ 新增
+- pt: 葡萄牙语 🇵🇹 ✨ 新增
+```
+
+**修改文件**:
+- `/backend/src/features/kol/dto/create-kol.dto.ts` - 扩展语言枚举
+- `/frontend/src/types/kol.ts` - 扩展语言枚举和配置
+- `/frontend/src/pages/KOL/KOLList.tsx` - 添加语言选择字段
+- `/extension/popup.js` - 添加语言选项
+
+---
+
+### 📋 模板自定义排序功能
+
+#### 功能概述
+实现模板列表的自定义排序功能，允许用户通过上下箭头调整模板顺序，方便快速访问常用模板。
+
+#### 实现内容
+
+**1. 数据库层**
+- ✅ 添加 `displayOrder` 字段（整数类型，默认 0）
+- ✅ 添加复合索引 `[userId, displayOrder]` 优化查询性能
+- ✅ 创建数据迁移（`20250111_add_template_display_order`）
+
+**2. 后端 API**
+- ✅ 新增排序 API：`POST /api/v1/templates/:id/reorder`
+- ✅ 实现排序逻辑（Prisma 事务保证原子性）：
+  - 获取当前模板和目标模板
+  - 交换两个模板的 displayOrder 值
+  - 验证用户权限（只能调整自己的模板）
+- ✅ 更新创建模板逻辑（自动分配递增的 displayOrder）
+- ✅ 更新查询默认排序（按 displayOrder 升序）
+- ✅ 扩展查询 DTO（添加 displayOrder 排序选项）
+
+**3. 前端 UI**
+- ✅ 模板列表添加"排序"列
+- ✅ 显示上下箭头按钮：
+  - 第一条禁用向上箭头
+  - 最后一条禁用向下箭头
+- ✅ 点击箭头调用排序 API
+- ✅ 排序成功后自动刷新列表
+- ✅ 添加 Zustand store action（reorderTemplate）
+
+**4. 数据修复**
+- ✅ 创建修复脚本：`/backend/scripts/fix-template-order.ts`
+- ✅ 为现有模板分配顺序值（0, 1, 2, 3, 4...）
+
+**修改文件**:
+- `/backend/prisma/schema.prisma` - 添加字段和索引
+- `/backend/src/features/templates/services/template.service.ts` - 排序逻辑
+- `/backend/src/features/templates/controllers/template.controller.ts` - 控制器
+- `/backend/src/features/templates/routes/template.routes.ts` - 路由
+- `/backend/src/features/templates/dto/template-query.dto.ts` - DTO 更新
+- `/frontend/src/store/template.store.ts` - Zustand action
+- `/frontend/src/services/template.service.ts` - API 调用
+- `/frontend/src/pages/Template/TemplateList.tsx` - UI 组件
+- `/frontend/src/types/template.ts` - 类型定义
+
+---
+
+### 📊 数据分析图表优化
+
+#### 功能概述
+优化数据分析页面的图表类型和布局，提升数据可视化效果。
+
+#### 变更内容
+- ✅ **语言分布图表**：从柱状图改为折线图（绿色 #14F195）
+- ✅ **模板分类统计**：从折线图改为柱状图（紫色 #9945FF）
+- ✅ **布局优化**：两个图表并排显示在一行（响应式：xs=24, lg=12）
+
+**修改文件**:
+- `/frontend/src/components/analytics/LanguageDistributionChart.tsx` - 改为 LineChart
+- `/frontend/src/components/analytics/TemplateCategoryChart.tsx` - 改为 BarChart
+- `/frontend/src/pages/AnalyticsDashboard.tsx` - 调整布局
+
+---
+
+### 🎨 插件 Token 弹窗样式优化
+
+#### 问题
+Token 确认弹窗过大且为白色背景，不适配深色主题。
+
+#### 解决方案
+- ✅ 缩小弹窗宽度（520px → 480px）
+- ✅ 设置垂直居中（centered: true）
+- ✅ 优化内容样式（移除 Ant Design Typography 组件，使用普通 p 标签）
+- ✅ 添加警告颜色（#faad14）给提示文本
+- ✅ 添加按钮文本（okText, cancelText）
+
+**修改文件**:
+- `/frontend/src/pages/Extension.tsx` - Modal.confirm 配置
+
+---
+
+### 🔧 Extension Token 倒计时系统完善
+
+#### 功能回顾
+- ✅ Token 生成后不立即激活（expiresAt = null）
+- ✅ 点击"复制/刷新 Token"后激活并开始 2 小时倒计时
+- ✅ 每次点击都会刷新倒计时（无需重新生成）
+- ✅ 实时显示剩余时间（格式：Xh Xm Xs）
+- ✅ 过期后自动失效
+
+**相关功能**:
+- ✅ Token 管理 API（生成、激活、查询）
+- ✅ 前端倒计时显示（每秒更新）
+- ✅ 过期检测和自动刷新
+
+---
+
+### 🧭 导航栏优化
+
+#### 功能变更
+- ✅ 增加导航菜单最大宽度（600px → 800px）
+- ✅ 确保"插件内容"菜单项正常显示，不被折叠
+
+**修改文件**:
+- `/frontend/src/components/Layout/AppLayout.tsx` - maxWidth 调整
+
+---
+
+### 📝 文档更新
+
+#### 更新内容
+- ✅ `/README.md` - 更新功能列表和路线图
+  - 更新已实现功能版本号（v1.5.0）
+  - 扩展数据分析部分说明
+  - 添加 v1.5.0 路线图
+  - 更新最后修改时间
+- ✅ `/docs/CHANGELOG.md` - 添加 v1.5.0 变更日志
+- ✅ 其他相关文档同步更新
+
+---
+
 ## [2025-11-09] - v1.4.0 功能完成
 
 ### 🔧 KOL 管理 Bug 修复

@@ -65,10 +65,14 @@ export default function Extension() {
       title: '确认复制/刷新 Token？',
       content: (
         <div>
-          <Paragraph>复制 Token 后，有效期将重新计算为 2 小时。</Paragraph>
-          <Paragraph type="warning">每次点击此按钮都会刷新倒计时，无需重新生成新的 Token。</Paragraph>
+          <p style={{ marginBottom: 8 }}>复制 Token 后，有效期将重新计算为 2 小时。</p>
+          <p style={{ color: '#faad14', marginBottom: 0 }}>每次点击此按钮都会刷新倒计时，无需重新生成新的 Token。</p>
         </div>
       ),
+      okText: '确认',
+      cancelText: '取消',
+      width: 480,
+      centered: true,
       onOk: async () => {
         try {
           await navigator.clipboard.writeText(extensionToken);
