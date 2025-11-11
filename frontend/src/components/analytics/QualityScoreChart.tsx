@@ -13,10 +13,10 @@ interface QualityScoreChartProps {
 }
 
 const COLORS = {
-  '优秀 (80+)': '#14F195',
-  '良好 (60-79)': '#9945FF',
-  '一般 (40-59)': '#FFA500',
-  '差 (<40)': '#FF4D4F',
+  '85以上': '#14F195',
+  '75-84': '#9945FF',
+  '65-74': '#FFA500',
+  '65以下': '#FF4D4F',
 };
 
 export const QualityScoreChart: React.FC<QualityScoreChartProps> = ({
@@ -80,6 +80,8 @@ export const QualityScoreChart: React.FC<QualityScoreChartProps> = ({
                       borderRadius: '8px',
                       color: '#fff',
                     }}
+                    labelStyle={{ color: '#fff' }}
+                    itemStyle={{ color: '#fff' }}
                     formatter={(value: number) => [`${value} 个`, '数量']}
                   />
                   <Legend

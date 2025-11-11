@@ -71,6 +71,8 @@ export const ContentCategoryChart: React.FC<ContentCategoryChartProps> = ({
                   borderRadius: '8px',
                   color: '#fff',
                 }}
+                labelStyle={{ color: '#fff' }}
+                itemStyle={{ color: '#fff' }}
                 cursor={{ fill: 'rgba(153, 69, 255, 0.1)' }}
                 formatter={(value: number, name: string) => [`${value} 个`, name]}
               />

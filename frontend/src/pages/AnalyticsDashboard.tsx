@@ -86,6 +86,7 @@ export const AnalyticsDashboard: React.FC = () => {
             value={overviewStats?.totalKols || 0}
             icon={<TeamOutlined />}
             loading={loadingOverview}
+            description="数据库中所有 KOL 总数"
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
@@ -94,6 +95,7 @@ export const AnalyticsDashboard: React.FC = () => {
             value={overviewStats?.newKolsThisWeek || 0}
             icon={<UserAddOutlined />}
             loading={loadingOverview}
+            description="过去 7 天内创建的 KOL 数量"
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
@@ -102,6 +104,7 @@ export const AnalyticsDashboard: React.FC = () => {
             value={overviewStats?.contactedThisWeek || 0}
             icon={<PhoneOutlined />}
             loading={loadingOverview}
+            description="过去 7 天变为「已联系」状态的 KOL"
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
@@ -114,6 +117,7 @@ export const AnalyticsDashboard: React.FC = () => {
             valueStyle={{
               color: (overviewStats?.overallResponseRate || 0) > 50 ? '#14F195' : '#FFA500',
             }}
+            description="(已回复+洽谈中+合作中) ÷ 所有非新增状态"
           />
         </Col>
       </Row>
@@ -129,6 +133,7 @@ export const AnalyticsDashboard: React.FC = () => {
             valueStyle={{
               color: (overviewStats?.weeklyResponseRate || 0) > 50 ? '#14F195' : '#FFA500',
             }}
+            description="本周回应数 ÷ 本周联系数"
           />
         </Col>
         <Col xs={24} sm={12} lg={8}>
@@ -137,6 +142,7 @@ export const AnalyticsDashboard: React.FC = () => {
             value={overviewStats?.activePartnerships || 0}
             icon={<StarOutlined />}
             loading={loadingOverview}
+            description="状态为「合作中」的 KOL 数量"
           />
         </Col>
         <Col xs={24} sm={12} lg={8}>
@@ -148,6 +154,7 @@ export const AnalyticsDashboard: React.FC = () => {
             valueStyle={{
               color: (overviewStats?.pendingFollowups || 0) > 0 ? '#FFA500' : '#14F195',
             }}
+            description="状态为「已回复」需要跟进的 KOL"
           />
         </Col>
       </Row>
