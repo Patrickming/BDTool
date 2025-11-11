@@ -447,11 +447,13 @@ pnpm dev
 ```
 
 **后端服务启动后：**
+
 - 主服务地址：`http://localhost:3000`
 - 健康检查：`http://localhost:3000/health`
 - API 基础路径：`http://localhost:3000/api/v1`
 
 **可用的后端命令：**
+
 ```bash
 pnpm dev              # 启动开发服务器（热重载）
 pnpm build            # 编译 TypeScript 到 dist/
@@ -479,10 +481,12 @@ pnpm dev
 ```
 
 **前端服务启动后：**
+
 - 主要地址：`http://localhost:5173`
 - 备用地址：`http://localhost:5174`（如果 5173 被占用）
 
 **可用的前端命令：**
+
 ```bash
 pnpm dev              # 启动 Vite 开发服务器（热重载）
 pnpm build            # 构建生产版本到 dist/
@@ -741,14 +745,17 @@ RATE_LIMIT_MAX_REQUESTS=100
 ```
 
 **必须配置的环境变量：**
+
 - `JWT_SECRET` - **必须修改为随机字符串！** 这关系到系统安全性
 - `DATABASE_URL` - 开发环境保持默认即可
 
 **可选配置：**
+
 - `DEEPL_API_KEY` - 如果需要使用翻译功能，需要申请 DeepL API 密钥
 - 其他配置保持默认值即可
 
 **生成安全的 JWT_SECRET：**
+
 ```bash
 # 方法1：使用 Node.js
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
@@ -771,8 +778,8 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/api': {
-        target: 'http://localhost:3000',  // 后端地址
+      "/api": {
+        target: "http://localhost:3000", // 后端地址
         changeOrigin: true,
       },
     },
@@ -781,6 +788,7 @@ export default defineConfig({
 ```
 
 **如需修改后端地址：**
+
 1. 打开 `frontend/vite.config.ts`
 2. 修改 `proxy.'/api'.target` 为你的后端地址
 3. 重启前端服务：`pnpm dev`
@@ -790,6 +798,7 @@ export default defineConfig({
 Extension Token 用于浏览器插件与后端的安全通信，**无需手动配置**。
 
 **使用流程：**
+
 1. 登录 Web 应用后，访问"插件内容"页面
 2. 系统自动生成 Extension Token
 3. 点击"复制/刷新 Token"按钮激活 Token（有效期 2 小时）
@@ -806,27 +815,7 @@ Extension Token 用于浏览器插件与后端的安全通信，**无需手动�
 - **密码加密**：使用 bcrypt 加密存储密码
 - **SQL 注入防护**：使用 Prisma ORM 参数化查询
 
-## 📊 KOL 筛选规则
-
-### ✅ 必需条件
-
-- 粉丝数：1,000 - 50,000
-- 7 天内活跃（必须有最近的推文）
-- 内容分类优先级：
-  1. 合约交易分析（最高优先级）
-  2. 加密货币交易
-  3. Web3 一般内容
-
-### ❌ 排除条件
-
-- 粉丝数 <1k 或 >50k 的账号
-- 不活跃账号（7 天以上无推文）
-- 非加密相关内容
-- 语言：中文、土耳其语、中东语言、波斯语
-
 ## 🤝 贡献指南
-
-这是 KCEX 交易所的私有项目。如果你是团队成员：
 
 1. 创建功能分支：`git checkout -b feature/your-feature`
 2. 提交更改：`git commit -m "功能：添加你的功能"`
@@ -851,19 +840,14 @@ Extension Token 用于浏览器插件与后端的安全通信，**无需手动�
 - **[开发任务](docs/开发任务.md)** - 任务跟踪与需求管理
 - **[测试报告](docs/测试报告.md)** - 完整集成测试报告
 
-## 📝 许可证
-
-私有项目 - 保留所有权利
-
 ## 👥 团队
 
-- **开发者：** Claude Code
-- **产品负责人：** KCEX BD Team
-- **目标用户：** BD 实习生和团队成员
+- **开发者：** pdm
+- **目标用户：** BD 人员
 
 ## 📞 支持
 
-如有问题、疑问或功能请求，请联系开发团队或在仓库中创建 Issue。
+如有问题、疑问或功能请求，请联系我或在仓库中创建 Issue。
 
 ## 🎯 路线图
 
@@ -938,6 +922,6 @@ Extension Token 用于浏览器插件与后端的安全通信，**无需手动�
 
 ---
 
-**使用 ❤️ 打造，助力高效的加密货币 KOL 管理**
+**使用 ❤️ 打造，助力高效的 KOL 管理**
 
 _最后更新：2025-11-11_
