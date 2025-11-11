@@ -7,6 +7,9 @@ import { Request, Response } from 'express';
 import { prisma } from '../database/client';
 import { logger } from '../config/logger.config';
 import crypto from 'crypto';
+import archiver from 'archiver';
+import path from 'path';
+import fs from 'fs';
 
 /**
  * 生成随机 Token
@@ -130,6 +133,68 @@ export async function activateExtensionToken(req: Request, res: Response) {
   } catch (error) {
     logger.error('激活 Extension Token 失败:', error);
     return res.status(500).json({ message: '服务器错误' });
+  }
+}
+
+/**
+ * 下载插件包
+ * GET /api/v1/extension/download
+ */
+export async function downloadExtension(req: Request, res: Response) {
+  try {
+    const userId = req.user!.id;
+    logger.info(`用户 ${userId} 请求下载插件包`);
+
+    // extension 文件夹的路径（从 backend 目录向上一级，然后进入 extension）
+    const extensionPath = path.resolve(__dirname, '../../..', 'extension');
+
+    // 检查路径是否存在
+    if (!fs.existsSync(extensionPath)) {
+      logger.error(`插件目录不存在: ${extensionPath}`);
+      return res.status(404).json({ message: '插件目录不存在' });
+    }
+
+    // 设置响应头
+    const zipFileName = `kol-bd-tool-extension-${new Date().toISOString().split('T')[0]}.zip`;
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename="${zipFileName}"`);
+
+    // 创建 archiver 实例
+    const archive = archiver('zip', {
+      zlib: { level: 9 }, // 最高压缩级别
+    });
+
+    // 处理错误
+    archive.on('error', (err) => {
+      logger.error('压缩插件包失败:', err);
+      res.status(500).json({ message: '压缩失败' });
+    });
+
+    // 监听压缩进度
+    archive.on('warning', (err) => {
+      if (err.code === 'ENOENT') {
+        logger.warn('压缩警告:', err);
+      } else {
+        logger.error('压缩错误:', err);
+        throw err;
+      }
+    });
+
+    // 将压缩流输出到响应
+    archive.pipe(res);
+
+    // 添加 extension 目录下的所有文件
+    archive.directory(extensionPath, false);
+
+    // 完成压缩
+    await archive.finalize();
+
+    logger.info(`用户 ${userId} 成功下载插件包`);
+  } catch (error) {
+    logger.error('下载插件包失败:', error);
+    if (!res.headersSent) {
+      return res.status(500).json({ message: '服务器错误' });
+    }
   }
 }
 

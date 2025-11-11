@@ -7,6 +7,7 @@ import {
   getExtensionToken,
   generateExtensionToken,
   activateExtensionToken,
+  downloadExtension,
 } from '../controllers/extension.controller';
 import { requireAuth } from '../middleware/auth.middleware';
 
@@ -32,5 +33,11 @@ router.post('/token/generate', generateExtensionToken);
  * 激活 Token（复制后开始倒计时）
  */
 router.post('/token/activate', activateExtensionToken);
+
+/**
+ * GET /api/v1/extension/download
+ * 下载插件包（压缩为 zip）
+ */
+router.get('/download', downloadExtension);
 
 export default router;

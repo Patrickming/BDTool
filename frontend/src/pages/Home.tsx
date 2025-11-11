@@ -2,9 +2,9 @@
  * 首页 - Solana 风格
  */
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Typography, Row, Col, Spin, Statistic } from 'antd';
+import { Card, Typography, Row, Col, Spin, Statistic, message } from 'antd';
 import {
   UserOutlined,
   DatabaseOutlined,
@@ -17,12 +17,16 @@ import {
   ArrowRightOutlined,
 } from '@ant-design/icons';
 import { useAuthStore } from '@/store/auth.store';
+import { getOverviewStats } from '@/services/analytics.service';
+import type { OverviewStats } from '@/types/analytics';
 
 const { Title, Text } = Typography;
 
 export default function Home() {
   const navigate = useNavigate();
   const { user, isLoading, loadUser } = useAuthStore();
+  const [stats, setStats] = useState<OverviewStats | null>(null);
+  const [loadingStats, setLoadingStats] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('auth_token');
@@ -36,6 +40,26 @@ export default function Home() {
       });
     }
   }, [user, navigate, loadUser]);
+
+  // 加载统计数据
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        setLoadingStats(true);
+        const data = await getOverviewStats();
+        setStats(data);
+      } catch (error) {
+        console.error('加载统计数据失败:', error);
+        message.error('加载统计数据失败');
+      } finally {
+        setLoadingStats(false);
+      }
+    };
+
+    if (user) {
+      fetchStats();
+    }
+  }, [user]);
 
   if (isLoading) {
     return (
@@ -109,9 +133,10 @@ export default function Home() {
           >
             <Statistic
               title={<span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>KOL 总数</span>}
-              value={0}
+              value={loadingStats ? 0 : stats?.totalKols ?? 0}
               prefix={<DatabaseOutlined style={{ color: '#9945FF', fontSize: 20 }} />}
               valueStyle={{ color: '#fff', fontSize: 28, fontWeight: 600 }}
+              loading={loadingStats}
             />
           </Card>
         </Col>
@@ -128,9 +153,10 @@ export default function Home() {
           >
             <Statistic
               title={<span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>模板数量</span>}
-              value={0}
+              value={loadingStats ? 0 : stats?.totalTemplates ?? 0}
               prefix={<FileTextOutlined style={{ color: '#14F195', fontSize: 20 }} />}
               valueStyle={{ color: '#fff', fontSize: 28, fontWeight: 600 }}
+              loading={loadingStats}
             />
           </Card>
         </Col>
@@ -147,9 +173,10 @@ export default function Home() {
           >
             <Statistic
               title={<span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>联系次数</span>}
-              value={0}
+              value={loadingStats ? 0 : stats?.totalContacts ?? 0}
               prefix={<ThunderboltOutlined style={{ color: '#00D4AA', fontSize: 20 }} />}
               valueStyle={{ color: '#fff', fontSize: 28, fontWeight: 600 }}
+              loading={loadingStats}
             />
           </Card>
         </Col>
@@ -166,9 +193,10 @@ export default function Home() {
           >
             <Statistic
               title={<span style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: 14 }}>活跃合作</span>}
-              value={0}
+              value={loadingStats ? 0 : stats?.activePartnerships ?? 0}
               prefix={<StarOutlined style={{ color: '#DC1FFF', fontSize: 20 }} />}
               valueStyle={{ color: '#fff', fontSize: 28, fontWeight: 600 }}
+              loading={loadingStats}
             />
           </Card>
         </Col>

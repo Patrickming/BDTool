@@ -14,6 +14,7 @@ import {
   SettingOutlined,
   LogoutOutlined,
   UserOutlined,
+  ChromeOutlined,
 } from '@ant-design/icons';
 import { useAuthStore } from '@/store/auth.store';
 import type { MenuProps } from 'antd';
@@ -60,6 +61,12 @@ export default function AppLayout() {
       label: '数据分析',
       onClick: () => navigate('/analytics'),
     },
+    {
+      key: '/extension',
+      icon: <ChromeOutlined />,
+      label: '插件内容',
+      onClick: () => navigate('/extension'),
+    },
   ];
 
   // 用户下拉菜单
@@ -88,6 +95,7 @@ export default function AppLayout() {
     if (path.startsWith('/kols')) return '/kols';
     if (path.startsWith('/templates')) return '/templates';
     if (path.startsWith('/analytics')) return '/analytics';
+    if (path.startsWith('/extension')) return '/extension';
     return '/';
   };
 
@@ -295,7 +303,7 @@ export default function AppLayout() {
             border: 'none',
             flex: 1,
             justifyContent: 'center',
-            maxWidth: 600,
+            maxWidth: 800,
             minWidth: 0,
           }}
           theme="dark"
