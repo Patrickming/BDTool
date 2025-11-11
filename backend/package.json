@@ -39,6 +39,7 @@
     "@azure-rest/ai-translation-text": "^1.0.1",
     "@azure/core-auth": "^1.10.1",
     "@prisma/client": "^6.19.0",
+    "archiver": "^7.0.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "deepl-node": "^1.21.0",
@@ -54,6 +55,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@types/archiver": "^7.0.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",

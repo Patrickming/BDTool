@@ -10,11 +10,13 @@ import { logger } from '@config/logger.config';
  */
 export interface OverviewStats {
   totalKols: number;              // 总 KOL 数
+  totalTemplates: number;         // 总模板数
+  totalContacts: number;          // 总联系数（除新添加之外的KOL数）
+  activePartnerships: number;     // 活跃合作数
   newKolsThisWeek: number;        // 本周新增 KOL 数
   contactedThisWeek: number;      // 本周联系数
   overallResponseRate: number;    // 总体响应率 (%)
   weeklyResponseRate: number;     // 本周响应率 (%)
-  activePartnerships: number;     // 活跃合作数
   pendingFollowups: number;       // 待跟进数
 }
 
@@ -147,13 +149,20 @@ export class AnalyticsService {
       },
     });
 
+    // 8. 总模板数
+    const totalTemplates = await prisma.template.count({
+      where: { userId },
+    });
+
     const stats: OverviewStats = {
       totalKols,
+      totalTemplates,
+      totalContacts,
+      activePartnerships,
       newKolsThisWeek,
       contactedThisWeek,
       overallResponseRate,
       weeklyResponseRate,
-      activePartnerships,
       pendingFollowups,
     };
 

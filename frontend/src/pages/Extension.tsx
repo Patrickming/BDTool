@@ -62,18 +62,18 @@ export default function Extension() {
     }
 
     Modal.confirm({
-      title: '确认复制 Token？',
+      title: '确认复制/刷新 Token？',
       content: (
         <div>
-          <Paragraph>复制 Token 后，将开始 2 小时倒计时。</Paragraph>
-          <Paragraph type="warning">时间到期后，此 Token 将自动失效，需要重新生成。</Paragraph>
+          <Paragraph>复制 Token 后，有效期将重新计算为 2 小时。</Paragraph>
+          <Paragraph type="warning">每次点击此按钮都会刷新倒计时，无需重新生成新的 Token。</Paragraph>
         </div>
       ),
       onOk: async () => {
         try {
           await navigator.clipboard.writeText(extensionToken);
 
-          // 激活 Token（开始倒计时）
+          // 激活 Token（开始/刷新倒计时）
           const response = await fetch('http://localhost:3000/api/v1/extension/token/activate', {
             method: 'POST',
             headers: {
@@ -84,7 +84,7 @@ export default function Extension() {
           if (response.ok) {
             const data = await response.json();
             setTokenExpiry(new Date(data.expiresAt));
-            message.success('Token 已复制到剪贴板，倒计时已开始');
+            message.success('Token 已复制到剪贴板，倒计时已刷新');
           }
         } catch (error) {
           message.error('复制失败，请手动复制');
@@ -183,7 +183,7 @@ export default function Extension() {
 
         <Alert
           message="插件认证说明"
-          description="插件使用独立的 Token 进行身份验证。复制 Token 后有效期为 2 小时，到期后需要重新生成。"
+          description="插件使用独立的 Token 进行身份验证。点击「复制/刷新 Token」后，Token 有效期将重新计算为 2 小时。如果 Token 已过期或想更换新的 Token，请点击「重新生成」。"
           type="info"
           showIcon
           style={{ marginBottom: 24 }}
@@ -220,7 +220,7 @@ export default function Extension() {
 
                 <Space size="middle">
                   <Button type="primary" icon={<CopyOutlined />} onClick={handleCopyToken}>
-                    复制 Token
+                    复制/刷新 Token
                   </Button>
                   <Button icon={<ReloadOutlined />} onClick={handleGenerateToken} loading={isGenerating}>
                     重新生成
@@ -353,16 +353,11 @@ export default function Extension() {
           current={-1}
           items={[
             {
-              title: <span style={{ color: '#fff', fontSize: 16 }}>下载插件</span>,
+              title: <span style={{ color: '#fff', fontSize: 16 }}>获取插件</span>,
               description: (
-                <div style={{ marginTop: 12 }}>
-                  <Paragraph style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-                    插件位于项目目录：<code>/extension</code>
-                  </Paragraph>
-                  <Button type="primary" icon={<DownloadOutlined />} disabled>
-                    下载插件包（开发中）
-                  </Button>
-                </div>
+                <Paragraph style={{ color: 'rgba(255, 255, 255, 0.6)', marginTop: 12 }}>
+                  插件位于项目目录：<code>/extension</code>
+                </Paragraph>
               ),
             },
             {
@@ -487,6 +482,17 @@ export default function Extension() {
             key="4"
           >
             <Paragraph style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+              <strong>方法 1（推荐）</strong>：如果 Token 还没完全过期或刚过期：
+              <br />
+              1. 返回本页面
+              <br />
+              2. 点击「复制/刷新 Token」按钮
+              <br />
+              3. 有效期会自动重新计算为 2 小时
+              <br />
+              <br />
+              <strong>方法 2</strong>：如果想换一个全新的 Token：
+              <br />
               1. 返回本页面
               <br />
               2. 点击「重新生成」按钮
