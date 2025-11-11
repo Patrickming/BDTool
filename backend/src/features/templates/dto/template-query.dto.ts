@@ -9,10 +9,11 @@ import { TemplateCategory } from './create-template.dto';
  * 排序字段枚举
  */
 export const SortField = z.enum([
-  'createdAt',  // 创建时间
-  'updatedAt',  // 更新时间
-  'useCount',   // 使用次数
-  'name',       // 名称（字母序）
+  'displayOrder', // 自定义排序（默认）
+  'createdAt',    // 创建时间
+  'updatedAt',    // 更新时间
+  'useCount',     // 使用次数
+  'name',         // 名称（字母序）
 ]);
 
 export type SortFieldType = z.infer<typeof SortField>;
@@ -60,9 +61,9 @@ export const templateQuerySchema = z.object({
     .transform((val) => (val === 'true' ? true : val === 'false' ? false : undefined)),
 
   // 排序参数
-  sortBy: SortField.default('createdAt'),
+  sortBy: SortField.default('displayOrder'),
 
-  sortOrder: SortOrder.default('desc'),
+  sortOrder: SortOrder.default('asc'),
 });
 
 /**

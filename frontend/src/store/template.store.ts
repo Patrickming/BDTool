@@ -33,6 +33,7 @@ interface TemplateState {
   createTemplate: (data: any) => Promise<void>;
   updateTemplate: (id: number, data: any) => Promise<void>;
   deleteTemplate: (id: number) => Promise<void>;
+  reorderTemplate: (id: number, direction: 'up' | 'down') => Promise<void>;
   setQueryParams: (params: Partial<TemplateQueryParams>) => void;
   resetQueryParams: () => void;
   setCurrentTemplate: (template: Template | null) => void;
@@ -44,8 +45,8 @@ interface TemplateState {
 const defaultQueryParams: TemplateQueryParams = {
   page: 1,
   limit: 20,
-  sortBy: 'createdAt',
-  sortOrder: 'desc',
+  sortBy: 'displayOrder',
+  sortOrder: 'asc',
 };
 
 /**
@@ -130,6 +131,17 @@ export const useTemplateStore = create<TemplateState>((set, get) => ({
     } catch (error: any) {
       message.error(error.response?.data?.message || '删除模板失败');
       set({ loading: false });
+    }
+  },
+
+  // 调整模板顺序
+  reorderTemplate: async (id: number, direction: 'up' | 'down') => {
+    try {
+      await templateService.reorderTemplate(id, direction);
+      message.success('顺序调整成功');
+      await get().fetchTemplates();
+    } catch (error: any) {
+      message.error(error.response?.data?.message || '顺序调整失败');
     }
   },
 

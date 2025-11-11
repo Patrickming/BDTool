@@ -191,6 +191,7 @@ export const AnalyticsDashboard: React.FC = () => {
         </Col>
       </Row>
 
+      {/* 语言分布（折线图）和模板分类统计（柱状图）*/}
       <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
         <Col xs={24} lg={12}>
           <LanguageDistributionChart
@@ -198,11 +199,7 @@ export const AnalyticsDashboard: React.FC = () => {
             loading={loadingDistributions}
           />
         </Col>
-      </Row>
-
-      {/* 模板分类统计 */}
-      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
-        <Col xs={24}>
+        <Col xs={24} lg={12}>
           <TemplateCategoryChart
             data={templateEffectiveness}
             loading={loadingTemplates}

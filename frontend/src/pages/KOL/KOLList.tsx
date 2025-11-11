@@ -23,6 +23,7 @@ import { useKOLStore } from '../../store/kol.store';
 import {
   KOLStatusConfig,
   ContentCategoryConfig,
+  LanguageConfig,
   SortByOptions,
   SortOrderOptions,
 } from '../../types/kol';
@@ -104,6 +105,7 @@ const KOLList: React.FC = () => {
         displayName: values.displayName,
         followerCount: values.followerCount !== undefined ? Number(values.followerCount) : 0,
         verified: values.verified !== undefined ? values.verified : false,
+        language: values.language || 'en',
         qualityScore: values.qualityScore !== undefined ? Number(values.qualityScore) : 0,
         contentCategory: values.contentCategory || 'unknown',
         status: values.status || 'new',
@@ -365,6 +367,16 @@ const KOLList: React.FC = () => {
               {Object.entries(ContentCategoryConfig).map(([value, config]) => (
                 <Select.Option key={value} value={value}>
                   {config.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item name="language" label="语言" initialValue="en">
+            <Select placeholder="选择语言">
+              {Object.entries(LanguageConfig).map(([value, config]) => (
+                <Select.Option key={value} value={value}>
+                  {config.flag} {config.label}
                 </Select.Option>
               ))}
             </Select>

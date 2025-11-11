@@ -343,6 +343,12 @@ function renderKOLList() {
               <option value="hi" ${
                 kol.language === "hi" ? "selected" : ""
               }>🇮🇳 印地语</option>
+              <option value="es" ${
+                kol.language === "es" ? "selected" : ""
+              }>🇪🇸 西班牙语</option>
+              <option value="pt" ${
+                kol.language === "pt" ? "selected" : ""
+              }>🇵🇹 葡萄牙语</option>
             </select>
           </div>
 

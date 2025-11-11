@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { Card, Spin } from 'antd';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import type { TemplateEffectiveness } from '../../types/analytics';
 
 interface TemplateCategoryChartProps {
@@ -49,7 +49,7 @@ export const TemplateCategoryChart: React.FC<TemplateCategoryChartProps> = ({
         <div style={{ height: '300px' }}>
           {chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
                 <XAxis
                   dataKey="category"
@@ -76,16 +76,13 @@ export const TemplateCategoryChart: React.FC<TemplateCategoryChartProps> = ({
                   wrapperStyle={{ color: '#8a8a8a' }}
                   formatter={() => <span style={{ color: '#8a8a8a' }}>模板数量</span>}
                 />
-                <Line
-                  type="monotone"
+                <Bar
                   dataKey="count"
-                  stroke="#9945FF"
-                  strokeWidth={3}
-                  dot={{ fill: '#9945FF', r: 6 }}
-                  activeDot={{ r: 8 }}
+                  fill="#9945FF"
+                  radius={[8, 8, 0, 0]}
                   name="模板数量"
                 />
-              </LineChart>
+              </BarChart>
             </ResponsiveContainer>
           ) : (
             <div style={{

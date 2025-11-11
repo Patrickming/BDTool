@@ -88,6 +88,9 @@ model Template {
   useCount     Int      @default(0)    // 使用次数
   successCount Int      @default(0)    // 成功响应次数
 
+  // 显示顺序
+  displayOrder Int      @default(0)    // 用于用户自定义排序
+
   // 时间戳
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -98,6 +101,7 @@ model Template {
 
   @@index([userId])
   @@index([category])
+  @@index([userId, displayOrder])
 }
 
 // 模板语言版本表

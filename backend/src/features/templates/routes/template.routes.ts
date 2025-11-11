@@ -31,6 +31,12 @@ router.post('/preview', templateController.previewTemplate);
 router.get('/', templateController.getTemplates);
 
 /**
+ * POST /api/v1/templates/:id/reorder
+ * 调整模板顺序
+ */
+router.post('/:id/reorder', templateController.reorderTemplate);
+
+/**
  * GET /api/v1/templates/:id
  * 获取模板详情
  */

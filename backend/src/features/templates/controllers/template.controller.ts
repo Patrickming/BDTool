@@ -153,6 +153,33 @@ export class TemplateController {
     // 3. 返回预览结果
     return successResponse(res, preview, '模板预览生成成功');
   });
+
+  /**
+   * 调整模板顺序
+   * POST /api/v1/templates/:id/reorder
+   */
+  reorderTemplate = asyncHandler(async (req: Request, res: Response) => {
+    const templateId = parseInt(req.params.id);
+    const { direction } = req.body;
+
+    logger.info(`用户 ${req.user?.id} 请求调整模板顺序: ${templateId}, 方向: ${direction}`);
+
+    // 1. 验证 ID
+    if (isNaN(templateId)) {
+      throw new ValidationError('无效的模板 ID');
+    }
+
+    // 2. 验证方向
+    if (direction !== 'up' && direction !== 'down') {
+      throw new ValidationError('方向只能是 up 或 down');
+    }
+
+    // 3. 调用服务层调整顺序
+    await templateService.reorderTemplate(req.user!.id, templateId, direction);
+
+    // 4. 返回成功响应
+    return successResponse(res, null, '模板顺序调整成功');
+  });
 }
 
 // 导出控制器实例

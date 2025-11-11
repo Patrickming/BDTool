@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { Card } from 'antd';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import type { LanguageDistribution } from '../../types/analytics';
 import { LanguageConfig, KOLLanguage } from '../../types/kol';
 
@@ -13,15 +13,6 @@ interface LanguageDistributionChartProps {
   loading?: boolean;
 }
 
-const COLORS: Record<string, string> = {
-  'en': '#9945FF',
-  'ja': '#14F195',
-  'ko': '#DC1FFF',
-  'fr': '#00D4AA',
-  'de': '#FFA500',
-  'ru': '#FF6B6B',
-  'hi': '#FFD700',
-};
 
 export const LanguageDistributionChart: React.FC<LanguageDistributionChartProps> = ({
   data,
@@ -56,7 +47,7 @@ export const LanguageDistributionChart: React.FC<LanguageDistributionChartProps>
       }}
     >
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart
+        <LineChart
           data={chartData}
           margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
         >
@@ -82,12 +73,20 @@ export const LanguageDistributionChart: React.FC<LanguageDistributionChartProps>
             itemStyle={{ color: '#fff' }}
             formatter={(value: number) => [`${value} 个`, '数量']}
           />
-          <Bar dataKey="count" radius={[8, 8, 0, 0]}>
-            {chartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[entry.language] || '#9945FF'} />
-            ))}
-          </Bar>
-        </BarChart>
+          <Legend
+            wrapperStyle={{ color: '#8a8a8a' }}
+            formatter={() => <span style={{ color: '#8a8a8a' }}>数量</span>}
+          />
+          <Line
+            type="monotone"
+            dataKey="count"
+            stroke="#14F195"
+            strokeWidth={3}
+            dot={{ fill: '#14F195', r: 6 }}
+            activeDot={{ r: 8 }}
+            name="数量"
+          />
+        </LineChart>
       </ResponsiveContainer>
     </Card>
   );
