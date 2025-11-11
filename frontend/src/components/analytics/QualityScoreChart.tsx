@@ -13,10 +13,10 @@ interface QualityScoreChartProps {
 }
 
 const COLORS = {
-  '85以上': '#14F195',
-  '75-84': '#9945FF',
-  '65-74': '#FFA500',
-  '65以下': '#FF4D4F',
+  '高质量': '#14F195',
+  '良好': '#9945FF',
+  '一般': '#FFA500',
+  '较差': '#FF4D4F',
 };
 
 export const QualityScoreChart: React.FC<QualityScoreChartProps> = ({
@@ -65,6 +65,7 @@ export const QualityScoreChart: React.FC<QualityScoreChartProps> = ({
                     innerRadius={60}
                     fill="#8884d8"
                     dataKey="count"
+                    nameKey="level"
                   >
                     {filteredData.map((entry, index) => (
                       <Cell

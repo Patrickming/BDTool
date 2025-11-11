@@ -27,7 +27,7 @@ export interface FollowerCountDistribution {
  * KOL 分布数据 - 质量分等级
  */
 export interface QualityScoreDistribution {
-  level: string;   // 质量等级（如 "85以上", "75-84", "65-74", "65以下"）
+  level: string;   // 质量等级（高质量 85+、良好 75-84、一般 65-74、较差 <65）
   count: number;   // 数量
 }
 
