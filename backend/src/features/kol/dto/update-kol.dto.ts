@@ -3,7 +3,7 @@
  */
 
 import { z } from 'zod';
-import { ContentCategory, KOLStatus } from './create-kol.dto';
+import { ContentCategory, KOLStatus, KOLLanguage } from './create-kol.dto';
 
 /**
  * Twitter 用户名格式验证
@@ -48,7 +48,7 @@ export const updateKOLSchema = z.object({
 
   profileImgUrl: z.string().url('头像 URL 格式不正确').optional(),
 
-  language: z.string().length(2, '语言代码必须是 2 个字符的 ISO 代码').optional(),
+  language: KOLLanguage.optional(),
 
   lastTweetDate: z.string().datetime('最后推文日期格式不正确').optional(),
 

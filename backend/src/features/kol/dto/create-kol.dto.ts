@@ -39,6 +39,21 @@ export const KOLStatus = z.enum([
 export type KOLStatusType = z.infer<typeof KOLStatus>;
 
 /**
+ * 语言枚举
+ */
+export const KOLLanguage = z.enum([
+  'en',  // 英语
+  'ja',  // 日语
+  'ko',  // 韩语
+  'fr',  // 法语
+  'de',  // 德语
+  'ru',  // 俄语
+  'hi',  // 印地语
+]);
+
+export type KOLLanguageType = z.infer<typeof KOLLanguage>;
+
+/**
  * 创建单个 KOL 的验证 schema
  */
 export const createKOLSchema = z.object({
@@ -75,7 +90,7 @@ export const createKOLSchema = z.object({
 
   profileImgUrl: z.string().url('头像 URL 格式不正确').optional(),
 
-  language: z.string().length(2, '语言代码必须是 2 个字符的 ISO 代码').optional(),
+  language: KOLLanguage.default('en'),
 
   lastTweetDate: z.string().datetime('最后推文日期格式不正确').optional(),
 

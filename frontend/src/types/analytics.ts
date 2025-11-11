@@ -48,6 +48,14 @@ export interface StatusDistribution {
 }
 
 /**
+ * KOL 分布数据 - 语言分布
+ */
+export interface LanguageDistribution {
+  language: string;  // 语言代码
+  count: number;     // 数量
+}
+
+/**
  * KOL 分布数据汇总
  */
 export interface KOLDistributions {
@@ -55,6 +63,7 @@ export interface KOLDistributions {
   byQualityScore: QualityScoreDistribution[];       // 按质量分分布
   byContentCategory: ContentCategoryDistribution[]; // 按内容分类分布
   byStatus: StatusDistribution[];                   // 按状态分布
+  byLanguage: LanguageDistribution[];               // 按语言分布
 }
 
 /**
