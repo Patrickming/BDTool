@@ -60,6 +60,7 @@ async function uploadKOLs(kols) {
           followingCount: kol.followingCount,
           profileImgUrl: kol.profileImgUrl,
           verified: kol.verified,
+          language: kol.language, // 语言字段
           // 手动填写的字段
           qualityScore: kol.qualityScore,
           contentCategory: kol.contentCategory,
