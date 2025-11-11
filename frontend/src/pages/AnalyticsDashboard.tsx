@@ -11,7 +11,7 @@ import { FollowerDistributionChart } from '../components/analytics/FollowerDistr
 import { QualityScoreChart } from '../components/analytics/QualityScoreChart';
 import { ContentCategoryChart } from '../components/analytics/ContentCategoryChart';
 import { StatusDistributionChart } from '../components/analytics/StatusDistributionChart';
-import { TemplateEffectivenessTable } from '../components/analytics/TemplateEffectivenessTable';
+import { TemplateCategoryChart } from '../components/analytics/TemplateCategoryChart';
 import { ContactTimelineChart } from '../components/analytics/ContactTimelineChart';
 
 const { Option } = Select;
@@ -190,10 +190,10 @@ export const AnalyticsDashboard: React.FC = () => {
         </Col>
       </Row>
 
-      {/* 模板效果表格 */}
+      {/* 模板分类统计 */}
       <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
         <Col xs={24}>
-          <TemplateEffectivenessTable
+          <TemplateCategoryChart
             data={templateEffectiveness}
             loading={loadingTemplates}
           />

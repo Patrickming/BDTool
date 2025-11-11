@@ -26,9 +26,9 @@ export const TemplateEffectivenessTable: React.FC<TemplateEffectivenessTableProp
 
   const categoryNameMap: Record<string, string> = {
     'initial': '初次联系',
-    'followup': '跟进',
-    'negotiation': '谈判',
-    'collaboration': '合作提案',
+    'followup': '跟进联系',
+    'negotiation': '价格谈判',
+    'collaboration': '合作细节',
     'maintenance': '关系维护',
   };
 
