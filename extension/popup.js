@@ -70,6 +70,23 @@ function updateTokenUI(hasToken) {
 // 执行初始化
 initialize();
 
+// 监听标签页更新（实时检测页面变化）
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  // 当 URL 变化或页面加载完成时重新检测
+  if (changeInfo.url || changeInfo.status === 'complete') {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0] && tabs[0].id === tabId) {
+        detectCurrentPage();
+      }
+    });
+  }
+});
+
+// 监听标签页切换（用户切换到不同的标签页）
+chrome.tabs.onActivated.addListener(() => {
+  detectCurrentPage();
+});
+
 // 检测当前页面类型
 async function detectCurrentPage() {
   try {
