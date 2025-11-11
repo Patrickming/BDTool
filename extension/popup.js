@@ -190,6 +190,7 @@ extractBtn.addEventListener("click", async () => {
               // 添加需要手动填写的字段（默认值）
               qualityScore: null, // 质量评分 (0-100)
               contentCategory: null, // 内容分类 (枚举值)
+              language: response.data.language || "en", // 语言 (默认英语)
               status: "new", // 状态 (默认 new)
               customNotes: "", // 自定义备注
               capturedAt: new Date().toISOString(),
@@ -313,6 +314,38 @@ function renderKOLList() {
             </div>
           </div>
 
+          <div style="margin-bottom: 8px;">
+            <label style="color: #999; font-size: 12px; display: block; margin-bottom: 4px;">
+              语言
+            </label>
+            <select
+              id="language_${index}"
+              style="width: 100%; padding: 6px; background: #1e2329; border: 1px solid #444; border-radius: 4px; color: #fff;"
+            >
+              <option value="en" ${
+                (kol.language === "en" || !kol.language) ? "selected" : ""
+              }>🇺🇸 英语</option>
+              <option value="ja" ${
+                kol.language === "ja" ? "selected" : ""
+              }>🇯🇵 日语</option>
+              <option value="ko" ${
+                kol.language === "ko" ? "selected" : ""
+              }>🇰🇷 韩语</option>
+              <option value="fr" ${
+                kol.language === "fr" ? "selected" : ""
+              }>🇫🇷 法语</option>
+              <option value="de" ${
+                kol.language === "de" ? "selected" : ""
+              }>🇩🇪 德语</option>
+              <option value="ru" ${
+                kol.language === "ru" ? "selected" : ""
+              }>🇷🇺 俄语</option>
+              <option value="hi" ${
+                kol.language === "hi" ? "selected" : ""
+              }>🇮🇳 印地语</option>
+            </select>
+          </div>
+
           <div>
             <label style="color: #999; font-size: 12px; display: block; margin-bottom: 4px;">
               自定义备注
@@ -364,10 +397,12 @@ saveEditsBtn.addEventListener("click", () => {
   localKOLs.forEach((kol, index) => {
     const qualityInput = document.getElementById(`quality_${index}`);
     const categoryInput = document.getElementById(`category_${index}`);
+    const languageInput = document.getElementById(`language_${index}`);
     const notesInput = document.getElementById(`notes_${index}`);
 
     kol.qualityScore = qualityInput.value ? parseInt(qualityInput.value) : null;
     kol.contentCategory = categoryInput.value || null;
+    kol.language = languageInput.value || 'en';
     kol.customNotes = notesInput.value.trim() || "";
   });
 

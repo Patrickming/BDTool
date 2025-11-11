@@ -7,8 +7,8 @@ import { Table, Button, Space, Modal, Form, Input, Select, InputNumber, Popconfi
 import { EditOutlined, DeleteOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import type { ColumnsType } from 'antd/es/table';
-import type { KOL, UpdateKOLDto, KOLStatus, ContentCategory, Pagination } from '../../types/kol';
-import { KOLStatusConfig, ContentCategoryConfig } from '../../types/kol';
+import type { KOL, UpdateKOLDto, KOLStatus, ContentCategory, KOLLanguage, Pagination } from '../../types/kol';
+import { KOLStatusConfig, ContentCategoryConfig, LanguageConfig } from '../../types/kol';
 import KOLStatusBadge from './KOLStatusBadge';
 import QualityScoreBar from './QualityScoreBar';
 import { useKOLStore } from '../../store/kol.store';
@@ -43,6 +43,7 @@ const KOLTable: React.FC<KOLTableProps> = ({ loading = false, onChange }) => {
         displayName: values.displayName,
         status: values.status,
         contentCategory: values.contentCategory,
+        language: values.language,
         qualityScore: values.qualityScore,
         followerCount: values.followerCount,
         verified: values.verified,
@@ -110,6 +111,16 @@ const KOLTable: React.FC<KOLTableProps> = ({ loading = false, onChange }) => {
       key: 'verified',
       width: 80,
       render: (verified: boolean) => (verified ? '✓' : '-'),
+    },
+    {
+      title: '语言',
+      dataIndex: 'language',
+      key: 'language',
+      width: 100,
+      render: (language: KOLLanguage) => {
+        const config = LanguageConfig[language];
+        return config ? `${config.flag} ${config.label}` : language;
+      },
     },
     {
       title: '质量分',
@@ -252,6 +263,16 @@ const KOLTable: React.FC<KOLTableProps> = ({ loading = false, onChange }) => {
               {Object.entries(ContentCategoryConfig).map(([value, config]) => (
                 <Select.Option key={value} value={value}>
                   {config.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item name="language" label="语言">
+            <Select>
+              {Object.entries(LanguageConfig).map(([value, config]) => (
+                <Select.Option key={value} value={value}>
+                  {config.flag} {config.label}
                 </Select.Option>
               ))}
             </Select>

@@ -26,6 +26,7 @@ export interface KOLDistributions {
   byQualityScore: Array<{ level: string; count: number }>;         // 质量分分布
   byContentCategory: Array<{ category: string; count: number }>;   // 内容分类分布
   byStatus: Array<{ status: string; count: number }>;              // 状态分布
+  byLanguage: Array<{ language: string; count: number }>;          // 语言分布
 }
 
 /**
@@ -171,7 +172,7 @@ export class AnalyticsService {
     // 1. 按粉丝数分布
     const kols = await prisma.kOL.findMany({
       where: { userId },
-      select: { followerCount: true, qualityScore: true, contentCategory: true, status: true },
+      select: { followerCount: true, qualityScore: true, contentCategory: true, status: true, language: true },
     });
 
     // 粉丝数分布统计
@@ -197,6 +198,9 @@ export class AnalyticsService {
 
     // 状态分布统计
     const statusMap: Record<string, number> = {};
+
+    // 语言分布统计
+    const languageMap: Record<string, number> = {};
 
     kols.forEach((kol) => {
       // 粉丝数统计
@@ -234,6 +238,10 @@ export class AnalyticsService {
       // 状态统计
       const status = kol.status || 'new';
       statusMap[status] = (statusMap[status] || 0) + 1;
+
+      // 语言统计
+      const language = kol.language || 'en';
+      languageMap[language] = (languageMap[language] || 0) + 1;
     });
 
     const distributions: KOLDistributions = {
@@ -251,6 +259,10 @@ export class AnalyticsService {
       })),
       byStatus: Object.entries(statusMap).map(([status, count]) => ({
         status,
+        count,
+      })),
+      byLanguage: Object.entries(languageMap).map(([language, count]) => ({
+        language,
         count,
       })),
     };

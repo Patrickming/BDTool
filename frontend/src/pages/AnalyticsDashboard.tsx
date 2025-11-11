@@ -11,6 +11,7 @@ import { FollowerDistributionChart } from '../components/analytics/FollowerDistr
 import { QualityScoreChart } from '../components/analytics/QualityScoreChart';
 import { ContentCategoryChart } from '../components/analytics/ContentCategoryChart';
 import { StatusDistributionChart } from '../components/analytics/StatusDistributionChart';
+import { LanguageDistributionChart } from '../components/analytics/LanguageDistributionChart';
 import { TemplateCategoryChart } from '../components/analytics/TemplateCategoryChart';
 import { ContactTimelineChart } from '../components/analytics/ContactTimelineChart';
 
@@ -185,6 +186,15 @@ export const AnalyticsDashboard: React.FC = () => {
         <Col xs={24} lg={12}>
           <StatusDistributionChart
             data={kolDistributions?.byStatus || []}
+            loading={loadingDistributions}
+          />
+        </Col>
+      </Row>
+
+      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+        <Col xs={24} lg={12}>
+          <LanguageDistributionChart
+            data={kolDistributions?.byLanguage || []}
             loading={loadingDistributions}
           />
         </Col>

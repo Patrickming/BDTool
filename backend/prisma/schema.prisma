@@ -48,7 +48,7 @@ model KOL {
   profileImgUrl   String?
 
   // 分析数据
-  language        String?   // ISO 语言代码
+  language        String    @default("en") // 语言：'en', 'ja', 'ko', 'fr', 'de', 'ru', 'hi'
   lastTweetDate   DateTime?
   accountCreated  DateTime?
   qualityScore    Int       @default(0) // 0-100 评分

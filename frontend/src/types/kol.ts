@@ -55,6 +55,32 @@ export const ContentCategoryConfig: Record<
 };
 
 /**
+ * 语言枚举
+ */
+export enum KOLLanguage {
+  EN = 'en',
+  JA = 'ja',
+  KO = 'ko',
+  FR = 'fr',
+  DE = 'de',
+  RU = 'ru',
+  HI = 'hi',
+}
+
+/**
+ * 语言配置
+ */
+export const LanguageConfig: Record<KOLLanguage, { label: string; flag: string }> = {
+  [KOLLanguage.EN]: { label: '英语', flag: '🇺🇸' },
+  [KOLLanguage.JA]: { label: '日语', flag: '🇯🇵' },
+  [KOLLanguage.KO]: { label: '韩语', flag: '🇰🇷' },
+  [KOLLanguage.FR]: { label: '法语', flag: '🇫🇷' },
+  [KOLLanguage.DE]: { label: '德语', flag: '🇩🇪' },
+  [KOLLanguage.RU]: { label: '俄语', flag: '🇷🇺' },
+  [KOLLanguage.HI]: { label: '印地语', flag: '🇮🇳' },
+};
+
+/**
  * KOL 接口
  */
 export interface KOL {
@@ -67,7 +93,7 @@ export interface KOL {
   followingCount: number;
   verified: boolean;
   profileImgUrl: string | null;
-  language: string | null;
+  language: KOLLanguage;
   lastTweetDate: string | null;
   accountCreated: string | null;
   qualityScore: number;
@@ -90,7 +116,7 @@ export interface CreateKOLDto {
   followingCount?: number;
   verified?: boolean;
   profileImgUrl?: string;
-  language?: string;
+  language?: KOLLanguage;
   lastTweetDate?: string;
   accountCreated?: string;
   qualityScore?: number;
@@ -111,7 +137,7 @@ export interface UpdateKOLDto {
   followingCount?: number;
   verified?: boolean;
   profileImgUrl?: string;
-  language?: string;
+  language?: KOLLanguage;
   lastTweetDate?: string;
   accountCreated?: string;
   qualityScore?: number;
