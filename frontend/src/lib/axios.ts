@@ -9,7 +9,7 @@ import type { ApiResponse } from '@/types/auth';
 export const api = axios.create({
   // 本地开发：使用相对路径，通过 Vite proxy 转发到 localhost:3000
   baseURL: '/api/v1',
-  timeout: 10000,
+  timeout: 90000, // 90秒超时，AI改写需要更长时间
   headers: {
     'Content-Type': 'application/json',
   },

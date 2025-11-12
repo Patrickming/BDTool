@@ -10,6 +10,7 @@ import templateRoutes from '@features/templates/routes/template.routes';
 import analyticsRoutes from '@features/analytics/routes/analytics.routes';
 import extensionRoutes from './routes/extension.routes';
 import { translationRoutes } from '@features/translation/routes/translation.routes';
+import aiRoutes from '@features/ai/routes/ai.routes';
 
 const router = Router();
 
@@ -54,6 +55,12 @@ router.use('/extension', extensionRoutes);
  * /api/v1/translation/*
  */
 router.use('/translation', translationRoutes);
+
+/**
+ * AI 功能路由
+ * /api/v1/ai/*
+ */
+router.use('/ai', aiRoutes);
 
 /**
  * 联系记录路由（待实现）
