@@ -29,6 +29,15 @@ const envSchema = z.object({
   OPENAI_API_KEY: z.string().optional(),
   ANTHROPIC_API_KEY: z.string().optional(),
 
+  // GLM-4 API 配置（智谱AI）
+  GLM_API_KEY: z.string().optional(),
+  GLM_MODEL: z.string().default('glm-4.5-airx'), // 默认使用 glm-4.5-airx 模型（更快）
+  GLM_BASE_URL: z.string().default('https://open.bigmodel.cn/api/paas/v4'),
+  GLM_TIMEOUT: z
+    .string()
+    .transform((val) => parseInt(val, 10))
+    .default('30000'),
+
   // 日志配置
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'debug']).default('info'),
 
