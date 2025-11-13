@@ -40,42 +40,72 @@ pnpm build
 
 ```
 src/
-├── pages/                # 页面组件
-│   ├── Auth/            # 认证页面
-│   │   ├── Login.tsx    # 登录页面
-│   │   └── Register.tsx # 注册页面
-│   ├── KOL/             # KOL 管理页面
-│   │   ├── KOLList.tsx  # KOL 列表
-│   │   ├── KOLDetail.tsx # KOL 详情
-│   │   └── KOLImport.tsx # 批量导入
-│   ├── Template/        # 模板管理页面
-│   ├── Analytics/       # 数据分析页面
-│   ├── Extension.tsx    # 插件配置页面
-│   └── Home.tsx         # 首页
-├── components/          # 可复用组件
-│   ├── Layout/         # 布局组件
-│   ├── KOL/            # KOL 相关组件
-│   ├── analytics/      # 分析图表组件
-│   └── Effects/        # 视觉效果组件
-├── services/           # API 服务
+├── pages/                  # 页面组件
+│   ├── Login.tsx          # 登录页面
+│   ├── Register.tsx       # 注册页面
+│   ├── Home.tsx           # 首页
+│   ├── Extension.tsx      # 插件配置页面
+│   ├── AnalyticsDashboard.tsx # 数据分析页面
+│   ├── KOL/               # KOL 管理页面
+│   │   ├── KOLList.tsx    # KOL 列表
+│   │   ├── KOLDetail.tsx  # KOL 详情
+│   │   └── KOLImport.tsx  # 批量导入
+│   └── Template/          # 模板管理页面
+│       ├── TemplateList.tsx
+│       ├── TemplateCreate.tsx
+│       └── TemplateEdit.tsx
+├── components/            # 可复用组件
+│   ├── Layout/           # 布局组件
+│   │   └── AppLayout.tsx
+│   ├── KOL/              # KOL 相关组件
+│   │   ├── KOLTable.tsx
+│   │   ├── KOLStatusBadge.tsx
+│   │   └── QualityScoreBar.tsx
+│   ├── Template/         # 模板相关组件
+│   │   ├── TemplateEditor.tsx
+│   │   ├── TemplateCategoryBadge.tsx
+│   │   ├── TemplateCopyModal.tsx
+│   │   └── VariableHelper.tsx
+│   ├── Translation/      # 翻译组件
+│   │   └── TranslationButton.tsx
+│   └── analytics/        # 分析图表组件
+│       ├── StatCard.tsx
+│       ├── ContactTimelineChart.tsx
+│       ├── ContentCategoryChart.tsx
+│       ├── FollowerDistributionChart.tsx
+│       ├── LanguageDistributionChart.tsx
+│       ├── QualityScoreChart.tsx
+│       ├── StatusDistributionChart.tsx
+│       ├── TemplateCategoryChart.tsx
+│       └── TemplateEffectivenessTable.tsx
+├── services/             # API 服务
 │   ├── auth.service.ts
 │   ├── kol.service.ts
 │   ├── template.service.ts
 │   ├── analytics.service.ts
 │   ├── translation.service.ts
-│   └── extension.service.ts
-├── store/              # Zustand 状态管理
+│   └── ai.service.ts
+├── store/                # Zustand 状态管理
 │   ├── auth.store.ts
 │   ├── kol.store.ts
 │   ├── template.store.ts
 │   └── analytics.store.ts
-├── types/              # TypeScript 类型定义
-├── utils/              # 工具函数
-│   └── export.ts       # CSV 导出工具
-├── styles/             # 全局样式
-│   └── theme.css       # 主题样式
-├── App.tsx             # 主应用组件
-└── main.tsx            # 应用入口
+├── types/                # TypeScript 类型定义
+│   ├── auth.ts
+│   ├── kol.ts
+│   ├── template.ts
+│   ├── analytics.ts
+│   ├── translation.ts
+│   └── ai.ts
+├── utils/                # 工具函数
+│   └── export.ts         # CSV 导出工具
+├── lib/                  # 库配置
+│   └── axios.ts          # Axios 实例配置
+├── styles/               # 全局样式
+│   └── theme.css         # 主题样式
+├── App.tsx               # 主应用组件
+├── main.tsx              # 应用入口
+└── index.css             # 全局样式入口
 ```
 
 ## 🎨 已实现功能
