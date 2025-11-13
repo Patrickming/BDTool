@@ -5,6 +5,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { UserRole } from '@prisma/client';
+import { verifyExtensionToken } from '../controllers/extension.controller';
 
 // 扩展 Express Request 类型，添加 user 属性
 declare global {
@@ -20,41 +21,57 @@ declare global {
 }
 
 /**
- * 验证 JWT Token 的中间件
- * 从请求头中提取 token，验证并将用户信息附加到 request 对象
+ * 验证 JWT Token 或 Extension Token 的中间件
+ * 优先检查 JWT，如果失败则尝试 Extension Token
  */
-export const requireAuth = (req: Request, res: Response, next: NextFunction): void => {
+export const requireAuth = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    // 从 Authorization header 中获取 token
+    // 1. 尝试 JWT 认证
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      res.status(401).json({ error: '未提供认证令牌' });
-      return;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7);
+
+      try {
+        const secret = process.env.JWT_SECRET;
+        if (!secret) {
+          throw new Error('JWT_SECRET 未配置');
+        }
+
+        const decoded = jwt.verify(token, secret) as {
+          userId: number;
+          email: string;
+          role: UserRole;
+        };
+
+        req.user = {
+          id: decoded.userId,
+          email: decoded.email,
+          role: decoded.role,
+        };
+
+        return next();
+      } catch (error) {
+        // JWT 验证失败，继续尝试 Extension Token
+      }
     }
 
-    const token = authHeader.substring(7); // 移除 "Bearer " 前缀
-
-    // 验证 token
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
-      throw new Error('JWT_SECRET 未配置');
+    // 2. 尝试 Extension Token 认证
+    const extensionToken = req.headers['x-extension-token'] as string;
+    if (extensionToken) {
+      const userId = await verifyExtensionToken(extensionToken);
+      if (userId) {
+        req.user = {
+          id: userId,
+          email: '',
+          role: 'member' as UserRole,
+        };
+        return next();
+      }
     }
 
-    const decoded = jwt.verify(token, secret) as {
-      userId: number;
-      email: string;
-      role: UserRole;
-    };
-
-    // 将用户信息附加到 request 对象
-    req.user = {
-      id: decoded.userId,
-      email: decoded.email,
-      role: decoded.role,
-    };
-
-    next();
+    // 3. 两种认证方式都失败
+    res.status(401).json({ error: '未提供认证令牌' });
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
       res.status(401).json({ error: '无效的认证令牌' });

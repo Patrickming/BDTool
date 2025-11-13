@@ -130,6 +130,74 @@
     <!-- 清空按钮 -->
     <button id="clearBtn" class="btn-secondary">清空本地数据</button>
 
+    <!-- 模板复制功能 -->
+    <div id="templateSection" style="display: none; margin-top: 15px; padding: 15px; background: #2a2a2a; border-radius: 8px; border: 1px solid #667eea;">
+      <h3 style="font-size: 14px; margin-bottom: 12px; color: #667eea;">📝 模板复制</h3>
+
+      <!-- 模板选择 -->
+      <div style="margin-bottom: 10px; position: relative;">
+        <label style="display: block; font-size: 11px; color: #999; margin-bottom: 4px;">选择模板</label>
+        <input
+          type="text"
+          id="templateSearchInput"
+          placeholder="搜索模板名称..."
+          style="width: 100%; padding: 8px; background: #1e2329; border: 1px solid #444; border-radius: 4px; color: #fff; font-size: 12px;"
+        />
+        <div
+          id="templateDropdown"
+          style="display: none; position: absolute; top: 100%; left: 0; right: 0; max-height: 200px; overflow-y: auto; background: #1e2329; border: 1px solid #667eea; border-radius: 4px; margin-top: 4px; z-index: 1000;"
+        >
+          <!-- 模板列表将动态插入这里 -->
+        </div>
+        <input type="hidden" id="templateSelect" value="">
+      </div>
+
+      <!-- KOL 选择 -->
+      <div style="margin-bottom: 10px; position: relative;">
+        <label style="display: block; font-size: 11px; color: #999; margin-bottom: 4px;">选择 KOL（可选）</label>
+        <input
+          type="text"
+          id="kolSearchInput"
+          placeholder="搜索 KOL 用户名..."
+          style="width: 100%; padding: 8px; background: #1e2329; border: 1px solid #444; border-radius: 4px; color: #fff; font-size: 12px;"
+        />
+        <div
+          id="kolDropdown"
+          style="display: none; position: absolute; top: 100%; left: 0; right: 0; max-height: 200px; overflow-y: auto; background: #1e2329; border: 1px solid #667eea; border-radius: 4px; margin-top: 4px; z-index: 1000;"
+        >
+          <!-- KOL 列表将动态插入这里 -->
+        </div>
+        <input type="hidden" id="kolSelect" value="">
+      </div>
+
+      <!-- AI 改写选项 -->
+      <div style="margin-bottom: 10px;">
+        <label style="display: flex; align-items: center; font-size: 12px; cursor: pointer; margin-bottom: 8px;">
+          <input type="checkbox" id="enableAI" style="margin-right: 8px;">
+          <span>🤖 AI 改写内容</span>
+        </label>
+
+        <!-- 改写风格选择（仅在启用AI时显示） -->
+        <div id="aiToneSection" style="display: none; margin-left: 20px; margin-top: 8px;">
+          <label style="display: block; font-size: 11px; color: #999; margin-bottom: 4px;">改写风格</label>
+          <select id="aiToneSelect" style="width: 100%; padding: 6px; background: #1e2329; border: 1px solid #444; border-radius: 4px; color: #fff; font-size: 12px;">
+            <option value="professional">专业 (Professional)</option>
+            <option value="formal">正式 (Formal)</option>
+            <option value="friendly">友好 (Friendly)</option>
+            <option value="casual">轻松 (Casual)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 复制按钮 -->
+      <button id="copyTemplateBtn" class="btn-primary" style="background: #667eea;" disabled>
+        📋 复制模板内容
+      </button>
+
+      <!-- 状态提示 -->
+      <div id="templateStatus" style="display: none; margin-top: 8px; padding: 8px; border-radius: 4px; font-size: 11px; text-align: center;"></div>
+    </div>
+
     <!-- 数据查看和编辑弹窗 -->
     <div
       id="dataModal"

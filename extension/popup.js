@@ -43,6 +43,8 @@ async function initialize() {
     if (result.extensionToken) {
       extensionToken = result.extensionToken;
       updateTokenUI(true);
+      // 显示模板区域
+      showTemplateSection();
     } else {
       updateTokenUI(false);
     }
@@ -553,3 +555,387 @@ saveTokenBtn.addEventListener("click", () => {
     updateUI(); // 更新上传按钮状态
   });
 });
+
+// ==================== 模板复制功能 ====================
+
+const templateSection = document.getElementById('templateSection');
+const templateSelect = document.getElementById('templateSelect');
+const templateSearchInput = document.getElementById('templateSearchInput');
+const templateDropdown = document.getElementById('templateDropdown');
+const kolSelect = document.getElementById('kolSelect');
+const kolSearchInput = document.getElementById('kolSearchInput');
+const kolDropdown = document.getElementById('kolDropdown');
+const enableAI = document.getElementById('enableAI');
+const aiToneSection = document.getElementById('aiToneSection');
+const aiToneSelect = document.getElementById('aiToneSelect');
+const copyTemplateBtn = document.getElementById('copyTemplateBtn');
+const templateStatus = document.getElementById('templateStatus');
+
+let allTemplates = [];
+let allKols = [];
+let currentTemplateContent = '';
+let selectedTemplate = null;
+let selectedKol = null;
+
+/**
+ * 显示模板区域
+ */
+function showTemplateSection() {
+  if (!extensionToken) {
+    return; // 没有 token 就不显示
+  }
+
+  templateSection.style.display = 'block';
+
+  // 加载模板列表
+  if (allTemplates.length === 0) {
+    loadTemplates();
+  }
+
+  // 加载 KOL 列表
+  if (allKols.length === 0) {
+    loadKols();
+  }
+}
+
+/**
+ * 隐藏模板区域
+ */
+function hideTemplateSection() {
+  templateSection.style.display = 'none';
+}
+
+/**
+ * 加载模板列表
+ */
+async function loadTemplates() {
+  try {
+    const response = await chrome.runtime.sendMessage({
+      action: 'getTemplates'
+    });
+
+    if (response && response.success) {
+      allTemplates = response.data.templates || [];
+      console.log('加载了', allTemplates.length, '个模板');
+    } else {
+      throw new Error(response?.error || '加载模板失败');
+    }
+  } catch (error) {
+    console.error('加载模板失败:', error);
+    showTemplateStatus('加载模板失败: ' + error.message, 'error');
+  }
+}
+
+/**
+ * 加载 KOL 列表
+ */
+async function loadKols() {
+  try {
+    const response = await chrome.runtime.sendMessage({
+      action: 'getKols'
+    });
+
+    if (response && response.success) {
+      allKols = response.data.kols || [];
+      console.log('加载了', allKols.length, '个 KOL');
+    }
+  } catch (error) {
+    console.error('加载 KOL 失败:', error);
+  }
+}
+
+/**
+ * 渲染模板下拉列表
+ */
+function renderTemplateDropdown(searchTerm = '') {
+  const filtered = searchTerm
+    ? allTemplates.filter(template =>
+        template.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : allTemplates;
+
+  if (filtered.length === 0) {
+    templateDropdown.innerHTML = '<div style="padding: 8px; color: #999; font-size: 11px;">没有找到匹配的模板</div>';
+  } else {
+    templateDropdown.innerHTML = filtered.slice(0, 50).map(template => `
+      <div
+        class="template-option"
+        data-id="${template.id}"
+        data-name="${template.name}"
+        style="padding: 8px; cursor: pointer; font-size: 12px; border-bottom: 1px solid #333;"
+        onmouseover="this.style.background='#2a2a2a'"
+        onmouseout="this.style.background='transparent'"
+      >
+        ${template.name}
+      </div>
+    `).join('');
+  }
+
+  templateDropdown.style.display = 'block';
+
+  // 添加点击事件
+  document.querySelectorAll('.template-option').forEach(option => {
+    option.addEventListener('click', () => {
+      const templateId = option.dataset.id;
+      const templateName = option.dataset.name;
+
+      selectedTemplate = allTemplates.find(t => t.id === parseInt(templateId));
+      templateSelect.value = templateId;
+      templateSearchInput.value = templateName;
+      templateDropdown.style.display = 'none';
+
+      // 触发模板加载
+      loadTemplatePreview();
+    });
+  });
+}
+
+/**
+ * 渲染 KOL 下拉列表
+ */
+function renderKolDropdown(searchTerm = '') {
+  const filtered = searchTerm
+    ? allKols.filter(kol =>
+        kol.username.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : allKols;
+
+  if (filtered.length === 0) {
+    kolDropdown.innerHTML = '<div style="padding: 8px; color: #999; font-size: 11px;">没有找到匹配的 KOL</div>';
+  } else {
+    kolDropdown.innerHTML = filtered.slice(0, 50).map(kol => `
+      <div
+        class="kol-option"
+        data-id="${kol.id}"
+        data-username="${kol.username}"
+        style="padding: 8px; cursor: pointer; font-size: 12px; border-bottom: 1px solid #333;"
+        onmouseover="this.style.background='#2a2a2a'"
+        onmouseout="this.style.background='transparent'"
+      >
+        @${kol.username}
+      </div>
+    `).join('');
+  }
+
+  kolDropdown.style.display = 'block';
+
+  // 添加点击事件
+  document.querySelectorAll('.kol-option').forEach(option => {
+    option.addEventListener('click', () => {
+      const kolId = option.dataset.id;
+      const username = option.dataset.username;
+
+      selectedKol = allKols.find(k => k.id === parseInt(kolId));
+      kolSelect.value = kolId;
+      kolSearchInput.value = `@${username}`;
+      kolDropdown.style.display = 'none';
+
+      // 触发模板重新加载
+      if (templateSelect.value) {
+        loadTemplatePreview();
+      }
+    });
+  });
+}
+
+/**
+ * 模板搜索输入框事件
+ */
+templateSearchInput.addEventListener('input', (e) => {
+  const searchTerm = e.target.value;
+  if (searchTerm.length > 0) {
+    renderTemplateDropdown(searchTerm);
+  } else {
+    selectedTemplate = null;
+    templateSelect.value = '';
+    currentTemplateContent = '';
+    copyTemplateBtn.disabled = true;
+    renderTemplateDropdown('');
+  }
+});
+
+templateSearchInput.addEventListener('focus', () => {
+  if (allTemplates.length > 0) {
+    renderTemplateDropdown(templateSearchInput.value);
+  }
+});
+
+/**
+ * KOL 搜索输入框事件
+ */
+kolSearchInput.addEventListener('input', (e) => {
+  const searchTerm = e.target.value.replace('@', '');
+  if (searchTerm.length > 0) {
+    renderKolDropdown(searchTerm);
+  } else {
+    selectedKol = null;
+    kolSelect.value = '';
+    renderKolDropdown('');
+
+    // 如果已选择模板，重新加载（去掉 KOL 替换）
+    if (templateSelect.value) {
+      loadTemplatePreview();
+    }
+  }
+});
+
+kolSearchInput.addEventListener('focus', () => {
+  if (allKols.length > 0) {
+    renderKolDropdown(kolSearchInput.value.replace('@', ''));
+  }
+});
+
+// 点击外部关闭下拉框
+document.addEventListener('click', (e) => {
+  if (!templateSearchInput.contains(e.target) && !templateDropdown.contains(e.target)) {
+    templateDropdown.style.display = 'none';
+  }
+  if (!kolSearchInput.contains(e.target) && !kolDropdown.contains(e.target)) {
+    kolDropdown.style.display = 'none';
+  }
+});
+
+/**
+ * AI 改写 checkbox 变化 - 显示/隐藏风格选择
+ */
+enableAI.addEventListener('change', (e) => {
+  if (e.target.checked) {
+    aiToneSection.style.display = 'block';
+  } else {
+    aiToneSection.style.display = 'none';
+  }
+});
+
+/**
+ * 加载模板预览
+ */
+async function loadTemplatePreview() {
+  const templateId = templateSelect.value;
+
+  if (!templateId) {
+    copyTemplateBtn.disabled = true;
+    currentTemplateContent = '';
+    return;
+  }
+
+  try {
+    copyTemplateBtn.disabled = true;
+    showTemplateStatus('加载中...', 'loading');
+
+    // 获取选中的 KOL
+    const kolId = kolSelect.value ? parseInt(kolSelect.value) : null;
+
+    const response = await chrome.runtime.sendMessage({
+      action: 'previewTemplate',
+      templateId: parseInt(templateId),
+      kolId: kolId
+    });
+
+    if (response && response.success) {
+      currentTemplateContent = response.data.previewContent || '';
+      copyTemplateBtn.disabled = false;
+      hideTemplateStatus();
+    } else {
+      throw new Error(response?.error || '预览模板失败');
+    }
+  } catch (error) {
+    console.error('预览模板失败:', error);
+    showTemplateStatus('预览失败: ' + error.message, 'error');
+  }
+}
+
+/**
+ * 复制模板内容
+ */
+copyTemplateBtn.addEventListener('click', async () => {
+  if (!currentTemplateContent) {
+    showTemplateStatus('没有可复制的内容', 'error');
+    return;
+  }
+
+  try {
+    let contentToCopy = currentTemplateContent;
+
+    // 如果启用了 AI 改写
+    if (enableAI.checked) {
+      copyTemplateBtn.disabled = true;
+      copyTemplateBtn.textContent = '⏳ AI 改写中...';
+
+      // 获取选择的改写风格
+      const selectedTone = aiToneSelect.value || 'professional';
+
+      const response = await chrome.runtime.sendMessage({
+        action: 'rewriteText',
+        text: currentTemplateContent,
+        tone: selectedTone,
+        language: 'en'
+      });
+
+      copyTemplateBtn.textContent = '📋 复制模板内容';
+      copyTemplateBtn.disabled = false;
+
+      if (response && response.success) {
+        contentToCopy = response.data.rewritten || currentTemplateContent;
+        showTemplateStatus('✅ AI 改写成功，正在复制...', 'success');
+      } else {
+        throw new Error(response?.error || 'AI 改写失败');
+      }
+    }
+
+    // 复制到剪贴板 - 使用 textarea 方法确保兼容性
+    const textarea = document.createElement('textarea');
+    textarea.value = contentToCopy;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+
+    try {
+      const successful = document.execCommand('copy');
+      if (!successful) {
+        throw new Error('复制命令执行失败');
+      }
+    } finally {
+      document.body.removeChild(textarea);
+    }
+
+    if (enableAI.checked) {
+      showTemplateStatus('✅ 已复制 AI 改写后的内容', 'success');
+    } else {
+      showTemplateStatus('✅ 已复制到剪贴板', 'success');
+    }
+
+    setTimeout(() => hideTemplateStatus(), 2000);
+  } catch (error) {
+    console.error('复制失败:', error);
+    showTemplateStatus('❌ ' + error.message, 'error');
+    copyTemplateBtn.textContent = '📋 复制模板内容';
+    copyTemplateBtn.disabled = false;
+  }
+});
+
+/**
+ * 显示状态提示
+ */
+function showTemplateStatus(message, type) {
+  templateStatus.textContent = message;
+  templateStatus.style.display = 'block';
+
+  if (type === 'success') {
+    templateStatus.style.background = '#1a3a1a';
+    templateStatus.style.color = '#51cf66';
+  } else if (type === 'error') {
+    templateStatus.style.background = '#3a1a1a';
+    templateStatus.style.color = '#ff6b6b';
+  } else {
+    templateStatus.style.background = '#2a2a2a';
+    templateStatus.style.color = '#999';
+  }
+}
+
+/**
+ * 隐藏状态提示
+ */
+function hideTemplateStatus() {
+  templateStatus.style.display = 'none';
+}
