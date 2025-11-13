@@ -5,16 +5,15 @@
 import { Router } from 'express';
 import { kolController } from '../controllers/kol.controller';
 import { requireAuth } from '../../../middleware/auth.middleware';
-import { authenticateExtensionOrJWT } from '../../../middleware/extension-auth.middleware';
 
 const router = Router();
 
 /**
  * POST /api/v1/kols
  * 创建单个 KOL
- * 支持插件 Token 认证
+ * 支持双认证（JWT + Extension Token）
  */
-router.post('/', authenticateExtensionOrJWT, kolController.createKOL);
+router.post('/', requireAuth, kolController.createKOL);
 
 // 其他 KOL 路由需要 JWT 认证
 router.use(requireAuth);

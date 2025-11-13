@@ -149,19 +149,17 @@ BDTool/
 │   └── 开发任务.md                # 任务跟踪文档
 │
 ├── frontend/                      # React 前端应用
-│   ├── public/                   # 静态资源
 │   ├── src/
 │   │   ├── components/           # 可复用 UI 组件
-│   │   │   ├── analytics/        # 数据分析图表组件
-│   │   │   ├── Effects/          # 视觉效果组件
-│   │   │   ├── KOL/              # KOL 相关组件
+│   │   │   ├── analytics/        # 数据分析图表组件（9 个组件）
+│   │   │   ├── KOL/              # KOL 相关组件（3 个组件）
 │   │   │   ├── Layout/           # 布局组件（AppLayout）
-│   │   │   ├── Template/         # 模板相关组件
-│   │   │   ├── Translation/      # 翻译相关组件
-│   │   │   └── Navbar.tsx        # 导航栏（已废弃）
+│   │   │   ├── Template/         # 模板相关组件（4 个组件）
+│   │   │   └── Translation/      # 翻译相关组件（1 个组件）
 │   │   ├── pages/                # 页面组件
 │   │   │   ├── KOL/              # KOL 管理页面
 │   │   │   │   ├── KOLList.tsx   # KOL 列表
+│   │   │   │   ├── KOLDetail.tsx # KOL 详情
 │   │   │   │   └── KOLImport.tsx # 批量导入
 │   │   │   ├── Template/         # 模板管理页面
 │   │   │   │   ├── TemplateList.tsx    # 模板列表
@@ -178,30 +176,32 @@ BDTool/
 │   │   │   ├── template.service.ts # 模板服务
 │   │   │   ├── analytics.service.ts # 分析服务
 │   │   │   ├── translation.service.ts # 翻译服务
-│   │   │   └── extension.service.ts # 插件服务
+│   │   │   └── ai.service.ts     # AI 服务
 │   │   ├── store/                # Zustand 状态管理
 │   │   │   ├── auth.store.ts     # 认证状态
 │   │   │   ├── kol.store.ts      # KOL 状态
 │   │   │   ├── template.store.ts # 模板状态
-│   │   │   ├── analytics.store.ts # 分析状态
-│   │   │   └── theme.store.ts    # 主题状态
+│   │   │   └── analytics.store.ts # 分析状态
 │   │   ├── styles/               # 全局样式
-│   │   │   ├── theme.css         # 主题系统
-│   │   │   └── global.css        # 全局样式
+│   │   │   └── theme.css         # 主题样式
 │   │   ├── types/                # TypeScript 类型定义
 │   │   │   ├── kol.ts            # KOL 类型
 │   │   │   ├── template.ts       # 模板类型
 │   │   │   ├── analytics.ts      # 分析类型
 │   │   │   ├── translation.ts    # 翻译类型
-│   │   │   └── extension.ts      # 插件类型
+│   │   │   └── ai.ts             # AI 类型
 │   │   ├── utils/                # 工具函数
 │   │   │   └── export.ts         # CSV 导出工具
-│   │   └── lib/                  # 第三方库配置
-│   │       └── axios.ts          # Axios 配置
-│   ├── .env.example              # 环境变量示例
+│   │   ├── lib/                  # 第三方库配置
+│   │   │   └── axios.ts          # Axios 配置
+│   │   ├── App.tsx               # 主应用组件
+│   │   ├── main.tsx              # 应用入口
+│   │   └── index.css             # 全局样式入口
 │   ├── package.json
 │   ├── tsconfig.json
-│   └── vite.config.ts            # Vite 配置
+│   ├── tsconfig.node.json
+│   ├── vite.config.ts            # Vite 配置
+│   └── README.md                 # 前端详细文档
 │
 ├── backend/                       # Express.js 后端应用
 │   ├── prisma/
@@ -219,11 +219,9 @@ BDTool/
 │   │   │   ├── templates/        # 模板管理模块
 │   │   │   ├── analytics/        # 数据分析模块
 │   │   │   ├── translation/      # 翻译服务模块
-│   │   │   ├── ai/               # AI 集成模块（待开发）
-│   │   │   └── contacts/         # 联系记录模块（待开发）
+│   │   │   └── ai/               # AI 集成模块 ✅
 │   │   ├── middleware/           # 中间件
-│   │   │   ├── auth.middleware.ts # JWT 认证
-│   │   │   ├── extension-auth.middleware.ts # 插件双认证
+│   │   │   ├── auth.middleware.ts # 双认证（JWT + Extension Token）
 │   │   │   ├── error.middleware.ts # 错误处理
 │   │   │   └── rate-limit.middleware.ts # 速率限制
 │   │   ├── utils/                # 工具函数
@@ -238,17 +236,19 @@ BDTool/
 │   ├── scripts/                  # 工具脚本
 │   │   ├── backup-db.sh          # 数据库备份脚本
 │   │   ├── health-check.ts       # 健康检查脚本
-│   │   ├── fix-template-order.ts # 模板顺序修复脚本
-│   │   └── analytics-debug.ts    # 数据分析调试工具
+│   │   ├── analytics-debug.ts    # 数据分析调试工具
+│   │   └── archive/              # 归档的一次性脚本
+│   │       └── fix-template-order.ts # 模板顺序修复脚本（已归档）
 │   ├── .env.example              # 环境变量示例
 │   ├── package.json
-│   └── tsconfig.json
+│   ├── tsconfig.json
+│   └── README.md                 # 后端详细文档
 │
 ├── extension/                     # Chrome 浏览器插件（Manifest V3）
 │   ├── manifest.json             # 插件配置
-│   ├── sidepanel.html            # 侧边栏页面
-│   ├── sidepanel.js              # 侧边栏逻辑
-│   ├── background.js             # 后台服务 Worker
+│   ├── side_panel.html           # 侧边栏页面
+│   ├── popup.js                  # 侧边栏逻辑（含模板功能）
+│   ├── background.js             # 后台服务 Worker（处理 AI 改写）
 │   ├── content.js                # 内容脚本（注入 Twitter 页面）
 │   ├── icons/                    # 插件图标
 │   │   ├── icon16.png
@@ -258,7 +258,8 @@ BDTool/
 │
 ├── .gitignore
 ├── package.json                  # 根目录 package.json（工作区配置）
-└── README.md                     # 本文件
+├── README.md                     # 本文件
+└── EXTENSION_TEMPLATE_FEATURE.md # 插件模板功能使用说明
 ```
 
 ## 📋 当前实现状态
@@ -418,11 +419,10 @@ BDTool/
   - 内容分析
   - 活跃度评估
 
-- ⏳ **功能 13：AI 集成**
-  - OpenAI GPT-4 集成
-  - Anthropic Claude 集成
-  - 自动内容生成
+- ⏳ **功能 13：更多 AI 集成**
   - AI 模板优化建议
+  - 自动内容个性化生成
+  - 多模型支持（OpenAI、Anthropic）
 
 ## 🚀 快速开始
 
@@ -858,9 +858,12 @@ Extension Token 用于浏览器插件与后端的安全通信，**无需手动�
 ## 📚 文档
 
 - **[API 文档](docs/API.md)** - REST API 端点与示例
+- **[后端文档](backend/README.md)** - 后端架构、API、开发指南
+- **[插件模板功能](EXTENSION_TEMPLATE_FEATURE.md)** - 插件模板复制功能使用说明
 - **[开发日志](docs/DEVELOPMENT.md)** - 开发进度与更新记录
 - **[开发任务](docs/开发任务.md)** - 任务跟踪与需求管理
-- **[测试报告](docs/测试报告.md)** - 完整集成测试报告
+- **[数据库备份](docs/DATABASE_BACKUP_RECOVERY.md)** - 备份与恢复指南
+- **[翻译服务配置](docs/翻译服务配置指南.md)** - DeepL 翻译配置文档
 
 ## 👥 团队
 
@@ -932,28 +935,91 @@ Extension Token 用于浏览器插件与后端的安全通信，**无需手动�
 
 ### v1.6.0（已完成 2025-11-13）✅
 
-- ✅ AI 智能改写功能（ZhipuAI GLM-4.5-airx 集成）
-- ✅ 4 种改写风格（专业/正式/友好/轻松）
-- ✅ 变量占位符保留机制
-- ✅ 插件模板复制功能
-  - 搜索式模板选择（实时过滤）
-  - 搜索式 KOL 选择（支持 @ 符号搜索）
-  - AI 改写集成（120 秒超时保护）
-  - 一键复制到剪贴板
-- ✅ 双认证中间件优化（JWT + Extension Token）
-- ✅ 插件 UI 优化（统一搜索式交互）
+- ✅ **AI 智能改写功能**（ZhipuAI GLM-4.5-airx 集成）
+  - 4 种改写风格（专业/正式/友好/轻松）
+  - 变量占位符保留机制（保护 {{variable}} 格式）
+  - 120 秒超时保护机制
+  - 双认证支持（JWT + Extension Token）
+- ✅ **插件模板复制功能**
+  - 搜索式模板选择（实时过滤，最多 50 个结果）
+  - 搜索式 KOL 选择（支持 @ 符号搜索，可选）
+  - AI 改写集成与风格选择器
+  - 变量自动替换（选择 KOL 后替换占位符）
+  - 一键复制到剪贴板（execCommand 优化）
+- ✅ **后端代码清理**
+  - 删除重复的认证中间件（extension-auth.middleware.ts）
+  - 统一使用 requireAuth 双认证中间件
+  - 删除空模块（contacts/）和空目录（6 个）
+  - 归档一次性脚本（fix-template-order.ts）
+- ✅ **文档完善**
+  - 新增后端详细文档（backend/README.md，732 行）
+  - 新增插件模板功能使用说明（EXTENSION_TEMPLATE_FEATURE.md）
+  - 更新根目录 README（本文件）
 
-### v1.7.0（计划中）🚧
+### v1.7.0（已完成 2025-11-13）✅
 
-- ⏳ 智能质量评分算法
-- ⏳ 联系记录系统
-- ⏳ 模板效果追踪与优化建议
+- ✅ **前端代码清理**
+  - 删除未使用的 SolanaBackground.tsx 组件（依赖未安装的 gsap）
+  - 删除已废弃的 Navbar.tsx 组件（已被 AppLayout 替代）
+  - 删除未使用的 theme.store.ts（主题切换功能已移除）
+  - 删除 dist/ 构建产物文件夹（3.1MB）
+  - 删除 Effects/ 空目录
+  - 更新 frontend/README.md 使其准确反映代码结构
+  - 更新根目录 README.md 删除不存在的文件引用
+- ✅ **代码优化**
+  - 减少代码行数约 350 行
+  - 提高代码库清晰度
+  - 修正文档与实际代码的一致性
 
 ### v2.0.0（计划中）🚧
 
 - ⏳ Twitter API 官方集成
 - ⏳ 自动质量评分算法
 - ⏳ 移动端应用
+- ⏳ 多 AI 模型集成（OpenAI、Anthropic）
+
+---
+
+## 📝 更新日志
+
+完整的更新记录请查看 [docs/CHANGELOG.md](docs/CHANGELOG.md)。
+
+最近更新：
+
+- **v1.7.0 (2025-11-13)**: 前端代码清理、文档更新
+- **v1.6.0 (2025-11-13)**: AI 智能改写、插件模板复制功能、后端代码清理
+- **v1.5.0 (2025-11-11)**: 模板自定义排序、Extension Token 倒计时优化
+- **v1.4.0 (2025-11-09)**: DeepL 翻译集成、数据库自动备份系统
+- **v1.3.0 (2025-11-08)**: CSV 导出功能
+
+## 🔧 技术亮点
+
+### 后端架构
+
+- **功能模块化设计**：按业务功能组织代码（auth、kol、templates、analytics、ai、translation）
+- **双认证机制**：统一的 `requireAuth` 中间件支持 JWT（Web）+ Extension Token（插件）
+- **类型安全**：完整的 TypeScript 覆盖 + Zod 运行时验证
+- **数据库安全**：Cron 定时备份 + 7 天保留策略
+- **结构化日志**：Pino 高性能日志系统
+- **AI 集成**：ZhipuAI GLM-4.5-airx 模型（120 秒超时保护）
+
+### 前端架构
+
+- **现代化技术栈**：React 18 + TypeScript + Vite 5
+- **状态管理**：Zustand 轻量级状态管理
+- **UI 设计**：Ant Design 5.x + Solana 风格深色主题
+- **数据可视化**：Recharts 响应式图表
+- **服务层分离**：独立的 API 服务层（services/）
+- **类型系统**：完整的 TypeScript 类型定义（types/）
+
+### 插件架构
+
+- **Manifest V3**：最新的浏览器插件标准
+- **Side Panel API**：现代化侧边栏交互
+- **安全认证**：Extension Token（SHA-256 哈希）
+- **离线存储**：Chrome Storage API 本地缓存
+- **AI 集成**：Background Service Worker 处理 AI 改写
+- **搜索式 UI**：模板和 KOL 选择均支持实时搜索
 
 ---
 
