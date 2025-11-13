@@ -14,6 +14,38 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     uploadKOLs(message.kols).then(sendResponse);
     return true; // 保持消息通道开启
   }
+
+  if (message.action === "getTemplates") {
+    getTemplates().then(sendResponse).catch(error => {
+      sendResponse({ success: false, error: error.message });
+    });
+    return true;
+  }
+
+  if (message.action === "getKols") {
+    getKols().then(sendResponse).catch(error => {
+      sendResponse({ success: false, error: error.message });
+    });
+    return true;
+  }
+
+  if (message.action === "previewTemplate") {
+    previewTemplate(message.templateId, message.kolId)
+      .then(sendResponse)
+      .catch(error => {
+        sendResponse({ success: false, error: error.message });
+      });
+    return true;
+  }
+
+  if (message.action === "rewriteText") {
+    rewriteText(message.text, message.tone, message.language)
+      .then(sendResponse)
+      .catch(error => {
+        sendResponse({ success: false, error: error.message });
+      });
+    return true;
+  }
 });
 
 // 批量上传 KOL 到数据库
@@ -147,4 +179,146 @@ async function uploadKOLs(kols) {
     duplicates,
     message,
   };
+}
+
+// ==================== 模板和 AI API ====================
+
+/**
+ * 获取模板列表
+ */
+async function getTemplates() {
+  const result = await chrome.storage.local.get(["extensionToken"]);
+  const extensionToken = result.extensionToken;
+
+  if (!extensionToken) {
+    throw new Error("未配置 Extension Token");
+  }
+
+  const response = await fetch(`${API_BASE_URL}/templates?page=1&limit=100`, {
+    method: "GET",
+    headers: {
+      "X-Extension-Token": extensionToken,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "获取模板列表失败");
+  }
+
+  return await response.json();
+}
+
+/**
+ * 获取 KOL 列表
+ */
+async function getKols() {
+  const result = await chrome.storage.local.get(["extensionToken"]);
+  const extensionToken = result.extensionToken;
+
+  if (!extensionToken) {
+    throw new Error("未配置 Extension Token");
+  }
+
+  const response = await fetch(`${API_BASE_URL}/kols?page=1&limit=100`, {
+    method: "GET",
+    headers: {
+      "X-Extension-Token": extensionToken,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "获取 KOL 列表失败");
+  }
+
+  return await response.json();
+}
+
+/**
+ * 预览模板（变量替换）
+ */
+async function previewTemplate(templateId, kolId) {
+  const result = await chrome.storage.local.get(["extensionToken"]);
+  const extensionToken = result.extensionToken;
+
+  if (!extensionToken) {
+    throw new Error("未配置 Extension Token");
+  }
+
+  const requestBody = {
+    templateId,
+    language: "en", // 默认使用英语
+  };
+
+  // 如果提供了 kolId，添加到请求中
+  if (kolId) {
+    requestBody.kolId = kolId;
+  }
+
+  const response = await fetch(`${API_BASE_URL}/templates/preview`, {
+    method: "POST",
+    headers: {
+      "X-Extension-Token": extensionToken,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestBody),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "预览模板失败");
+  }
+
+  return await response.json();
+}
+
+/**
+ * AI 改写文本
+ */
+async function rewriteText(text, tone, language) {
+  const result = await chrome.storage.local.get(["extensionToken"]);
+  const extensionToken = result.extensionToken;
+
+  if (!extensionToken) {
+    throw new Error("未配置 Extension Token");
+  }
+
+  // 创建 AbortController 用于超时控制
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 120000); // 120秒超时
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/ai/rewrite`, {
+      method: "POST",
+      headers: {
+        "X-Extension-Token": extensionToken,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text,
+        tone,
+        language,
+        preserveVariables: true,
+      }),
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || "AI 改写失败");
+    }
+
+    return await response.json();
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw new Error("AI 改写超时，请稍后重试");
+    }
+    throw error;
+  }
 }
