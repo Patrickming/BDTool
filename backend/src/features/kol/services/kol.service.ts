@@ -224,9 +224,12 @@ export class KOLService {
 
     // 搜索条件（用户名或显示名）
     if (search) {
+      // 去掉开头的 @ 符号（如果有的话）
+      const searchTerm = search.startsWith('@') ? search.slice(1) : search;
+
       where.OR = [
-        { username: { contains: search } },
-        { displayName: { contains: search } },
+        { username: { contains: searchTerm } },
+        { displayName: { contains: searchTerm } },
       ];
     }
 
