@@ -1,5 +1,95 @@
 # 更新日志
 
+## [2025-11-13] - v1.6.0 AI 智能改写 & 插件模板功能
+
+### 🤖 AI 智能改写功能
+
+#### 功能概述
+集成 ZhipuAI GLM-4.5-airx 模型，为模板内容提供智能改写功能，支持 4 种风格，保护变量占位符。
+
+#### 实现内容
+
+**1. 后端 AI 服务**
+- ✅ GLM API 集成（`backend/src/features/ai/services/glm.service.ts`）
+- ✅ 改写控制器（`backend/src/features/ai/controllers/rewrite.controller.ts`）
+- ✅ 4 种改写风格：professional / formal / friendly / casual
+- ✅ 变量占位符保护（保留 `{{variable}}` 格式）
+- ✅ 健康检查端点（`GET /api/v1/ai/health`）
+- ✅ 双认证支持（JWT + Extension Token）
+
+**2. API 端点**
+- ✅ `POST /api/v1/ai/rewrite` - 单文本改写
+- ✅ `POST /api/v1/ai/rewrite/batch` - 批量改写
+- ✅ `POST /api/v1/ai/rewrite/template` - 模板改写（带 KOL 上下文）
+- ✅ `GET /api/v1/ai/health` - 服务健康检查
+
+**3. 前端集成**
+- ✅ AI 服务封装（`frontend/src/services/ai.service.ts`）
+- ✅ 模板复制弹窗集成 AI 改写
+- ✅ 风格选择器（4 种风格）
+- ✅ AI 改写状态提示（加载、成功、失败）
+
+**修改文件**:
+- `/backend/src/features/ai/` - AI 功能模块
+- `/frontend/src/services/ai.service.ts` - AI 服务
+- `/frontend/src/types/ai.ts` - AI 类型定义
+- `/frontend/src/components/Template/TemplateCopyModal.tsx` - 模板复制弹窗
+
+---
+
+### 📋 插件模板复制功能
+
+#### 功能概述
+在 Chrome 插件中实现完整的模板复制功能，支持搜索式选择、KOL 替换、AI 改写。
+
+#### 实现内容
+
+**1. 搜索式模板选择**
+- ✅ 实时搜索过滤（支持模糊匹配）
+- ✅ 最多显示 50 个匹配结果
+- ✅ 点击选项自动加载预览
+- ✅ 搜索输入框 + 下拉列表交互
+
+**2. 搜索式 KOL 选择**
+- ✅ 实时搜索过滤（支持 @ 符号）
+- ✅ 默认空值（保留占位符）
+- ✅ 选择 KOL 自动替换变量
+- ✅ 清空输入时恢复占位符
+
+**3. AI 改写集成**
+- ✅ AI 改写 checkbox（勾选时显示风格选择器）
+- ✅ 4 种改写风格选择器
+- ✅ 120 秒超时保护（AbortController）
+- ✅ 复制按钮状态提示（⏳ AI 改写中...）
+- ✅ 改写成功提示（✅ 已复制 AI 改写后的内容）
+
+**4. 剪贴板优化**
+- ✅ 使用 `execCommand('copy')` 确保兼容性
+- ✅ 修复 "Document is not focused" 错误
+- ✅ 临时 textarea 方案
+
+**5. 后端 API 支持**
+- ✅ Extension Token 双认证中间件
+- ✅ 模板列表 API（`GET /api/v1/templates`）
+- ✅ KOL 列表 API（`GET /api/v1/kols`）
+- ✅ 模板预览 API（`POST /api/v1/templates/preview`）
+- ✅ AI 改写 API（`POST /api/v1/ai/rewrite`）
+
+**修改文件**:
+- `/extension/side_panel.html` - UI 结构（模板/KOL 搜索框）
+- `/extension/popup.js` - 模板功能逻辑
+- `/extension/background.js` - API 调用（120 秒超时）
+- `/backend/src/middleware/auth.middleware.ts` - 双认证中间件
+- `/EXTENSION_TEMPLATE_FEATURE.md` - 功能说明文档
+
+**技术亮点**:
+- 统一的搜索式交互体验
+- 智能变量替换机制
+- AI 改写与变量保护并存
+- 完善的错误处理和用户反馈
+
+---
+
 ## [2025-11-11] - v1.5.0 首页数据对接与多项优化
 
 ### 🏠 首页统计数据对接真实 API
