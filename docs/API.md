@@ -1454,5 +1454,194 @@ curl "http://localhost:3000/api/v1/analytics/timeline?days=7" \
 
 ---
 
-**最后更新**: 2025-11-07
-**版本**: v1.2.0
+## 8. AI 智能改写
+
+### 8.1 健康检查
+
+**端点**: `GET /api/v1/ai/health`
+
+**描述**: 检查 GLM AI 服务是否可用
+
+**认证**: Bearer Token 或 Extension Token
+
+**响应**:
+
+```json
+{
+  "success": true,
+  "message": "GLM 服务可用",
+  "data": {
+    "available": true,
+    "model": "glm-4-airx",
+    "timestamp": "2025-11-13T10:30:00.000Z"
+  }
+}
+```
+
+---
+
+### 8.2 单文本改写
+
+**端点**: `POST /api/v1/ai/rewrite`
+
+**描述**: 使用 AI 改写文本内容，保留变量占位符
+
+**认证**: Bearer Token 或 Extension Token
+
+**请求体**:
+
+```json
+{
+  "text": "Hello {{username}}, welcome to our exchange!",
+  "tone": "professional",
+  "language": "en",
+  "preserveVariables": true,
+  "model": "glm-4-airx"
+}
+```
+
+**参数说明**:
+- `text` (string, 必需): 待改写的文本
+- `tone` (string, 可选): 改写风格
+  - `professional` - 专业（默认）
+  - `formal` - 正式
+  - `friendly` - 友好
+  - `casual` - 轻松
+- `language` (string, 可选): 语言代码（默认 `en`）
+- `preserveVariables` (boolean, 可选): 是否保留 `{{variable}}` 格式（默认 `true`）
+- `model` (string, 可选): GLM 模型版本（默认从环境变量读取）
+
+**响应**:
+
+```json
+{
+  "success": true,
+  "data": {
+    "original": "Hello {{username}}, welcome to our exchange!",
+    "rewritten": "Greetings {{username}}, we're delighted to have you join our trading platform!",
+    "tone": "professional",
+    "model": "glm-4-airx",
+    "timestamp": "2025-11-13T10:30:00.000Z"
+  }
+}
+```
+
+**错误响应**:
+- `400` - 参数验证失败（text 为空等）
+- `500` - GLM API 调用失败
+- `503` - GLM 服务不可用（未配置 API 密钥）
+
+---
+
+### 8.3 批量改写
+
+**端点**: `POST /api/v1/ai/rewrite/batch`
+
+**描述**: 批量改写多个文本
+
+**认证**: Bearer Token 或 Extension Token
+
+**请求体**:
+
+```json
+{
+  "texts": [
+    "Hello {{username}}!",
+    "Thank you for joining us."
+  ],
+  "tone": "friendly",
+  "language": "en",
+  "preserveVariables": true
+}
+```
+
+**响应**:
+
+```json
+{
+  "success": true,
+  "data": {
+    "results": [
+      {
+        "original": "Hello {{username}}!",
+        "rewritten": "Hi there {{username}}!",
+        "success": true
+      },
+      {
+        "original": "Thank you for joining us.",
+        "rewritten": "We're so glad you're here with us!",
+        "success": true
+      }
+    ],
+    "total": 2,
+    "successful": 2,
+    "failed": 0
+  }
+}
+```
+
+---
+
+### 8.4 模板改写（带 KOL 上下文）
+
+**端点**: `POST /api/v1/ai/rewrite/template`
+
+**描述**: 改写模板内容，可选择性地提供 KOL 上下文信息
+
+**认证**: Bearer Token 或 Extension Token
+
+**请求体**:
+
+```json
+{
+  "text": "Hello {{username}}, we'd like to invite you to collaborate.",
+  "tone": "professional",
+  "language": "en",
+  "kolContext": {
+    "username": "elonmusk",
+    "followerCount": 50000000,
+    "contentCategory": "crypto_trading"
+  }
+}
+```
+
+**响应**:
+
+```json
+{
+  "success": true,
+  "data": {
+    "original": "Hello {{username}}, we'd like to invite you to collaborate.",
+    "rewritten": "Good day {{username}}, we would be honored to explore a potential collaboration with you.",
+    "tone": "professional"
+  }
+}
+```
+
+---
+
+## 9. 认证说明
+
+### 双认证机制
+
+从 v1.6.0 开始，API 支持两种认证方式：
+
+**1. JWT Bearer Token（Web 应用）**
+```http
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**2. Extension Token（Chrome 插件）**
+```http
+X-Extension-Token: abc123def456...
+```
+
+### 认证优先级
+1. 优先检查 JWT Token
+2. JWT 失败时检查 Extension Token
+3. 两者都失败时返回 401 未授权
+
+---
+
+**最后更新**: 2025-11-13
+**版本**: v1.6.0
