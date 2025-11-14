@@ -145,8 +145,13 @@ BDTool/
 │   ├── CHANGELOG.md              # 更新日志
 │   ├── DEVELOPMENT.md            # 开发日志与更新记录
 │   ├── DATABASE_BACKUP_RECOVERY.md # 数据库备份与恢复指南
+│   ├── REQUIREMENTS.md           # 项目需求文档
 │   ├── 翻译服务配置指南.md         # DeepL 翻译配置文档
-│   └── 开发任务.md                # 任务跟踪文档
+│   ├── 开发任务.md                # 任务跟踪文档
+│   └── archive/                  # 历史文档归档
+│       ├── 功能3-模板管理系统设计.md
+│       ├── 测试报告-模板管理.md
+│       └── 测试报告.md
 │
 ├── frontend/                      # React 前端应用
 │   ├── src/
@@ -964,12 +969,20 @@ Extension Token 用于浏览器插件与后端的安全通信，**无需手动�
   - 删除未使用的 theme.store.ts（主题切换功能已移除）
   - 删除 dist/ 构建产物文件夹（3.1MB）
   - 删除 Effects/ 空目录
+- ✅ **后端代码清理**
+  - 删除 6 个空目录（types/、common/types/、features/*/middleware/、features/*/__tests__/）
+- ✅ **文档清理**
+  - 删除过时的 DATABASE.md（内容为 SQLAlchemy，实际使用 Prisma）
+  - 创建 docs/archive/ 归档历史文档（3 个设计/测试文档）
+- ✅ **插件清理**
+  - 删除未使用的 popup.html（已被 side_panel.html 替代）
+- ✅ **文档更新**
   - 更新 frontend/README.md 使其准确反映代码结构
   - 更新根目录 README.md 删除不存在的文件引用
+  - 文档结构与实际代码 100% 一致
 - ✅ **代码优化**
-  - 减少代码行数约 350 行
-  - 提高代码库清晰度
-  - 修正文档与实际代码的一致性
+  - 减少代码行数约 1,100 行（前端 350 行 + 后端 750 行）
+  - 提高代码库清晰度和可维护性
 
 ### v2.0.0（计划中）🚧
 
