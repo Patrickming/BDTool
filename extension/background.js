@@ -22,6 +22,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
+  if (message.action === "getTemplateDetail") {
+    getTemplateDetail(message.templateId).then(sendResponse).catch(error => {
+      sendResponse({ success: false, error: error.message });
+    });
+    return true;
+  }
+
   if (message.action === "getKols") {
     getKols().then(sendResponse).catch(error => {
       sendResponse({ success: false, error: error.message });
@@ -30,7 +37,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.action === "previewTemplate") {
-    previewTemplate(message.templateId, message.kolId)
+    previewTemplate(message.templateId, message.kolId, message.language)
       .then(sendResponse)
       .catch(error => {
         sendResponse({ success: false, error: error.message });
@@ -211,6 +218,33 @@ async function getTemplates() {
 }
 
 /**
+ * 获取模板详情（包含所有语言版本）
+ */
+async function getTemplateDetail(templateId) {
+  const result = await chrome.storage.local.get(["extensionToken"]);
+  const extensionToken = result.extensionToken;
+
+  if (!extensionToken) {
+    throw new Error("未配置 Extension Token");
+  }
+
+  const response = await fetch(`${API_BASE_URL}/templates/${templateId}`, {
+    method: "GET",
+    headers: {
+      "X-Extension-Token": extensionToken,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "获取模板详情失败");
+  }
+
+  return await response.json();
+}
+
+/**
  * 获取 KOL 列表
  */
 async function getKols() {
@@ -240,7 +274,7 @@ async function getKols() {
 /**
  * 预览模板（变量替换）
  */
-async function previewTemplate(templateId, kolId) {
+async function previewTemplate(templateId, kolId, language) {
   const result = await chrome.storage.local.get(["extensionToken"]);
   const extensionToken = result.extensionToken;
 
@@ -250,7 +284,7 @@ async function previewTemplate(templateId, kolId) {
 
   const requestBody = {
     templateId,
-    language: "en", // 默认使用英语
+    language: language || "en", // 使用传入的语言，默认英语
   };
 
   // 如果提供了 kolId，添加到请求中
