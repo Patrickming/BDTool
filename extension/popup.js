@@ -565,6 +565,7 @@ const templateDropdown = document.getElementById('templateDropdown');
 const kolSelect = document.getElementById('kolSelect');
 const kolSearchInput = document.getElementById('kolSearchInput');
 const kolDropdown = document.getElementById('kolDropdown');
+const languageSelect = document.getElementById('languageSelect');
 const enableAI = document.getElementById('enableAI');
 const aiToneSection = document.getElementById('aiToneSection');
 const aiToneSelect = document.getElementById('aiToneSelect');
@@ -576,6 +577,7 @@ let allKols = [];
 let currentTemplateContent = '';
 let selectedTemplate = null;
 let selectedKol = null;
+let currentTemplateDetail = null; // 存储当前选中模板的详细信息
 
 /**
  * 显示模板区域
@@ -675,7 +677,7 @@ function renderTemplateDropdown(searchTerm = '') {
 
   // 添加点击事件
   document.querySelectorAll('.template-option').forEach(option => {
-    option.addEventListener('click', () => {
+    option.addEventListener('click', async () => {
       const templateId = option.dataset.id;
       const templateName = option.dataset.name;
 
@@ -683,6 +685,9 @@ function renderTemplateDropdown(searchTerm = '') {
       templateSelect.value = templateId;
       templateSearchInput.value = templateName;
       templateDropdown.style.display = 'none';
+
+      // 加载模板详情
+      await loadTemplateDetail(parseInt(templateId));
 
       // 触发模板加载
       loadTemplatePreview();
@@ -785,6 +790,16 @@ kolSearchInput.addEventListener('focus', () => {
   }
 });
 
+/**
+ * 语言选择变化事件 - 重新加载模板
+ */
+languageSelect.addEventListener('change', () => {
+  // 如果已选择模板，重新加载预览
+  if (templateSelect.value) {
+    loadTemplatePreview();
+  }
+});
+
 // 点击外部关闭下拉框
 document.addEventListener('click', (e) => {
   if (!templateSearchInput.contains(e.target) && !templateDropdown.contains(e.target)) {
@@ -807,6 +822,109 @@ enableAI.addEventListener('change', (e) => {
 });
 
 /**
+ * 加载模板详情
+ */
+async function loadTemplateDetail(templateId) {
+  try {
+    const response = await chrome.runtime.sendMessage({
+      action: 'getTemplateDetail',
+      templateId: templateId
+    });
+
+    if (response && response.success) {
+      currentTemplateDetail = response.data;
+
+      // 更新语言选择器（只显示该模板支持的语言）
+      updateLanguageOptions(currentTemplateDetail.versions);
+
+      // 根据是否有占位符决定是否显示 KOL 选择器
+      updateKolSectionVisibility(currentTemplateDetail.versions);
+    } else {
+      console.error('加载模板详情失败:', response?.error);
+    }
+  } catch (error) {
+    console.error('加载模板详情异常:', error);
+  }
+}
+
+/**
+ * 更新语言选择器 - 只显示模板支持的语言
+ */
+function updateLanguageOptions(versions) {
+  if (!versions || versions.length === 0) {
+    return;
+  }
+
+  // 获取模板支持的所有语言
+  const availableLanguages = versions.map(v => v.language);
+
+  // 语言映射
+  const languageMap = {
+    'en': '🇺🇸 英语 (English)',
+    'zh': '🇨🇳 中文 (Chinese)',
+    'ja': '🇯🇵 日语 (Japanese)',
+    'ko': '🇰🇷 韩语 (Korean)',
+    'fr': '🇫🇷 法语 (French)',
+    'de': '🇩🇪 德语 (German)',
+    'ru': '🇷🇺 俄语 (Russian)',
+    'es': '🇪🇸 西班牙语 (Spanish)',
+    'pt': '🇵🇹 葡萄牙语 (Portuguese)'
+  };
+
+  // 清空并重新填充语言选择器
+  languageSelect.innerHTML = '';
+
+  availableLanguages.forEach(lang => {
+    const option = document.createElement('option');
+    option.value = lang;
+    option.textContent = languageMap[lang] || lang;
+    languageSelect.appendChild(option);
+  });
+
+  // 如果只有一个语言，自动选中
+  if (availableLanguages.length === 1) {
+    languageSelect.value = availableLanguages[0];
+  } else {
+    // 优先选择英语，如果没有则选择第一个
+    if (availableLanguages.includes('en')) {
+      languageSelect.value = 'en';
+    } else {
+      languageSelect.value = availableLanguages[0];
+    }
+  }
+}
+
+/**
+ * 更新 KOL 选择区域显示 - 根据模板是否有占位符
+ */
+function updateKolSectionVisibility(versions) {
+  const kolSection = document.getElementById('kolSearchInput').parentElement;
+
+  if (!versions || versions.length === 0) {
+    kolSection.style.display = 'block'; // 默认显示
+    return;
+  }
+
+  // 检查所有版本的内容是否包含变量占位符
+  const hasVariables = versions.some(v => {
+    const content = v.content || '';
+    // 检查是否包含 {{xxx}} 格式的占位符
+    return /\{\{[^}]+\}\}/.test(content);
+  });
+
+  // 如果没有占位符，隐藏 KOL 选择区域
+  if (hasVariables) {
+    kolSection.style.display = 'block';
+  } else {
+    kolSection.style.display = 'none';
+    // 清空 KOL 选择
+    kolSelect.value = '';
+    kolSearchInput.value = '';
+    selectedKol = null;
+  }
+}
+
+/**
  * 加载模板预览
  */
 async function loadTemplatePreview() {
@@ -822,13 +940,15 @@ async function loadTemplatePreview() {
     copyTemplateBtn.disabled = true;
     showTemplateStatus('加载中...', 'loading');
 
-    // 获取选中的 KOL
+    // 获取选中的 KOL 和语言
     const kolId = kolSelect.value ? parseInt(kolSelect.value) : null;
+    const language = languageSelect.value || 'en';
 
     const response = await chrome.runtime.sendMessage({
       action: 'previewTemplate',
       templateId: parseInt(templateId),
-      kolId: kolId
+      kolId: kolId,
+      language: language
     });
 
     if (response && response.success) {
@@ -861,14 +981,15 @@ copyTemplateBtn.addEventListener('click', async () => {
       copyTemplateBtn.disabled = true;
       copyTemplateBtn.textContent = '⏳ AI 改写中...';
 
-      // 获取选择的改写风格
+      // 获取选择的改写风格和语言
       const selectedTone = aiToneSelect.value || 'professional';
+      const selectedLanguage = languageSelect.value || 'en';
 
       const response = await chrome.runtime.sendMessage({
         action: 'rewriteText',
         text: currentTemplateContent,
         tone: selectedTone,
-        language: 'en'
+        language: selectedLanguage
       });
 
       copyTemplateBtn.textContent = '📋 复制模板内容';
