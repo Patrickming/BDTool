@@ -4,7 +4,7 @@
 
 ## 📖 项目简介
 
-KOL BD Tool 是一个专为 KCEX 交易所 BD 团队打造的全栈 Web 应用，旨在简化在 Twitter/X 上发现、管理和联系加密货币 KOL 的流程。
+KOL BD Tool 是一个专为 BD 团队打造的全栈 Web 应用，旨在简化在 Twitter/X 上发现、管理和联系 KOL 的流程。
 
 ## ✨ 核心功能
 
@@ -970,7 +970,7 @@ Extension Token 用于浏览器插件与后端的安全通信，**无需手动�
   - 删除 dist/ 构建产物文件夹（3.1MB）
   - 删除 Effects/ 空目录
 - ✅ **后端代码清理**
-  - 删除 6 个空目录（types/、common/types/、features/*/middleware/、features/*/__tests__/）
+  - 删除 6 个空目录（types/、common/types/、features/_/middleware/、features/_/**tests**/）
 - ✅ **文档清理**
   - 删除过时的 DATABASE.md（内容为 SQLAlchemy，实际使用 Prisma）
   - 创建 docs/archive/ 归档历史文档（3 个设计/测试文档）
