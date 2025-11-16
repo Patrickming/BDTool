@@ -47,10 +47,17 @@ export const StatusDistributionChart: React.FC<StatusDistributionChartProps> = (
   // 计算总数
   const total = filteredData.reduce((sum, item) => sum + item.count, 0);
 
-  // 自定义标签渲染
-  const renderCustomLabel = (entry: any) => {
-    const percent = ((entry.count / total) * 100).toFixed(1);
-    return `${entry.name}: ${percent}%`;
+  // 自定义图例渲染 - 显示百分比
+  const renderLegend = (value: string, entry: any) => {
+    const item = filteredData.find(d => d.name === value);
+    if (!item) return value;
+
+    const percent = ((item.count / total) * 100).toFixed(1);
+    return (
+      <span style={{ color: '#fff', fontSize: '12px' }}>
+        {value} <span style={{ color: '#8a8a8a' }}>({percent}%)</span>
+      </span>
+    );
   };
 
   return (
@@ -68,7 +75,7 @@ export const StatusDistributionChart: React.FC<StatusDistributionChartProps> = (
       }}
     >
       <Spin spinning={loading}>
-        <div style={{ height: '300px', position: 'relative' }}>
+        <div style={{ height: '350px', position: 'relative' }}>
           {filteredData.length > 0 ? (
             <>
               <ResponsiveContainer width="100%" height="100%">
@@ -76,11 +83,11 @@ export const StatusDistributionChart: React.FC<StatusDistributionChartProps> = (
                   <Pie
                     data={filteredData}
                     cx="50%"
-                    cy="50%"
+                    cy="45%"
                     labelLine={false}
-                    label={renderCustomLabel}
-                    outerRadius={105}
-                    innerRadius={65}
+                    label={false}
+                    outerRadius={90}
+                    innerRadius={60}
                     fill="#8884d8"
                     dataKey="count"
                   >
@@ -100,27 +107,34 @@ export const StatusDistributionChart: React.FC<StatusDistributionChartProps> = (
                     }}
                     labelStyle={{ color: '#fff' }}
                     itemStyle={{ color: '#fff' }}
-                    formatter={(value: number, name: string) => [`${value} 个`, name]}
+                    formatter={(value: number, name: string) => {
+                      const percent = ((value / total) * 100).toFixed(1);
+                      return [`${value} 个 (${percent}%)`, name];
+                    }}
                   />
                   <Legend
                     verticalAlign="bottom"
-                    height={36}
-                    formatter={(value) => <span style={{ color: '#8a8a8a' }}>{value}</span>}
+                    height={60}
+                    wrapperStyle={{
+                      paddingTop: '10px',
+                    }}
+                    formatter={renderLegend}
+                    iconType="circle"
                   />
                 </PieChart>
               </ResponsiveContainer>
               <div
                 style={{
                   position: 'absolute',
-                  top: '50%',
+                  top: '42%',
                   left: '50%',
                   transform: 'translate(-50%, -50%)',
                   textAlign: 'center',
                   pointerEvents: 'none',
                 }}
               >
-                <div style={{ color: '#8a8a8a', fontSize: '14px' }}>KOL 总数</div>
-                <div style={{ color: '#fff', fontSize: '24px', fontWeight: 600 }}>{total}</div>
+                <div style={{ color: '#8a8a8a', fontSize: '12px' }}>KOL 总数</div>
+                <div style={{ color: '#fff', fontSize: '28px', fontWeight: 600, marginTop: '4px' }}>{total}</div>
               </div>
             </>
           ) : (
