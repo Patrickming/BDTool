@@ -41,9 +41,21 @@ export const AnalyticsDashboard: React.FC = () => {
     fetchAllAnalytics();
   };
 
-  const handleTimelineDaysChange = (days: number) => {
+  const handleTimelineDaysChange = async (days: number) => {
     setTimelineDays(days);
-    fetchContactTimeline(days);
+    // 同时更新概览统计和时间线数据
+    await Promise.all([
+      useAnalyticsStore.getState().fetchOverviewStats(days),
+      fetchContactTimeline(days),
+    ]);
+  };
+
+  // 根据时间范围生成标题前缀
+  const getTimeRangeLabel = () => {
+    if (timelineDays === 0) return '总';
+    if (timelineDays === 7) return '本周';
+    if (timelineDays === 30) return '本月';
+    return `近${timelineDays}天`;
   };
 
   return (
@@ -64,6 +76,7 @@ export const AnalyticsDashboard: React.FC = () => {
             <Option value={30}>近 30 天</Option>
             <Option value={60}>近 60 天</Option>
             <Option value={90}>近 90 天</Option>
+            <Option value={0}>所有时间</Option>
           </Select>
           <Button
             type="primary"
@@ -92,20 +105,20 @@ export const AnalyticsDashboard: React.FC = () => {
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <StatCard
-            title="本周新增"
+            title={`${getTimeRangeLabel()}新增`}
             value={overviewStats?.newKolsThisWeek || 0}
             icon={<UserAddOutlined />}
             loading={loadingOverview}
-            description="过去 7 天内创建的 KOL 数量"
+            description={timelineDays === 0 ? '所有时间内创建的 KOL 数量' : `过去 ${timelineDays} 天内创建的 KOL 数量`}
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <StatCard
-            title="本周联系数"
+            title={`${getTimeRangeLabel()}联系数`}
             value={overviewStats?.contactedThisWeek || 0}
             icon={<PhoneOutlined />}
             loading={loadingOverview}
-            description="过去 7 天变为「已联系」状态的 KOL"
+            description={timelineDays === 0 ? '所有时间除新增外的所有 KOL' : `过去 ${timelineDays} 天除新增外的所有 KOL`}
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
@@ -118,7 +131,7 @@ export const AnalyticsDashboard: React.FC = () => {
             valueStyle={{
               color: (overviewStats?.overallResponseRate || 0) > 50 ? '#14F195' : '#FFA500',
             }}
-            description="(已回复+洽谈中+合作中) ÷ 所有非新增状态"
+            description="(已联系+已回复+洽谈中+合作中+已合作+已拒绝) ÷ 除新增外的所有 KOL"
           />
         </Col>
       </Row>
@@ -126,7 +139,7 @@ export const AnalyticsDashboard: React.FC = () => {
       <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
         <Col xs={24} sm={12} lg={8}>
           <StatCard
-            title="本周响应率"
+            title={`${getTimeRangeLabel()}响应率`}
             value={overviewStats?.weeklyResponseRate || 0}
             suffix="%"
             icon={<PercentageOutlined />}
@@ -134,7 +147,7 @@ export const AnalyticsDashboard: React.FC = () => {
             valueStyle={{
               color: (overviewStats?.weeklyResponseRate || 0) > 50 ? '#14F195' : '#FFA500',
             }}
-            description="本周回应数 ÷ 本周联系数"
+            description={timelineDays === 0 ? '(已联系+已回复+洽谈中+合作中+已合作+已拒绝) ÷ 除新增外的所有 KOL' : `过去 ${timelineDays} 天的响应率`}
           />
         </Col>
         <Col xs={24} sm={12} lg={8}>

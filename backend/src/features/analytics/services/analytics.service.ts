@@ -60,51 +60,67 @@ export class AnalyticsService {
   /**
    * 获取概览统计数据
    * @param userId - 用户 ID
+   * @param days - 查询天数（0 表示所有时间，默认 7）
    * @returns 概览统计
    */
-  async getOverviewStats(userId: number): Promise<OverviewStats> {
-    logger.info(`用户 ${userId} 获取概览统计`);
+  async getOverviewStats(userId: number, days: number = 7): Promise<OverviewStats> {
+    logger.info(`用户 ${userId} 获取概览统计 (${days === 0 ? '所有时间' : `近${days}天`})`);
 
     const now = new Date();
-    const weekStart = new Date(now);
-    weekStart.setDate(now.getDate() - 7);
+    let timeStart: Date | undefined;
+
+    // 如果 days > 0，计算时间范围起点；如果 days === 0，不限制时间（所有时间）
+    if (days > 0) {
+      timeStart = new Date(now);
+      timeStart.setDate(now.getDate() - days);
+    }
 
     // 1. 总 KOL 数
     const totalKols = await prisma.kOL.count({
       where: { userId },
     });
 
-    // 2. 本周新增 KOL 数
+    // 2. 时间范围内新增 KOL 数
+    // 如果是所有时间（days=0），返回总 KOL 数
+    // 如果是指定时间范围，返回该时间范围内创建的 KOL 数量
     const newKolsThisWeek = await prisma.kOL.count({
       where: {
         userId,
-        createdAt: { gte: weekStart },
+        ...(days === 0
+          ? {}  // 所有时间：返回所有 KOL（等同于 totalKols）
+          : { createdAt: { gte: timeStart } }  // 指定时间：返回时间范围内创建的 KOL
+        ),
       },
     });
 
-    // 3. 本周联系数 - 基于 KOL 状态 'contacted' 且在本周内更新的
+    // 3. 时间范围内联系数 - 除新增外的所有 6 个状态的总和
+    // 状态: contacted, replied, negotiating, cooperating, cooperated, rejected
+    const nonNewStatuses = ['contacted', 'replied', 'negotiating', 'cooperating', 'cooperated', 'rejected'];
+
     const contactedThisWeek = await prisma.kOL.count({
       where: {
         userId,
-        status: 'contacted',
-        updatedAt: { gte: weekStart },
+        status: { in: nonNewStatuses },
+        ...(days > 0 && timeStart ? { updatedAt: { gte: timeStart } } : {}),
       },
     });
 
-    // 4. 总体响应率 - (已回复 + 协商中 + 合作中) / 总联系数
-    // 总联系数 = 所有非 'new' 状态的 KOL
+    // 4. 总体响应率 - (已回复+洽谈中+合作中+已合作+已拒绝) / 除新增外的所有 6 个状态
+    // 响应状态: replied, negotiating, cooperating, cooperated, rejected (不包括 contacted)
+    const responseStatuses = ['replied', 'negotiating', 'cooperating', 'cooperated', 'rejected'];
+
     const totalContacts = await prisma.kOL.count({
       where: {
         userId,
-        status: { not: 'new' },
+        status: { in: nonNewStatuses },
       },
     });
 
-    // 响应数 = replied + negotiating + cooperating 状态的 KOL
+    // 响应数 = 已回复+洽谈中+合作中+已合作+已拒绝（5个状态）
     const totalResponses = await prisma.kOL.count({
       where: {
         userId,
-        status: { in: ['replied', 'negotiating', 'cooperating'] },
+        status: { in: responseStatuses },
       },
     });
 
@@ -112,20 +128,21 @@ export class AnalyticsService {
       ? Math.round((totalResponses / totalContacts) * 100 * 10) / 10  // 保留一位小数
       : 0;
 
-    // 5. 本周响应率 - 本周新增的响应 / 本周联系数
+    // 5. 时间范围内响应率 - 时间范围内的响应数 / 时间范围内的联系数
+    // 如果是所有时间（days=0），weeklyResponseRate 和 overallResponseRate 相同
     const weeklyContacts = await prisma.kOL.count({
       where: {
         userId,
-        status: 'contacted',
-        updatedAt: { gte: weekStart },
+        status: { in: nonNewStatuses },
+        ...(days > 0 && timeStart ? { updatedAt: { gte: timeStart } } : {}),
       },
     });
 
     const weeklyResponses = await prisma.kOL.count({
       where: {
         userId,
-        status: { in: ['replied', 'negotiating', 'cooperating'] },
-        updatedAt: { gte: weekStart },
+        status: { in: responseStatuses },
+        ...(days > 0 && timeStart ? { updatedAt: { gte: timeStart } } : {}),
       },
     });
 

@@ -13,10 +13,14 @@ import type {
 
 /**
  * 获取概览统计数据
+ * @param days 天数 (0表示所有时间, 默认 7)
  */
-export async function getOverviewStats(): Promise<OverviewStats> {
+export async function getOverviewStats(days: number = 7): Promise<OverviewStats> {
   const response = await api.get<AnalyticsApiResponse<OverviewStats>>(
-    '/analytics/overview'
+    '/analytics/overview',
+    {
+      params: { days },
+    }
   );
   return response.data.data;
 }

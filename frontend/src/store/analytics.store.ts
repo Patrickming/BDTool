@@ -29,7 +29,7 @@ interface AnalyticsState {
   timelineDays: number;
 
   // Actions
-  fetchOverviewStats: () => Promise<void>;
+  fetchOverviewStats: (days?: number) => Promise<void>;
   fetchKOLDistributions: () => Promise<void>;
   fetchTemplateEffectiveness: () => Promise<void>;
   fetchContactTimeline: (days?: number) => Promise<void>;
@@ -52,10 +52,11 @@ export const useAnalyticsStore = create<AnalyticsState>((set, get) => ({
   timelineDays: 7,
 
   // 获取概览统计数据
-  fetchOverviewStats: async () => {
+  fetchOverviewStats: async (days?: number) => {
     try {
       set({ loadingOverview: true });
-      const data = await analyticsService.getOverviewStats();
+      const targetDays = days ?? get().timelineDays;
+      const data = await analyticsService.getOverviewStats(targetDays);
       set({ overviewStats: data });
     } catch (error: any) {
       message.error(error.response?.data?.message || '获取概览统计失败');

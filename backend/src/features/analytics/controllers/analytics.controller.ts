@@ -14,13 +14,21 @@ import { logger } from '@config/logger.config';
 export class AnalyticsController {
   /**
    * 获取概览统计
-   * GET /api/v1/analytics/overview
+   * GET /api/v1/analytics/overview?days=7
    */
   getOverviewStats = asyncHandler(async (req: Request, res: Response) => {
     logger.info(`用户 ${req.user?.id} 请求概览统计`);
 
+    // 获取查询参数（天数，0 表示所有时间）
+    const days = parseInt(req.query.days as string) || 7;
+
+    // 验证天数范围（0 表示所有时间，1-365 天）
+    if (days < 0 || days > 365) {
+      return successResponse(res, null, '天数参数必须在 0-365 之间', 400);
+    }
+
     // 调用服务层获取统计数据
-    const stats = await analyticsService.getOverviewStats(req.user!.id);
+    const stats = await analyticsService.getOverviewStats(req.user!.id, days);
 
     // 返回成功响应
     return successResponse(res, stats, '概览统计获取成功');
