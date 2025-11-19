@@ -2,18 +2,26 @@
  * 分析仪表盘页面
  */
 
-import React, { useEffect } from 'react';
-import { Row, Col, Button, Select, Space } from 'antd';
-import { ReloadOutlined, TeamOutlined, UserAddOutlined, PhoneOutlined, PercentageOutlined, StarOutlined, BellOutlined } from '@ant-design/icons';
-import { useAnalyticsStore } from '../store/analytics.store';
-import { StatCard } from '../components/analytics/StatCard';
-import { FollowerDistributionChart } from '../components/analytics/FollowerDistributionChart';
-import { QualityScoreChart } from '../components/analytics/QualityScoreChart';
-import { ContentCategoryChart } from '../components/analytics/ContentCategoryChart';
-import { StatusDistributionChart } from '../components/analytics/StatusDistributionChart';
-import { LanguageDistributionChart } from '../components/analytics/LanguageDistributionChart';
-import { TemplateCategoryChart } from '../components/analytics/TemplateCategoryChart';
-import { ContactTimelineChart } from '../components/analytics/ContactTimelineChart';
+import React, { useEffect } from "react";
+import { Row, Col, Button, Select, Space } from "antd";
+import {
+  ReloadOutlined,
+  TeamOutlined,
+  UserAddOutlined,
+  PhoneOutlined,
+  PercentageOutlined,
+  StarOutlined,
+  BellOutlined,
+} from "@ant-design/icons";
+import { useAnalyticsStore } from "../store/analytics.store";
+import { StatCard } from "../components/analytics/StatCard";
+import { FollowerDistributionChart } from "../components/analytics/FollowerDistributionChart";
+import { QualityScoreChart } from "../components/analytics/QualityScoreChart";
+import { ContentCategoryChart } from "../components/analytics/ContentCategoryChart";
+import { StatusDistributionChart } from "../components/analytics/StatusDistributionChart";
+import { LanguageDistributionChart } from "../components/analytics/LanguageDistributionChart";
+import { TemplateCategoryChart } from "../components/analytics/TemplateCategoryChart";
+import { ContactTimelineChart } from "../components/analytics/ContactTimelineChart";
 
 const { Option } = Select;
 
@@ -52,21 +60,27 @@ export const AnalyticsDashboard: React.FC = () => {
 
   // 根据时间范围生成标题前缀
   const getTimeRangeLabel = () => {
-    if (timelineDays === 0) return '总';
-    if (timelineDays === 7) return '本周';
-    if (timelineDays === 30) return '本月';
+    if (timelineDays === 7) return "本周";
+    if (timelineDays === 30) return "本月";
     return `近${timelineDays}天`;
   };
 
   return (
-    <div style={{ padding: '24px', background: '#0a0a0f', minHeight: '100vh' }}>
+    <div style={{ padding: "24px", background: "#0a0a0f", minHeight: "100vh" }}>
       {/* 页面标题和操作 */}
-      <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h1 style={{ color: '#fff', fontSize: '28px', margin: 0 }}>
-          数据分析
-        </h1>
+      <div
+        style={{
+          marginBottom: "24px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <h1 style={{ color: "#fff", fontSize: "28px", margin: 0 }}>数据分析</h1>
         <Space>
-          <span style={{ color: '#8a8a8a', marginRight: '8px' }}>时间线范围：</span>
+          <span style={{ color: "#8a8a8a", marginRight: "8px" }}>
+            时间线范围：
+          </span>
           <Select
             value={timelineDays}
             onChange={handleTimelineDaysChange}
@@ -76,15 +90,14 @@ export const AnalyticsDashboard: React.FC = () => {
             <Option value={30}>近 30 天</Option>
             <Option value={60}>近 60 天</Option>
             <Option value={90}>近 90 天</Option>
-            <Option value={0}>所有时间</Option>
           </Select>
           <Button
             type="primary"
             icon={<ReloadOutlined />}
             onClick={handleRefresh}
             style={{
-              background: 'linear-gradient(90deg, #9945FF 0%, #14F195 100%)',
-              border: 'none',
+              background: "linear-gradient(90deg, #9945FF 0%, #14F195 100%)",
+              border: "none",
             }}
           >
             刷新数据
@@ -92,8 +105,8 @@ export const AnalyticsDashboard: React.FC = () => {
         </Space>
       </div>
 
-      {/* 概览统计卡片 */}
-      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+      {/* 概览统计卡片 - 第一行 */}
+      <Row gutter={[16, 16]} style={{ marginBottom: "24px" }}>
         <Col xs={24} sm={12} lg={6}>
           <StatCard
             title="总 KOL 数"
@@ -105,11 +118,20 @@ export const AnalyticsDashboard: React.FC = () => {
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <StatCard
+            title="总联系数"
+            value={overviewStats?.totalContacts || 0}
+            icon={<PhoneOutlined />}
+            loading={loadingOverview}
+            description="除新添加外的所有 KOL 数量（6个状态之和）"
+          />
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <StatCard
             title={`${getTimeRangeLabel()}新增`}
             value={overviewStats?.newKolsThisWeek || 0}
             icon={<UserAddOutlined />}
             loading={loadingOverview}
-            description={timelineDays === 0 ? '所有时间内创建的 KOL 数量' : `过去 ${timelineDays} 天内创建的 KOL 数量`}
+            description={`过去 ${timelineDays} 天内创建的 KOL 数量`}
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
@@ -118,9 +140,13 @@ export const AnalyticsDashboard: React.FC = () => {
             value={overviewStats?.contactedThisWeek || 0}
             icon={<PhoneOutlined />}
             loading={loadingOverview}
-            description={timelineDays === 0 ? '所有时间除新增外的所有 KOL' : `过去 ${timelineDays} 天除新增外的所有 KOL`}
+            description={`过去 ${timelineDays} 天除新增外的所有 KOL`}
           />
         </Col>
+      </Row>
+
+      {/* 概览统计卡片 - 第二行 */}
+      <Row gutter={[16, 16]} style={{ marginBottom: "24px" }}>
         <Col xs={24} sm={12} lg={6}>
           <StatCard
             title="总体响应率"
@@ -129,15 +155,15 @@ export const AnalyticsDashboard: React.FC = () => {
             icon={<PercentageOutlined />}
             loading={loadingOverview}
             valueStyle={{
-              color: (overviewStats?.overallResponseRate || 0) > 50 ? '#14F195' : '#FFA500',
+              color:
+                (overviewStats?.overallResponseRate || 0) > 50
+                  ? "#14F195"
+                  : "#FFA500",
             }}
-            description="(已联系+已回复+洽谈中+合作中+已合作+已拒绝) ÷ 除新增外的所有 KOL"
+            description="除(新增外+已联系)KOL ÷ 除新增外KOL"
           />
         </Col>
-      </Row>
-
-      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
-        <Col xs={24} sm={12} lg={8}>
+        <Col xs={24} sm={12} lg={6}>
           <StatCard
             title={`${getTimeRangeLabel()}响应率`}
             value={overviewStats?.weeklyResponseRate || 0}
@@ -145,12 +171,15 @@ export const AnalyticsDashboard: React.FC = () => {
             icon={<PercentageOutlined />}
             loading={loadingOverview}
             valueStyle={{
-              color: (overviewStats?.weeklyResponseRate || 0) > 50 ? '#14F195' : '#FFA500',
+              color:
+                (overviewStats?.weeklyResponseRate || 0) > 50
+                  ? "#14F195"
+                  : "#FFA500",
             }}
-            description={timelineDays === 0 ? '(已联系+已回复+洽谈中+合作中+已合作+已拒绝) ÷ 除新增外的所有 KOL' : `过去 ${timelineDays} 天的响应率`}
+            description={`过去 ${timelineDays} 天的响应率`}
           />
         </Col>
-        <Col xs={24} sm={12} lg={8}>
+        <Col xs={24} sm={12} lg={6}>
           <StatCard
             title="活跃合作数"
             value={overviewStats?.activePartnerships || 0}
@@ -159,14 +188,17 @@ export const AnalyticsDashboard: React.FC = () => {
             description="状态为「合作中」的 KOL 数量"
           />
         </Col>
-        <Col xs={24} sm={12} lg={8}>
+        <Col xs={24} sm={12} lg={6}>
           <StatCard
             title="待跟进数"
             value={overviewStats?.pendingFollowups || 0}
             icon={<BellOutlined />}
             loading={loadingOverview}
             valueStyle={{
-              color: (overviewStats?.pendingFollowups || 0) > 0 ? '#FFA500' : '#14F195',
+              color:
+                (overviewStats?.pendingFollowups || 0) > 0
+                  ? "#FFA500"
+                  : "#14F195",
             }}
             description="状态为「已回复」需要跟进的 KOL"
           />
@@ -174,7 +206,7 @@ export const AnalyticsDashboard: React.FC = () => {
       </Row>
 
       {/* KOL 分布图表 */}
-      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+      <Row gutter={[16, 16]} style={{ marginBottom: "24px" }}>
         <Col xs={24} lg={12}>
           <FollowerDistributionChart
             data={kolDistributions?.byFollowerCount || []}
@@ -189,7 +221,7 @@ export const AnalyticsDashboard: React.FC = () => {
         </Col>
       </Row>
 
-      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+      <Row gutter={[16, 16]} style={{ marginBottom: "24px" }}>
         <Col xs={24} lg={12}>
           <ContentCategoryChart
             data={kolDistributions?.byContentCategory || []}
@@ -205,7 +237,7 @@ export const AnalyticsDashboard: React.FC = () => {
       </Row>
 
       {/* 语言分布（折线图）和模板分类统计（柱状图）*/}
-      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+      <Row gutter={[16, 16]} style={{ marginBottom: "24px" }}>
         <Col xs={24} lg={12}>
           <LanguageDistributionChart
             data={kolDistributions?.byLanguage || []}

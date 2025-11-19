@@ -81,33 +81,27 @@ export class AnalyticsService {
     });
 
     // 2. 时间范围内新增 KOL 数
-    // 如果是所有时间（days=0），返回总 KOL 数
-    // 如果是指定时间范围，返回该时间范围内创建的 KOL 数量
     const newKolsThisWeek = await prisma.kOL.count({
       where: {
         userId,
-        ...(days === 0
-          ? {}  // 所有时间：返回所有 KOL（等同于 totalKols）
-          : { createdAt: { gte: timeStart } }  // 指定时间：返回时间范围内创建的 KOL
-        ),
+        createdAt: { gte: timeStart },
       },
     });
 
-    // 3. 时间范围内联系数 - 除新增外的所有 6 个状态的总和
-    // 状态: contacted, replied, negotiating, cooperating, cooperated, rejected
+    // 3. 时间范围内联系数 - 统计时间范围内更新的除新添加外的6个状态
     const nonNewStatuses = ['contacted', 'replied', 'negotiating', 'cooperating', 'cooperated', 'rejected'];
+    const responseStatuses = ['replied', 'negotiating', 'cooperating', 'cooperated', 'rejected'];
 
     const contactedThisWeek = await prisma.kOL.count({
       where: {
         userId,
         status: { in: nonNewStatuses },
-        ...(days > 0 && timeStart ? { updatedAt: { gte: timeStart } } : {}),
+        updatedAt: { gte: timeStart },
       },
     });
 
     // 4. 总体响应率 - (已回复+洽谈中+合作中+已合作+已拒绝) / 除新增外的所有 6 个状态
     // 响应状态: replied, negotiating, cooperating, cooperated, rejected (不包括 contacted)
-    const responseStatuses = ['replied', 'negotiating', 'cooperating', 'cooperated', 'rejected'];
 
     const totalContacts = await prisma.kOL.count({
       where: {
@@ -129,12 +123,11 @@ export class AnalyticsService {
       : 0;
 
     // 5. 时间范围内响应率 - 时间范围内的响应数 / 时间范围内的联系数
-    // 如果是所有时间（days=0），weeklyResponseRate 和 overallResponseRate 相同
     const weeklyContacts = await prisma.kOL.count({
       where: {
         userId,
         status: { in: nonNewStatuses },
-        ...(days > 0 && timeStart ? { updatedAt: { gte: timeStart } } : {}),
+        updatedAt: { gte: timeStart },
       },
     });
 
@@ -142,7 +135,7 @@ export class AnalyticsService {
       where: {
         userId,
         status: { in: responseStatuses },
-        ...(days > 0 && timeStart ? { updatedAt: { gte: timeStart } } : {}),
+        updatedAt: { gte: timeStart },
       },
     });
 
