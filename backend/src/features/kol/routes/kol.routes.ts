@@ -38,6 +38,12 @@ router.get('/', kolController.getKOLList);
 router.get('/:id', kolController.getKOLById);
 
 /**
+ * GET /api/v1/kols/:id/history
+ * 获取 KOL 修改历史
+ */
+router.get('/:id/history', kolController.getKOLHistory);
+
+/**
  * PUT /api/v1/kols/:id
  * 更新 KOL 信息
  */

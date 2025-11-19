@@ -79,6 +79,30 @@ class KOLService {
   async deleteKOL(id: number): Promise<void> {
     await api.delete(`/kols/${id}`);
   }
+
+  /**
+   * 获取 KOL 修改历史
+   */
+  async getKOLHistory(id: number): Promise<Array<{
+    id: number;
+    fieldName: string;
+    oldValue: string | null;
+    newValue: string | null;
+    createdAt: string;
+  }>> {
+    const response = await api.get<{
+      success: boolean;
+      message: string;
+      data: Array<{
+        id: number;
+        fieldName: string;
+        oldValue: string | null;
+        newValue: string | null;
+        createdAt: string;
+      }>;
+    }>(`/kols/${id}/history`);
+    return response.data.data;
+  }
 }
 
 // 导出单例

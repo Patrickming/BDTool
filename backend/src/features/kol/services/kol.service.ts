@@ -8,6 +8,7 @@ import { BadRequestError, NotFoundError } from '@common/errors/app-error';
 import { CreateKOLDTO, parseTwitterUsername } from '../dto/create-kol.dto';
 import { UpdateKOLDTO } from '../dto/update-kol.dto';
 import { KOLQueryDTO } from '../dto/kol-query.dto';
+import { recordKOLChanges, compareKOLData, KOL_TRACKED_FIELDS } from '../../../services/kol-history.service';
 
 /**
  * KOL 列表响应接口
@@ -111,6 +112,11 @@ export class KOLService {
         updatedAt: true,
       },
     });
+
+    // 4. 记录初始状态到历史（用于追踪 KOL 创建）
+    await recordKOLChanges(kol.id, userId, [
+      { fieldName: 'status', oldValue: null, newValue: kol.status },
+    ]);
 
     logger.info(`KOL 创建成功: ${kol.id} - @${kol.username}`);
     return kol;
@@ -397,7 +403,13 @@ export class KOLService {
       data.accountCreated = new Date(updateDto.accountCreated);
     }
 
-    // 3. 更新 KOL
+    // 3. 比较变更并记录历史
+    const changes = compareKOLData(existing as Record<string, unknown>, data, KOL_TRACKED_FIELDS);
+    if (changes.length > 0) {
+      await recordKOLChanges(kolId, userId, changes);
+    }
+
+    // 4. 更新 KOL
     const kol = await prisma.kOL.update({
       where: { id: kolId },
       data,
@@ -422,7 +434,7 @@ export class KOLService {
       },
     });
 
-    logger.info(`KOL 更新成功: ${kol.id} - @${kol.username}`);
+    logger.info(`KOL 更新成功: ${kol.id} - @${kol.username}, 记录了 ${changes.length} 个字段变更`);
     return kol;
   }
 

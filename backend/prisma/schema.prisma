@@ -66,12 +66,34 @@ model KOL {
   contactLogs     ContactLog[]
   tweets          Tweet[]
   kolTags         KOLTag[]
+  history         KOLHistory[]
 
   @@index([userId])
   @@index([status])
   @@index([qualityScore])
   @@index([followerCount])
   @@index([contentCategory])
+}
+
+// KOL 修改历史表
+model KOLHistory {
+  id          Int      @id @default(autoincrement())
+  kolId       Int
+  kol         KOL      @relation(fields: [kolId], references: [id], onDelete: Cascade)
+  userId      Int      // 操作用户 ID
+
+  // 变更记录
+  fieldName   String   // 变更的字段名：'status', 'customNotes', 'qualityScore' 等
+  oldValue    String?  // 旧值（JSON 字符串）
+  newValue    String?  // 新值（JSON 字符串）
+
+  // 时间戳
+  createdAt   DateTime @default(now())
+
+  @@index([kolId])
+  @@index([userId])
+  @@index([createdAt])
+  @@index([fieldName])
 }
 
 // 模板表（主表 - 多语言模板容器）

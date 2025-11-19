@@ -10,6 +10,7 @@ import { createKOLSchema, batchImportSchema } from '../dto/create-kol.dto';
 import { updateKOLSchema } from '../dto/update-kol.dto';
 import { kolQuerySchema } from '../dto/kol-query.dto';
 import { kolService } from '../services/kol.service';
+import { getKOLHistory } from '../../../services/kol-history.service';
 import { logger } from '@config/logger.config';
 
 /**
@@ -151,6 +152,30 @@ export class KOLController {
 
     // 3. 返回成功响应
     return successResponse(res, null, 'KOL 删除成功');
+  });
+
+  /**
+   * 获取 KOL 修改历史
+   * GET /api/v1/kols/:id/history
+   */
+  getKOLHistory = asyncHandler(async (req: Request, res: Response) => {
+    const kolId = parseInt(req.params.id);
+
+    logger.info(`用户 ${req.user?.id} 请求 KOL 历史: ${kolId}`);
+
+    // 1. 验证 ID
+    if (isNaN(kolId)) {
+      throw new ValidationError('无效的 KOL ID');
+    }
+
+    // 2. 验证 KOL 存在且属于该用户
+    await kolService.getKOLById(req.user!.id, kolId);
+
+    // 3. 获取历史记录
+    const history = await getKOLHistory(kolId);
+
+    // 4. 返回历史数据
+    return successResponse(res, history, '获取 KOL 历史记录成功');
   });
 }
 

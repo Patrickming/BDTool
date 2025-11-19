@@ -4,23 +4,63 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Descriptions, Button, Space, Spin, Tag, Divider, Avatar, Row, Col, Statistic } from 'antd';
-import { ArrowLeftOutlined, EditOutlined, TwitterOutlined, UserOutlined, CalendarOutlined } from '@ant-design/icons';
+import { Card, Descriptions, Button, Space, Spin, Tag, Divider, Avatar, Row, Col, Statistic, Table, Empty } from 'antd';
+import { ArrowLeftOutlined, TwitterOutlined, UserOutlined, HistoryOutlined, CalendarOutlined } from '@ant-design/icons';
 import KOLStatusBadge from '@/components/KOL/KOLStatusBadge';
 import QualityScoreBar from '@/components/KOL/QualityScoreBar';
 import { kolService } from '@/services/kol.service';
 import type { KOL } from '@/types/kol';
 import { ContentCategoryConfig } from '@/types/kol';
+import type { ColumnsType } from 'antd/es/table';
+
+// 历史记录类型
+interface KOLHistoryRecord {
+  id: number;
+  fieldName: string;
+  oldValue: string | null;
+  newValue: string | null;
+  createdAt: string;
+}
+
+// 字段名称映射
+const fieldNameMap: Record<string, string> = {
+  status: '状态',
+  customNotes: '备注',
+  qualityScore: '质量评分',
+  contentCategory: '内容分类',
+  language: '语言',
+  followerCount: '粉丝数',
+  followingCount: '关注数',
+  bio: '简介',
+  displayName: '显示名称',
+  username: '用户名',
+  verified: '认证状态',
+  profileImgUrl: '头像',
+};
+
+// 状态值映射
+const statusValueMap: Record<string, string> = {
+  new: '新添加',
+  contacted: '已联系',
+  replied: '已回复',
+  negotiating: '洽谈中',
+  cooperating: '合作中',
+  cooperated: '已合作',
+  rejected: '已拒绝',
+};
 
 const KOLDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [kol, setKol] = useState<KOL | null>(null);
   const [loading, setLoading] = useState(true);
+  const [history, setHistory] = useState<KOLHistoryRecord[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
 
   useEffect(() => {
     if (id) {
       loadKOLDetail(parseInt(id));
+      loadKOLHistory(parseInt(id));
     }
   }, [id]);
 
@@ -35,6 +75,76 @@ const KOLDetail: React.FC = () => {
       setLoading(false);
     }
   };
+
+  const loadKOLHistory = async (kolId: number) => {
+    try {
+      setHistoryLoading(true);
+      const data = await kolService.getKOLHistory(kolId);
+      setHistory(data);
+    } catch (error) {
+      console.error('加载 KOL 历史记录失败:', error);
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
+
+  // 格式化历史记录的值
+  const formatHistoryValue = (fieldName: string, value: string | null): string => {
+    if (value === null) return '-';
+
+    try {
+      const parsed = JSON.parse(value);
+
+      // 状态字段特殊处理
+      if (fieldName === 'status') {
+        return statusValueMap[parsed] || parsed;
+      }
+
+      // 布尔值处理
+      if (typeof parsed === 'boolean') {
+        return parsed ? '是' : '否';
+      }
+
+      // 内容分类处理
+      if (fieldName === 'contentCategory') {
+        return ContentCategoryConfig[parsed]?.label || parsed;
+      }
+
+      return String(parsed);
+    } catch {
+      return value;
+    }
+  };
+
+  // 历史记录表格列定义
+  const historyColumns: ColumnsType<KOLHistoryRecord> = [
+    {
+      title: '时间',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      width: 180,
+      render: (date: string) => new Date(date).toLocaleString('zh-CN'),
+    },
+    {
+      title: '修改字段',
+      dataIndex: 'fieldName',
+      key: 'fieldName',
+      width: 120,
+      render: (fieldName: string) => fieldNameMap[fieldName] || fieldName,
+    },
+    {
+      title: '原值',
+      dataIndex: 'oldValue',
+      key: 'oldValue',
+      render: (value: string | null, record) => formatHistoryValue(record.fieldName, value),
+    },
+    {
+      title: '新值',
+      dataIndex: 'newValue',
+      key: 'newValue',
+      render: (value: string | null, record) => formatHistoryValue(record.fieldName, value),
+    },
+  ];
 
   if (loading) {
     return (
@@ -73,21 +183,12 @@ const KOLDetail: React.FC = () => {
     <div className="animate-fade-in-up">
         {/* 顶部操作栏 */}
         <div style={{ marginBottom: 24 }}>
-          <Space>
-            <Button
-              icon={<ArrowLeftOutlined />}
-              onClick={() => navigate('/kols')}
-            >
-              返回列表
-            </Button>
-            <Button
-              type="primary"
-              icon={<EditOutlined />}
-              onClick={() => navigate(`/kols/${kol.id}/edit`)}
-            >
-              编辑
-            </Button>
-          </Space>
+          <Button
+            icon={<ArrowLeftOutlined />}
+            onClick={() => navigate('/kols')}
+          >
+            返回列表
+          </Button>
         </div>
 
         {/* 基本信息卡片 */}
@@ -188,20 +289,37 @@ const KOLDetail: React.FC = () => {
           </Descriptions>
         </Card>
 
-        {/* 联系记录卡片（占位） */}
+        {/* 修改历史卡片 */}
         <Card
-          title="联系记录"
-          extra={
-            <Button type="link" disabled>
-              添加记录
-            </Button>
+          title={
+            <Space>
+              <HistoryOutlined />
+              修改历史
+            </Space>
           }
         >
-          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--text-secondary)' }}>
-            <CalendarOutlined style={{ fontSize: 48, marginBottom: 16 }} />
-            <p>暂无联系记录</p>
-            <p style={{ fontSize: 12 }}>此功能将在后续版本中实现</p>
-          </div>
+          {historyLoading ? (
+            <div style={{ textAlign: 'center', padding: '40px 0' }}>
+              <Spin />
+            </div>
+          ) : history.length > 0 ? (
+            <Table
+              columns={historyColumns}
+              dataSource={history}
+              rowKey="id"
+              pagination={{
+                pageSize: 10,
+                showSizeChanger: false,
+                showTotal: (total) => `共 ${total} 条记录`,
+              }}
+              size="small"
+            />
+          ) : (
+            <Empty
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+              description="暂无修改记录"
+            />
+          )}
         </Card>
     </div>
   );

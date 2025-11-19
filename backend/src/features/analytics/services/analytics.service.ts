@@ -81,18 +81,40 @@ export class AnalyticsService {
     });
 
     // 2. 时间范围内新增 KOL 数
-    const newKolsThisWeek = await prisma.kOL.count({
+    // 优先从历史记录中查询（oldValue = null 表示新创建）
+    const newKolsFromHistory = await prisma.kOLHistory.count({
+      where: {
+        userId,
+        fieldName: 'status',
+        oldValue: null, // null 表示新创建的 KOL
+        createdAt: { gte: timeStart },
+      },
+    });
+
+    // 如果历史记录没有数据，回退到原有逻辑
+    const newKolsThisWeek = newKolsFromHistory > 0 ? newKolsFromHistory : await prisma.kOL.count({
       where: {
         userId,
         createdAt: { gte: timeStart },
       },
     });
 
-    // 3. 时间范围内联系数 - 统计时间范围内更新的除新添加外的6个状态
+    // 3. 时间范围内联系数 - 统计时间范围内状态变为联系状态的 KOL
     const nonNewStatuses = ['contacted', 'replied', 'negotiating', 'cooperating', 'cooperated', 'rejected'];
     const responseStatuses = ['replied', 'negotiating', 'cooperating', 'cooperated', 'rejected'];
 
-    const contactedThisWeek = await prisma.kOL.count({
+    // 优先从历史记录中查询状态变更
+    const contactedFromHistory = await prisma.kOLHistory.count({
+      where: {
+        userId,
+        fieldName: 'status',
+        newValue: { in: nonNewStatuses.map(s => JSON.stringify(s)) },
+        createdAt: { gte: timeStart },
+      },
+    });
+
+    // 如果历史记录没有数据，回退到原有逻辑
+    const contactedThisWeek = contactedFromHistory > 0 ? contactedFromHistory : await prisma.kOL.count({
       where: {
         userId,
         status: { in: nonNewStatuses },
@@ -123,21 +145,49 @@ export class AnalyticsService {
       : 0;
 
     // 5. 时间范围内响应率 - 时间范围内的响应数 / 时间范围内的联系数
-    const weeklyContacts = await prisma.kOL.count({
+    // 优先从历史记录中查询
+    const weeklyContactsFromHistory = await prisma.kOLHistory.count({
       where: {
         userId,
-        status: { in: nonNewStatuses },
-        updatedAt: { gte: timeStart },
+        fieldName: 'status',
+        newValue: { in: nonNewStatuses.map(s => JSON.stringify(s)) },
+        createdAt: { gte: timeStart },
       },
     });
 
-    const weeklyResponses = await prisma.kOL.count({
+    const weeklyResponsesFromHistory = await prisma.kOLHistory.count({
       where: {
         userId,
-        status: { in: responseStatuses },
-        updatedAt: { gte: timeStart },
+        fieldName: 'status',
+        newValue: { in: responseStatuses.map(s => JSON.stringify(s)) },
+        createdAt: { gte: timeStart },
       },
     });
+
+    // 如果历史记录有数据，使用历史记录；否则回退到原有逻辑
+    let weeklyContacts: number;
+    let weeklyResponses: number;
+
+    if (weeklyContactsFromHistory > 0) {
+      weeklyContacts = weeklyContactsFromHistory;
+      weeklyResponses = weeklyResponsesFromHistory;
+    } else {
+      weeklyContacts = await prisma.kOL.count({
+        where: {
+          userId,
+          status: { in: nonNewStatuses },
+          updatedAt: { gte: timeStart },
+        },
+      });
+
+      weeklyResponses = await prisma.kOL.count({
+        where: {
+          userId,
+          status: { in: responseStatuses },
+          updatedAt: { gte: timeStart },
+        },
+      });
+    }
 
     const weeklyResponseRate = weeklyContacts > 0
       ? Math.round((weeklyResponses / weeklyContacts) * 100 * 10) / 10
