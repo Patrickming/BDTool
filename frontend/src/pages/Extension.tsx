@@ -53,7 +53,7 @@ export default function Extension() {
   const loadExtensionToken = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3000/api/v1/extension/token",
+        "/api/v1/extension/token",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
@@ -100,7 +100,7 @@ export default function Extension() {
 
           // 激活 Token（开始/刷新倒计时）
           const response = await fetch(
-            "http://localhost:3000/api/v1/extension/token/activate",
+            "/api/v1/extension/token/activate",
             {
               method: "POST",
               headers: {
@@ -126,7 +126,7 @@ export default function Extension() {
     setIsGenerating(true);
     try {
       const response = await fetch(
-        "http://localhost:3000/api/v1/extension/token/generate",
+        "/api/v1/extension/token/generate",
         {
           method: "POST",
           headers: {

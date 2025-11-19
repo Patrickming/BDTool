@@ -62,10 +62,4 @@ router.use('/translation', translationRoutes);
  */
 router.use('/ai', aiRoutes);
 
-/**
- * 联系记录路由（待实现）
- * /api/v1/contacts/*
- */
-// router.use('/contacts', contactRoutes);
-
 export default router;
