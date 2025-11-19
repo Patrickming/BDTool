@@ -4,8 +4,8 @@
  */
 
 import { Request, Response } from 'express';
-import { prisma } from '../database/client';
-import { logger } from '../config/logger.config';
+import { prisma } from '@database/client';
+import { logger } from '@config/logger.config';
 import crypto from 'crypto';
 import archiver from 'archiver';
 import path from 'path';
@@ -146,7 +146,7 @@ export async function downloadExtension(req: Request, res: Response) {
     logger.info(`用户 ${userId} 请求下载插件包`);
 
     // extension 文件夹的路径（从 backend 目录向上一级，然后进入 extension）
-    const extensionPath = path.resolve(__dirname, '../../..', 'extension');
+    const extensionPath = path.resolve(__dirname, '../../../..', 'extension');
 
     // 检查路径是否存在
     if (!fs.existsSync(extensionPath)) {

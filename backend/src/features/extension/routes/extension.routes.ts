@@ -9,7 +9,7 @@ import {
   activateExtensionToken,
   downloadExtension,
 } from '../controllers/extension.controller';
-import { requireAuth } from '../middleware/auth.middleware';
+import { requireAuth } from '@middleware/auth.middleware';
 
 const router = Router();
 

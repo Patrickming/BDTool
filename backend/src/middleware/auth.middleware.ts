@@ -5,7 +5,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { UserRole } from '@prisma/client';
-import { verifyExtensionToken } from '../controllers/extension.controller';
+import { verifyExtensionToken } from '@features/extension/controllers/extension.controller';
 
 // 扩展 Express Request 类型，添加 user 属性
 declare global {

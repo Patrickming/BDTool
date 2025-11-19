@@ -10,7 +10,7 @@ import { createKOLSchema, batchImportSchema } from '../dto/create-kol.dto';
 import { updateKOLSchema } from '../dto/update-kol.dto';
 import { kolQuerySchema } from '../dto/kol-query.dto';
 import { kolService } from '../services/kol.service';
-import { getKOLHistory } from '../../../services/kol-history.service';
+import { getKOLHistory } from '../services/kol-history.service';
 import { logger } from '@config/logger.config';
 
 /**

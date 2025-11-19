@@ -9,7 +9,7 @@ import {
   updateUser,
   deleteUser,
 } from '../controllers/user.controller';
-import { requireAuth, requireAdmin, requireOwnerOrAdmin } from '../middleware/auth.middleware';
+import { requireAuth, requireAdmin, requireOwnerOrAdmin } from '@middleware/auth.middleware';
 
 const router = Router();
 

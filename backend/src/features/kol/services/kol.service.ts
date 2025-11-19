@@ -8,7 +8,7 @@ import { BadRequestError, NotFoundError } from '@common/errors/app-error';
 import { CreateKOLDTO, parseTwitterUsername } from '../dto/create-kol.dto';
 import { UpdateKOLDTO } from '../dto/update-kol.dto';
 import { KOLQueryDTO } from '../dto/kol-query.dto';
-import { recordKOLChanges, compareKOLData, KOL_TRACKED_FIELDS } from '../../../services/kol-history.service';
+import { recordKOLChanges, compareKOLData, KOL_TRACKED_FIELDS } from './kol-history.service';
 
 /**
  * KOL 列表响应接口

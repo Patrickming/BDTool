@@ -284,8 +284,8 @@ function renderKOLList() {
               <input
                 type="number"
                 id="quality_${index}"
-                min="1"
-                max="5"
+                min="0"
+                max="100"
                 value="${kol.qualityScore || ""}"
                 placeholder="0-100"
                 style="width: 100%; padding: 6px; background: #1e2329; border: 1px solid #444; border-radius: 4px; color: #fff;"
@@ -327,6 +327,9 @@ function renderKOLList() {
               <option value="en" ${
                 (kol.language === "en" || !kol.language) ? "selected" : ""
               }>🇺🇸 英语</option>
+              <option value="zh" ${
+                kol.language === "zh" ? "selected" : ""
+              }>🇨🇳 中文</option>
               <option value="ja" ${
                 kol.language === "ja" ? "selected" : ""
               }>🇯🇵 日语</option>
@@ -351,6 +354,21 @@ function renderKOLList() {
               <option value="pt" ${
                 kol.language === "pt" ? "selected" : ""
               }>🇵🇹 葡萄牙语</option>
+              <option value="ar" ${
+                kol.language === "ar" ? "selected" : ""
+              }>🇸🇦 阿拉伯语</option>
+              <option value="vi" ${
+                kol.language === "vi" ? "selected" : ""
+              }>🇻🇳 越南语</option>
+              <option value="th" ${
+                kol.language === "th" ? "selected" : ""
+              }>🇹🇭 泰语</option>
+              <option value="id" ${
+                kol.language === "id" ? "selected" : ""
+              }>🇮🇩 印尼语</option>
+              <option value="tr" ${
+                kol.language === "tr" ? "selected" : ""
+              }>🇹🇷 土耳其语</option>
             </select>
           </div>
 

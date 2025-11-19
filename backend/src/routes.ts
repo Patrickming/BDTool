@@ -4,11 +4,11 @@
 
 import { Router } from 'express';
 import authRoutes from '@features/auth/routes/auth.routes';
-import userRoutes from './routes/user.routes';
+import userRoutes from '@features/user/routes/user.routes';
 import kolRoutes from '@features/kol/routes/kol.routes';
 import templateRoutes from '@features/templates/routes/template.routes';
 import analyticsRoutes from '@features/analytics/routes/analytics.routes';
-import extensionRoutes from './routes/extension.routes';
+import extensionRoutes from '@features/extension/routes/extension.routes';
 import { translationRoutes } from '@features/translation/routes/translation.routes';
 import aiRoutes from '@features/ai/routes/ai.routes';
 

@@ -43,6 +43,7 @@ export type KOLStatusType = z.infer<typeof KOLStatus>;
  */
 export const KOLLanguage = z.enum([
   'en',  // 英语
+  'zh',  // 中文
   'ja',  // 日语
   'ko',  // 韩语
   'fr',  // 法语
@@ -51,6 +52,11 @@ export const KOLLanguage = z.enum([
   'hi',  // 印地语
   'es',  // 西班牙语
   'pt',  // 葡萄牙语
+  'ar',  // 阿拉伯语
+  'vi',  // 越南语
+  'th',  // 泰语
+  'id',  // 印尼语
+  'tr',  // 土耳其语
 ]);
 
 export type KOLLanguageType = z.infer<typeof KOLLanguage>;
