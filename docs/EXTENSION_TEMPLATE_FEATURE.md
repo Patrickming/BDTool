@@ -246,19 +246,21 @@ Body:
 ### 文件结构
 ```
 extension/
-├── manifest.json              # 插件配置
-├── side_panel.html            # 侧边栏 UI
-├── popup.js                   # 前端逻辑（942 行）
-├── background.js              # 后台服务（API 调用）
-├── content-twitter-extractor.js  # Twitter DOM 提取
-└── icons/                     # 插件图标
+├── manifest.json                   # 插件配置
+├── side_panel.html                 # 侧边栏 UI
+├── popup.js                        # 前端逻辑（约 1080 行）
+├── background.js                   # 后台服务（API 调用）
+├── content-twitter-extractor.js    # Twitter DOM 提取
+├── icons/                          # 插件图标
+├── README.md                       # 插件说明文档
+└── SIDE_PANEL_GUIDE.md             # 侧边栏使用指南
 ```
 
 ### 关键代码位置
-- **模板搜索**：`popup.js:744-755` (templateSearchInput 事件)
-- **KOL 搜索**：`popup.js:766-780` (kolSearchInput 事件)
-- **AI 改写逻辑**：`popup.js:850-915` (copyTemplateBtn 点击事件)
-- **API 调用**：`background.js:189-324` (getTemplates, previewTemplate, rewriteText)
+- **模板搜索**：`popup.js` (templateSearchInput 事件监听器)
+- **KOL 搜索**：`popup.js` (kolSearchInput 事件监听器)
+- **AI 改写逻辑**：`popup.js` (copyTemplateBtn 点击事件)
+- **API 调用**：`background.js` (getTemplates, previewTemplate, rewriteText 函数)
 
 ## 更新日志
 

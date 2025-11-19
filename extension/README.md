@@ -102,11 +102,12 @@
 ```
 extension/
 ├── manifest.json                   # 扩展配置文件（Manifest V3）
-├── sidepanel.html                  # 侧边栏界面
-├── sidepanel.js                    # 侧边栏逻辑
-├── content.js                      # Twitter 数据提取脚本
+├── side_panel.html                 # 侧边栏界面
+├── popup.js                        # 侧边栏/弹窗逻辑
+├── content-twitter-extractor.js    # Twitter 数据提取脚本
 ├── background.js                   # 后台服务和 API 调用
 ├── icons/                          # 图标资源
+├── SIDE_PANEL_GUIDE.md             # 侧边栏使用指南
 └── README.md                       # 本文件
 ```
 
