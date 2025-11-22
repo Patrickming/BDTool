@@ -388,7 +388,8 @@ function renderKOLList() {
               kol.status
             }</span>
             <button
-              onclick="removeKOL(${index})"
+              class="remove-kol-btn"
+              data-index="${index}"
               style="padding: 4px 12px; background: #3a1a1a; color: #ff6b6b; border: 1px solid #ff6b6b; border-radius: 4px; cursor: pointer; font-size: 12px;"
             >
               移除
@@ -400,10 +401,19 @@ function renderKOLList() {
   });
 
   kolListContainer.innerHTML = html;
+
+  // 添加移除按钮的事件委托
+  const removeButtons = kolListContainer.querySelectorAll('.remove-kol-btn');
+  removeButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const index = parseInt(this.getAttribute('data-index'));
+      removeKOL(index);
+    });
+  });
 }
 
-// 移除 KOL（全局函数）
-window.removeKOL = function (index) {
+// 移除 KOL
+function removeKOL(index) {
   if (confirm(`确定移除 @${localKOLs[index].username}?`)) {
     localKOLs.splice(index, 1);
     collectedCount = localKOLs.length;
@@ -415,7 +425,7 @@ window.removeKOL = function (index) {
       }
     });
   }
-};
+}
 
 // 保存编辑
 saveEditsBtn.addEventListener("click", () => {
