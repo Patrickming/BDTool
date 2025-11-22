@@ -67,13 +67,14 @@ export class AnalyticsService {
   async getOverviewStats(userId: number, days: number = 7): Promise<OverviewStats> {
     logger.info(`用户 ${userId} 获取概览统计 (${days === 0 ? '所有时间' : `近${days}天`})`);
 
-    const now = new Date();
     let timeStart: Date | undefined;
 
-    // 如果 days > 0，计算时间范围起点；如果 days === 0，不限制时间（所有时间）
+    // 如果 days > 0，计算时间范围起点（包含今天共 days 天）；如果 days === 0，不限制时间（所有时间）
     if (days > 0) {
-      timeStart = new Date(now);
-      timeStart.setDate(now.getDate() - days);
+      const now = new Date();
+      const todayStr = now.toISOString().split('T')[0];
+      timeStart = new Date(todayStr);
+      timeStart.setUTCDate(timeStart.getUTCDate() - (days - 1));
     }
 
     // 1. 总 KOL 数
