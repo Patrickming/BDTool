@@ -2,16 +2,17 @@
  * 分析仪表盘页面
  */
 
-import React, { useEffect } from "react";
-import { Row, Col, Button, Select, Space } from "antd";
+import React, { useEffect, useMemo } from "react";
+import { Row, Col, Select, Space } from "antd";
 import {
-  ReloadOutlined,
   TeamOutlined,
   UserAddOutlined,
   PhoneOutlined,
   PercentageOutlined,
   StarOutlined,
   BellOutlined,
+  CalendarOutlined,
+  GlobalOutlined,
 } from "@ant-design/icons";
 import { useAnalyticsStore } from "../store/analytics.store";
 import { StatCard } from "../components/analytics/StatCard";
@@ -45,10 +46,6 @@ export const AnalyticsDashboard: React.FC = () => {
     fetchAllAnalytics();
   }, [fetchAllAnalytics]);
 
-  const handleRefresh = () => {
-    fetchAllAnalytics();
-  };
-
   const handleTimelineDaysChange = async (days: number) => {
     setTimelineDays(days);
     // 同时更新概览统计和时间线数据
@@ -65,6 +62,37 @@ export const AnalyticsDashboard: React.FC = () => {
     return `近${timelineDays}天`;
   };
 
+  // 计算时间范围显示
+  const timeRangeDisplay = useMemo(() => {
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
+    const startDate = new Date(todayStr);
+    startDate.setUTCDate(startDate.getUTCDate() - (timelineDays - 1));
+    const startStr = startDate.toISOString().split('T')[0];
+
+    // 格式化为 MM/DD
+    const formatDate = (dateStr: string) => {
+      const [, month, day] = dateStr.split('-');
+      return `${month}/${day}`;
+    };
+
+    // 获取 UTC 偏移量
+    const getUTCOffset = () => {
+      const offset = now.getTimezoneOffset();
+      const hours = Math.abs(Math.floor(offset / 60));
+      const minutes = Math.abs(offset % 60);
+      const sign = offset <= 0 ? '+' : '-';
+      return `UTC${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    };
+
+    return {
+      start: formatDate(startStr),
+      end: formatDate(todayStr),
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      utcOffset: getUTCOffset(),
+    };
+  }, [timelineDays]);
+
   return (
     <div style={{ padding: "24px", background: "#0a0a0f", minHeight: "100vh" }}>
       {/* 页面标题和操作 */}
@@ -77,8 +105,8 @@ export const AnalyticsDashboard: React.FC = () => {
         }}
       >
         <h1 style={{ color: "#fff", fontSize: "28px", margin: 0 }}>数据分析</h1>
-        <Space>
-          <span style={{ color: "#8a8a8a", marginRight: "8px" }}>
+        <Space size="middle">
+          <span style={{ color: "#8a8a8a" }}>
             时间线范围：
           </span>
           <Select
@@ -91,17 +119,28 @@ export const AnalyticsDashboard: React.FC = () => {
             <Option value={60}>近 60 天</Option>
             <Option value={90}>近 90 天</Option>
           </Select>
-          <Button
-            type="primary"
-            icon={<ReloadOutlined />}
-            onClick={handleRefresh}
+          <div
             style={{
-              background: "linear-gradient(90deg, #9945FF 0%, #14F195 100%)",
-              border: "none",
+              display: "flex",
+              alignItems: "center",
+              gap: "16px",
+              padding: "8px 16px",
+              background: "rgba(153, 69, 255, 0.1)",
+              borderRadius: "8px",
+              border: "1px solid rgba(153, 69, 255, 0.2)",
             }}
           >
-            刷新数据
-          </Button>
+            <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "#9945FF" }}>
+              <CalendarOutlined />
+              <span style={{ color: "#fff" }}>
+                {timeRangeDisplay.start} ~ {timeRangeDisplay.end}
+              </span>
+            </span>
+            <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "#8a8a8a", fontSize: "12px" }}>
+              <GlobalOutlined />
+              {timeRangeDisplay.timezone} ({timeRangeDisplay.utcOffset})
+            </span>
+          </div>
         </Space>
       </div>
 
