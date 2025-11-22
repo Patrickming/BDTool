@@ -1,884 +1,966 @@
-# KOL-BD-Tool - Requirements Specification
+# KOL-BD-Tool - 需求规格说明书
 
-**Version:** 1.0
-**Last Updated:** 2025-11-06
-**Project:** KOL Management System for KCEX Exchange BD Team
-
----
-
-## Table of Contents
-
-1. [Project Overview](#project-overview)
-2. [User Personas](#user-personas)
-3. [Core Requirements](#core-requirements)
-4. [KOL Filtering Rules](#kol-filtering-rules)
-5. [Functional Requirements](#functional-requirements)
-6. [Non-Functional Requirements](#non-functional-requirements)
-7. [User Interface Requirements](#user-interface-requirements)
-8. [Integration Requirements](#integration-requirements)
-9. [Security Requirements](#security-requirements)
-10. [Future Enhancements](#future-enhancements)
+**版本：** 1.0
+**最后更新：** 2025-11-22
+**项目：** BD 团队 KOL 管理系统
 
 ---
 
-## 1. Project Overview
+## 目录
 
-### 1.1 Purpose
-Build a comprehensive web application to help KCEX exchange BD team efficiently discover, manage, and communicate with crypto KOLs on Twitter/X.
-
-### 1.2 Background
-- **Current Pain Point #1:** Manual template management and risk of account restrictions due to repetitive messages
-- **Current Pain Point #2:** Time-consuming KOL discovery process (need to contact 100+ new KOLs per week)
-- **Current Pain Point #3:** Lack of systematic relationship tracking and follow-up management
-
-### 1.3 Goals
-- **Efficiency:** Reduce KOL discovery time by 70%
-- **Organization:** Centralized CRM for all KOL relationships
-- **Safety:** Avoid Twitter account restrictions through manual sending
-- **Quality:** Focus on high-quality, relevant KOLs (contract trading focus)
-
-### 1.4 Success Metrics
-- Contact 100+ new qualified KOLs per week
-- Maintain organized database of 500+ KOLs
-- Achieve 20%+ response rate
-- Zero account suspensions
+1. [项目概述](#1-项目概述)
+2. [用户画像](#2-用户画像)
+3. [核心需求](#3-核心需求)
+4. [KOL 筛选规则](#4-kol-筛选规则)
+5. [功能需求](#5-功能需求)
+6. [非功能需求](#6-非功能需求)
+7. [用户界面需求](#7-用户界面需求)
+8. [集成需求](#8-集成需求)
+9. [安全需求](#9-安全需求)
+10. [未来增强](#10-未来增强)
 
 ---
 
-## 2. User Personas
+## 1. 项目概述
 
-### Primary User: BD Intern
-- **Name:** Alex (example)
-- **Role:** Business Development Intern at KCEX
-- **Goals:**
-  - Find 100+ new qualified crypto KOLs weekly
-  - Manage outreach to multiple KOLs simultaneously
-  - Track conversation history and follow-ups
-  - Avoid repetitive messages that trigger account restrictions
-- **Technical Skill:** Intermediate (comfortable with web apps)
-- **Pain Points:**
-  - Manual Twitter searching is time-consuming
-  - Hard to remember which KOLs have been contacted
-  - Creating unique messages for each KOL is tedious
+### 1.1 目的
 
-### Secondary User: BD Manager
-- **Role:** Team lead overseeing BD operations
-- **Goals:**
-  - Monitor team performance (contacts, response rates)
-  - Ensure consistent quality in outreach
-  - Review KOL partnership opportunities
-- **Needs:**
-  - Analytics dashboard
-  - Export functionality for reporting
+构建一个全面的 Web 应用程序，帮助 BD 团队高效地在 Twitter/X 上发现、管理和联系加密货币 KOL。
 
----
+### 1.2 背景
 
-## 3. Core Requirements
+- **痛点 #1：** 手动管理模板，发送重复消息有账号被封风险
+- **痛点 #2：** KOL 发现过程耗时（每周需要联系 100+ 新 KOL）
+- **痛点 #3：** 缺乏系统化的关系跟踪和跟进管理
 
-### 3.1 Must Have (MVP - Phase 1)
-1. ✅ KOL database with CRUD operations
-2. ✅ Message template management
-3. ✅ Manual KOL import (batch username input)
-4. ✅ KOL detail view with contact history
-5. ✅ Status tracking (new/contacted/replied/etc.)
-6. ✅ Message preview with variable substitution
-7. ✅ Copy-to-clipboard functionality
-8. ✅ Basic filtering (status, follower count)
+### 1.3 目标
 
-### 3.2 Should Have (Phase 2)
-1. ✅ AI-powered template generation
-2. ✅ Automatic KOL quality scoring
-3. ✅ Tweet content analysis
-4. ✅ Tag system for organization
-5. ✅ Analytics dashboard
-6. ✅ Browser extension for quick capture
+- **效率：** 减少 70% 的 KOL 发现时间
+- **组织：** 集中管理所有 KOL 关系的 CRM 系统
+- **安全：** 通过手动发送避免 Twitter 账号限制
+- **质量：** 专注于高质量、相关的 KOL（合约交易方向）
 
-### 3.3 Nice to Have (Phase 3)
-1. ⏳ Seed expansion (discover from existing KOLs)
-2. ⏳ Network visualization
-3. ⏳ Follow-up reminders
-4. ⏳ Team collaboration features
-5. ⏳ Multi-language UI
+### 1.4 成功指标
+
+- 每周联系 100+ 符合条件的新 KOL
+- 维护 500+ KOL 的有序数据库
+- 达到 20%+ 的响应率
+- 零账号封禁
 
 ---
 
-## 4. KOL Filtering Rules
+## 2. 用户画像
 
-### 4.1 Inclusion Criteria (All Must Be Met)
+### 主要用户：BD 实习生
 
-#### 4.1.1 Follower Count
-- **Minimum:** 1,000 followers
-- **Maximum:** 50,000 followers
-- **Rationale:**
-  - <1k: Too small influence
-  - >50k: Too expensive or already partnered with competitors
+- **角色：** CEX 商务拓展实习生
+- **目标：**
+  - 每周发现 100+ 符合条件的加密货币 KOL
+  - 同时管理对多个 KOL 的外联
+  - 跟踪对话历史和跟进
+  - 避免触发账号限制的重复消息
+- **技术能力：** 中级（熟悉 Web 应用）
+- **痛点：**
+  - 手动 Twitter 搜索耗时
+  - 难以记住哪些 KOL 已联系过
+  - 为每个 KOL 创建独特消息很繁琐
 
-#### 4.1.2 Content Category (Priority Order)
-1. **Priority 1 (Highest):** Contract Trading Analysis
-   - Keywords: "contract", "leverage", "long", "short", "futures", "perpetual", "degen", "liquidation"
-   - Content: Price predictions, entry/exit points, trading strategies
+### 次要用户：BD 经理
 
-2. **Priority 2:** Crypto Token Trading
-   - Keywords: "token", "coin", "buy", "sell", "pump", "alpha", "gem"
-   - Content: Token recommendations, market analysis
-
-3. **Priority 3:** Web3 General
-   - Keywords: "web3", "blockchain", "defi", "nft", "dao"
-   - Content: General crypto/blockchain discussion
-
-#### 4.1.3 Activity Level
-- **Requirement:** At least 1 tweet in the last 7 days
-- **Rationale:** Inactive accounts won't promote effectively
-
-#### 4.1.4 Language (EXCLUSION LIST)
-**DO NOT include KOLs who primarily post in:**
-- ❌ Chinese (Simplified/Traditional)
-- ❌ Turkish
-- ❌ Middle Eastern languages (Arabic, Hebrew)
-- ❌ Persian (Farsi)
-
-**Accepted languages:**
-- ✅ English (preferred)
-- ✅ Spanish
-- ✅ Portuguese
-- ✅ German
-- ✅ French
-- ✅ Japanese
-- ✅ Korean
-- ✅ Russian
-
-### 4.2 Exclusion Criteria (Any One Disqualifies)
-- ❌ Spam/bot accounts
-- ❌ Suspended accounts
-- ❌ Protected/private accounts
-- ❌ No profile picture
-- ❌ Generic/unclear bio
-- ❌ No crypto-related content in recent 50 tweets
-- ❌ Excessive promotional content (>80% retweets)
-
-### 4.3 Quality Scoring Algorithm
-
-**Total Score: 0-100 points**
-
-1. **Follower Count (20 points)**
-   - 1k-5k: 10 points
-   - 5k-10k: 15 points
-   - 10k-30k: 20 points
-   - 30k-50k: 15 points
-
-2. **Content Relevance (30 points)**
-   - Contract trading focus: 30 points
-   - Crypto trading focus: 20 points
-   - Web3 general: 10 points
-   - Mixed/unclear: 5 points
-
-3. **Engagement Rate (25 points)**
-   - Formula: (Avg Likes + Replies) / Follower Count * 1000
-   - >10: 25 points
-   - 5-10: 20 points
-   - 2-5: 15 points
-   - 1-2: 10 points
-   - <1: 5 points
-
-4. **Activity Level (15 points)**
-   - Daily posts (7+ tweets/week): 15 points
-   - Regular posts (3-6 tweets/week): 10 points
-   - Occasional posts (1-2 tweets/week): 5 points
-
-5. **Account Quality (10 points)**
-   - Verified badge: +5 points
-   - Account age >1 year: +3 points
-   - Complete profile (bio, location, link): +2 points
-
-**Score Interpretation:**
-- 80-100: 🌟 Excellent - High priority
-- 60-79: ✅ Good - Standard priority
-- 40-59: ⚠️ Fair - Low priority
-- <40: ❌ Poor - Consider excluding
+- **角色：** 负责 BD 运营的团队负责人
+- **目标：**
+  - 监控团队绩效（联系数、响应率）
+  - 确保外联质量一致
+  - 审核 KOL 合作机会
+- **需求：**
+  - 数据分析仪表盘
+  - 导出功能用于报告
 
 ---
 
-## 5. Functional Requirements
+## 3. 核心需求
 
-### 5.1 Module 1: Message Template Management
+### 3.1 必须实现（MVP - 第一阶段）
 
-#### FR-1.1: Template CRUD Operations
-- **Description:** Users can create, read, update, and delete message templates
-- **Acceptance Criteria:**
-  - ✅ Create new template with name, category, and content
-  - ✅ Edit existing templates
-  - ✅ Delete templates (with confirmation)
-  - ✅ View list of all templates grouped by category
+1. ✅ KOL 数据库 CRUD 操作
+2. ✅ 消息模板管理
+3. ✅ 手动批量导入 KOL（用户名批量输入）
+4. ✅ KOL 详情页含联系历史
+5. ✅ 状态跟踪（新添加/已联系/已回复等）
+6. ✅ 带变量替换的消息预览
+7. ✅ 复制到剪贴板功能
+8. ✅ 基础筛选（状态、粉丝数）
 
-#### FR-1.2: Template Categories
-- **Categories:**
-  1. Initial Contact (first DM to new KOL)
-  2. Follow-up (second contact if no response)
-  3. Negotiation (discussing terms, pricing)
-  4. Collaboration Details (finalizing partnership)
-  5. Relationship Maintenance (check-ins with existing partners)
+### 3.2 应该实现（第二阶段）
 
-#### FR-1.3: Variable Support
-- **Supported Variables:**
-  - `{{username}}` - KOL Twitter username
-  - `{{display_name}}` - KOL display name
-  - `{{follower_count}}` - Formatted follower number (e.g., "10.5K")
-  - `{{bio}}` - KOL bio text
-  - `{{my_name}}` - User's name
-  - `{{exchange_name}}` - "KCEX"
-  - `{{custom_note}}` - User-provided custom text
+1. ✅ AI 驱动的模板生成
+2. ⏳ 自动 KOL 质量评分（当前为手动）
+3. ⏳ 推文内容分析
+4. ⏳ 标签系统组织
+5. ✅ 数据分析仪表盘
+6. ✅ 浏览器插件快速捕获
 
-- **Acceptance Criteria:**
-  - ✅ Variables displayed in template editor
-  - ✅ Preview shows variables replaced with actual data
-  - ✅ Validation warns if variable syntax is incorrect
+### 3.3 锦上添花（第三阶段）
 
-#### FR-1.4: AI Template Generation
-- **Description:** Generate message templates using AI (OpenAI/Claude)
-- **Input:**
-  - Scenario (initial contact, follow-up, etc.)
-  - Tone (professional, friendly, casual)
-  - Key points to include
-  - Language preference
-
-- **Output:**
-  - 3-5 different template variations
-  - Each variation avoids repetitive phrasing
-
-- **Acceptance Criteria:**
-  - ✅ AI generation takes <10 seconds
-  - ✅ User can regenerate if unsatisfied
-  - ✅ Generated templates can be edited before saving
-  - ✅ Graceful error handling if AI API fails
-
-#### FR-1.5: Template Effectiveness Tracking
-- **Metrics:**
-  - Times used
-  - Response rate (if logged)
-  - Average response time
-
-- **Acceptance Criteria:**
-  - ✅ Display metrics on template list
-  - ✅ Sort templates by effectiveness
-  - ✅ Highlight top-performing templates
+1. ⏳ 种子扩展（从现有 KOL 发现）
+2. ⏳ 关系网络可视化
+3. ⏳ 跟进提醒
+4. ⏳ 团队协作功能
+5. ⏳ 多语言界面
 
 ---
 
-### 5.2 Module 2: KOL Discovery
+## 4. KOL 筛选规则
 
-#### FR-2.1: Manual Batch Import
-- **Description:** Import multiple KOLs by pasting usernames
-- **Input:**
-  - Text area accepting:
-    - Plain usernames (one per line)
-    - @usernames
-    - Full Twitter URLs
-    - Comma-separated list
+### 4.1 纳入标准（必须全部满足）
 
-- **Process:**
-  1. Parse input and extract usernames
-  2. Fetch basic profile data for each
-  3. Apply filtering rules
-  4. Calculate quality scores
-  5. Show preview of discovered KOLs
-  6. User confirms import
+#### 4.1.1 粉丝数
 
-- **Acceptance Criteria:**
-  - ✅ Handle 100+ usernames in single import
-  - ✅ Skip duplicates automatically
-  - ✅ Show progress indicator
-  - ✅ Display success/failure count
-  - ✅ List any usernames that failed (not found, suspended, etc.)
+- **最小：** 1,000 粉丝
+- **最大：** 50,000 粉丝
+- **理由：**
+  - <1k：影响力太小
+  - > 50k：太贵或已与竞争对手合作
 
-#### FR-2.2: Browser Extension Import
-- **Description:** Quickly capture KOL info while browsing Twitter
-- **Features:**
-  1. **Single KOL Capture:**
-     - Click extension icon on KOL's Twitter profile
-     - Auto-extract: username, name, follower count, bio, avatar
-     - Save to database with one click
+#### 4.1.2 内容分类（优先级顺序）
 
-  2. **Batch Following List Import:**
-     - Navigate to your Twitter following page
-     - Click "Import Following List"
-     - Extension scrolls and captures all accounts
-     - Send to backend for filtering and scoring
+1. **优先级 1（最高）：** 合约交易分析
 
-- **Acceptance Criteria:**
-  - ✅ Extension works on twitter.com and x.com
-  - ✅ Captures data accurately
-  - ✅ Shows success notification
-  - ✅ Handles rate limiting gracefully
+   - 关键词："contract"、"leverage"、"long"、"short"、"futures"、"perpetual"、"degen"、"liquidation"
+   - 内容：价格预测、入场/出场点、交易策略
 
-#### FR-2.3: Seed Expansion (Future)
-- **Description:** Discover new KOLs from existing ones
-- **Process:**
-  1. Select seed KOLs (high-quality accounts)
-  2. Fetch their following lists
-  3. Filter and score discovered accounts
-  4. Recommend top matches
+2. **优先级 2：** 加密代币交易
 
-- **Note:** Requires Twitter API access or advanced scraping
+   - 关键词："token"、"coin"、"buy"、"sell"、"pump"、"alpha"、"gem"
+   - 内容：代币推荐、市场分析
 
-#### FR-2.4: Quality Scoring
-- **Description:** Automatically calculate quality score (0-100) for each KOL
-- **Process:**
-  1. Analyze follower count
-  2. Fetch recent tweets (last 50)
-  3. Calculate engagement rate
-  4. Detect content category
-  5. Check activity level
-  6. Assign score
+3. **优先级 3：** Web3 通用
+   - 关键词："web3"、"blockchain"、"defi"、"nft"、"dao"
+   - 内容：一般加密/区块链讨论
 
-- **Acceptance Criteria:**
-  - ✅ Scoring completes within 5 seconds per KOL
-  - ✅ Score displayed prominently in UI
-  - ✅ Score can be manually adjusted
-  - ✅ Breakdown of score components visible
+#### 4.1.3 活跃度
 
----
+- **要求：** 最近 7 天内至少发 1 条推文
+- **理由：** 不活跃的账号无法有效推广
 
-### 5.3 Module 3: KOL Database & CRM
+#### 4.1.4 语言支持
 
-#### FR-3.1: KOL List View
-- **Display:** Table format with columns:
-  - Avatar (thumbnail)
-  - Username
-  - Display Name
-  - Follower Count
-  - Quality Score (with color coding)
-  - Status
-  - Tags
-  - Last Contact Date
-  - Actions (View, Edit, Delete)
+**接受的语言（15 种）：**
 
-- **Features:**
-  - ✅ Sortable by any column
-  - ✅ Pagination (25/50/100 per page)
-  - ✅ Search by username or name
-  - ✅ Multi-select for batch operations
+- ✅ 英语（首选）
+- ✅ 中文
+- ✅ 日语
+- ✅ 韩语
+- ✅ 法语
+- ✅ 德语
+- ✅ 俄语
+- ✅ 印地语
+- ✅ 西班牙语
+- ✅ 葡萄牙语
+- ✅ 阿拉伯语
+- ✅ 越南语
+- ✅ 泰语
+- ✅ 印尼语
+- ✅ 土耳其语
 
-#### FR-3.2: Filtering & Search
-- **Filters:**
-  1. **Status:** New, Contacted, Replied, Negotiating, Cooperating, Rejected, Not Interested
-  2. **Follower Range:** Custom min/max
-  3. **Quality Score:** Excellent (80+), Good (60-79), Fair (40-59), Poor (<40)
-  4. **Tags:** Multi-select
-  5. **Content Category:** Contract Trading, Crypto Trading, Web3
-  6. **Activity:** Active (7 days), Recent (30 days), Inactive
+### 4.2 排除标准（任一项即排除）
 
-- **Search:**
-  - ✅ Real-time search (debounced)
-  - ✅ Search in username, display name, bio
-  - ✅ Combine search with filters
+- ❌ 垃圾/机器人账号
+- ❌ 被封禁的账号
+- ❌ 受保护/私密账号
+- ❌ 无头像
+- ❌ 简介模糊不清
+- ❌ 最近 50 条推文无加密相关内容
+- ❌ 过度推广内容（>80% 转推）
 
-#### FR-3.3: KOL Detail View
-- **Layout:**
+### 4.3 质量评分算法
 
-  **Left Panel (40%):**
-  - Large avatar
-  - Display name and username
-  - Follower/following count
-  - Verified badge (if applicable)
-  - Bio
-  - Quality score breakdown
-  - Account created date
-  - Twitter profile link (open in new tab)
+**总分：0-100 分**
 
-  **Right Panel (60%):**
-  - **Status selector** (dropdown)
-  - **Tags** (add/remove)
-  - **Notes** (rich text editor)
-  - **Contact History** (timeline)
-    - Date, message sent, response (if any)
-    - Expandable to show full message
-  - **Recent Tweets** (last 10)
-    - Date, content, engagement metrics
+1. **粉丝数（20 分）**
 
-- **Actions:**
-  - "Prepare Message" button
-  - "Update Status" button
-  - "Add Note" button
-  - "Delete KOL" button (with confirmation)
+   - 1k-5k：10 分
+   - 5k-10k：15 分
+   - 10k-30k：20 分
+   - 30k-50k：15 分
 
-#### FR-3.4: Status Management
-- **Available Statuses:**
-  1. **New** - Just discovered, not contacted
-  2. **Contacted** - Initial message sent
-  3. **Replied** - KOL responded
-  4. **Negotiating** - Discussing partnership terms
-  5. **Cooperating** - Active partnership
-  6. **Rejected** - KOL declined
-  7. **Not Interested** - We decided not to pursue
+2. **内容相关性（30 分）**
 
-- **Status Workflow:**
-  - Automatic status change when logging contact
-  - Manual status override available
-  - Status history tracked
+   - 合约交易方向：30 分
+   - 加密交易方向：20 分
+   - Web3 通用：10 分
+   - 混合/不明确：5 分
 
-- **Color Coding:**
-  - New: Gray
-  - Contacted: Blue
-  - Replied: Green
-  - Negotiating: Yellow
-  - Cooperating: Dark Green
-  - Rejected: Red
-  - Not Interested: Light Gray
+3. **互动率（25 分）**
 
-#### FR-3.5: Tag System
-- **Default Tags:**
-  - High Priority
-  - Contract Trading Expert
-  - Responsive
-  - Reasonable Price
-  - Large Audience
-  - High Engagement
+   - 公式：(平均点赞 + 回复) / 粉丝数 \* 1000
+   - > 10：25 分
+   - 5-10：20 分
+   - 2-5：15 分
+   - 1-2：10 分
+   - <1：5 分
 
-- **Custom Tags:**
-  - User can create custom tags
-  - Tags have colors
-  - Tags can be edited/deleted
+4. **活跃度（15 分）**
 
-- **Usage:**
-  - Multi-select tags per KOL
-  - Filter KOL list by tags
-  - Bulk tag operations
+   - 每日发布（7+ 推文/周）：15 分
+   - 定期发布（3-6 推文/周）：10 分
+   - 偶尔发布（1-2 推文/周）：5 分
 
-#### FR-3.6: Contact History Timeline
-- **Entry Types:**
-  1. **Message Sent:**
-     - Date/time
-     - Template used
-     - Message content (truncated, expandable)
-     - Platform (DM, Reply, Email)
+5. **账号质量（10 分）**
+   - 认证徽章：+5 分
+   - 账号年龄 >1 年：+3 分
+   - 完整资料（简介、位置、链接）：+2 分
 
-  2. **Response Received:**
-     - Date/time
-     - Response content
-     - Sentiment (positive/neutral/negative) - optional
+**评分解读：**
 
-  3. **Status Change:**
-     - Date/time
-     - Old status → New status
-     - Notes
-
-  4. **Notes Added:**
-     - Date/time
-     - Note content
-
-- **Display:**
-  - Chronological order (newest first)
-  - Icons for each entry type
-  - Expandable cards
-
-#### FR-3.7: Notes System
-- **Features:**
-  - Rich text editor (bold, italic, lists)
-  - Timestamp on each note
-  - Edit/delete notes
-  - Search within notes
-
-- **Use Cases:**
-  - Record phone call details
-  - Save negotiation points
-  - Store pricing information
-  - Personal observations about KOL
+- 80-100：🌟 优秀 - 高优先级
+- 60-79：✅ 良好 - 标准优先级
+- 40-59：⚠️ 一般 - 低优先级
+- <40：❌ 较差 - 考虑排除
 
 ---
 
-### 5.4 Module 4: Outreach Assistant
+## 5. 功能需求
 
-#### FR-4.1: Message Preparation
-- **Workflow:**
-  1. User navigates to KOL detail page
-  2. Clicks "Prepare Message"
-  3. Modal opens with:
-     - Template selector (dropdown by category)
-     - Template preview with variables filled
-     - Editable text area
-     - Variable reference panel
+### 5.1 模块 1：消息模板管理
 
-- **Features:**
-  - ✅ Auto-fill variables from KOL data
-  - ✅ Live preview as user edits
-  - ✅ Character counter (Twitter DM limit: 10,000)
-  - ✅ "Copy to Clipboard" button
-  - ✅ "Save as Draft" button
+#### FR-1.1：模板 CRUD 操作
 
-#### FR-4.2: Message Variables
-- **Auto-filled from KOL profile:**
+- **描述：** 用户可以创建、查看、更新和删除消息模板
+- **验收标准：**
+  - ✅ 创建新模板（名称、分类、内容）
+  - ✅ 编辑现有模板
+  - ✅ 删除模板（带确认）
+  - ✅ 按分类分组查看所有模板
+
+#### FR-1.2：模板分类
+
+- **分类：**
+  1. 初次联系（首次私信新 KOL）
+  2. 跟进（无响应时的二次联系）
+  3. 谈判（讨论条款、价格）
+  4. 合作详情（确定合作关系）
+  5. 关系维护（与现有合作伙伴保持联系）
+
+#### FR-1.3：变量支持
+
+- **支持的变量：**
+
+  - `{{username}}` - KOL Twitter 用户名
+  - `{{display_name}}` - KOL 显示名称
+  - `{{follower_count}}` - 格式化的粉丝数（如 "10.5K"）
+  - `{{bio}}` - KOL 简介
+  - `{{my_name}}` - 用户名称
+  - `{{exchange_name}}` - "CEX"
+  - `{{custom_note}}` - 用户提供的自定义文本
+
+- **验收标准：**
+  - ✅ 变量在模板编辑器中显示
+  - ✅ 预览显示替换后的实际数据
+  - ✅ 变量语法错误时有验证警告
+
+#### FR-1.4：AI 模板生成
+
+- **描述：** 使用 AI（智谱 GLM）生成消息模板
+- **输入：**
+
+  - 场景（初次联系、跟进等）
+  - 语气（专业、友好、轻松）
+  - 需包含的要点
+  - 语言偏好
+
+- **输出：**
+
+  - 3-5 个不同的模板变体
+  - 每个变体避免重复措辞
+
+- **验收标准：**
+  - ✅ AI 生成 <120 秒
+  - ✅ 用户不满意可重新生成
+  - ✅ 生成的模板可在保存前编辑
+  - ✅ AI API 失败时优雅处理错误
+
+#### FR-1.5：模板效果跟踪
+
+- **指标：**
+
+  - 使用次数
+  - 响应率（如已记录）
+  - 平均响应时间
+
+- **验收标准：**
+  - ✅ 在模板列表显示指标
+  - ✅ 可按效果排序模板
+  - ✅ 高亮显示表现最佳的模板
+
+---
+
+### 5.2 模块 2：KOL 发现
+
+#### FR-2.1：手动批量导入
+
+- **描述：** 通过粘贴用户名批量导入 KOL
+- **输入：**
+
+  - 文本区域接受：
+    - 纯用户名（每行一个）
+    - @用户名
+    - 完整 Twitter URL
+    - 逗号分隔列表
+
+- **流程：**
+
+  1. 解析输入并提取用户名
+  2. 获取每个的基本资料数据
+  3. 应用筛选规则
+  4. 计算质量评分
+  5. 显示发现的 KOL 预览
+  6. 用户确认导入
+
+- **验收标准：**
+  - ✅ 单次导入处理 100+ 用户名
+  - ✅ 自动跳过重复项
+  - ✅ 显示进度指示器
+  - ✅ 显示成功/失败统计
+  - ✅ 列出失败的用户名（未找到、被封禁等）
+
+#### FR-2.2：浏览器插件导入
+
+- **描述：** 浏览 Twitter 时快速捕获 KOL 信息
+- **功能：**
+
+  1. **单个 KOL 捕获：**
+
+     - 在 KOL 的 Twitter 主页点击插件图标
+     - 自动提取：用户名、名称、粉丝数、简介、头像
+     - 一键保存到数据库
+
+  2. **批量关注列表导入：**
+     - 导航到 Twitter 关注页面
+     - 点击"导入关注列表"
+     - 插件滚动并捕获所有账号
+     - 发送到后端进行筛选和评分
+
+- **验收标准：**
+  - ✅ 插件在 twitter.com 和 x.com 上工作
+  - ✅ 准确捕获数据
+  - ✅ 显示成功通知
+  - ✅ 优雅处理限流
+
+#### FR-2.3：种子扩展（未来）
+
+- **描述：** 从现有 KOL 发现新 KOL
+- **流程：**
+
+  1. 选择种子 KOL（高质量账号）
+  2. 获取他们的关注列表
+  3. 筛选和评分发现的账号
+  4. 推荐最匹配的
+
+- **注意：** 需要 Twitter API 访问或高级爬虫
+
+#### FR-2.4：质量评分
+
+- **描述：** 自动为每个 KOL 计算质量分（0-100）
+- **流程：**
+
+  1. 分析粉丝数
+  2. 获取最近推文（最近 50 条）
+  3. 计算互动率
+  4. 检测内容分类
+  5. 检查活跃度
+  6. 分配评分
+
+- **验收标准：**
+  - ⏳ 评分在 5 秒内完成（当前为手动）
+  - ✅ 评分在 UI 中醒目显示
+  - ✅ 评分可手动调整
+  - ⏳ 可见评分组成细分
+
+---
+
+### 5.3 模块 3：KOL 数据库与 CRM
+
+#### FR-3.1：KOL 列表视图
+
+- **显示：** 表格格式，列包括：
+
+  - 头像（缩略图）
+  - 用户名
+  - 显示名称
+  - 粉丝数
+  - 质量评分（带颜色编码）
+  - 状态
+  - 标签
+  - 最后联系日期
+  - 操作（查看、编辑、删除）
+
+- **功能：**
+  - ✅ 任意列可排序
+  - ✅ 分页（10/20/50/100 每页）
+  - ✅ 按用户名或名称搜索
+  - ✅ 多选批量操作
+
+#### FR-3.2：筛选与搜索
+
+- **筛选器：**
+
+  1. **状态：** 新添加、已联系、已回复、洽谈中、合作中、已合作、已拒绝
+  2. **粉丝范围：** 自定义最小/最大值
+  3. **质量评分：** 优秀(80+)、良好(60-79)、一般(40-59)、较差(<40)
+  4. **内容分类：** 合约交易、代币交易、Web3
+  5. **语言：** 15 种语言选择
+
+- **搜索：**
+  - ✅ 实时搜索（防抖）
+  - ✅ 在用户名、显示名、简介中搜索
+  - ✅ 搜索与筛选组合
+
+#### FR-3.3：KOL 详情视图
+
+- **布局：**
+
+  **左侧面板（40%）：**
+
+  - 大头像
+  - 显示名称和用户名
+  - 粉丝/关注数
+  - 认证徽章（如有）
+  - 简介
+  - 质量评分细分
+  - 账号创建日期
+  - Twitter 主页链接（新标签打开）
+
+  **右侧面板（60%）：**
+
+  - **状态选择器**（下拉）
+  - **备注**（富文本编辑器）
+  - **联系历史**（时间线）
+    - 日期、发送的消息、响应（如有）
+    - 可展开查看完整消息
+  - **修改历史**（时间线）
+    - 字段变更记录
+
+- **操作：**
+  - "准备消息"按钮
+  - "更新状态"按钮
+  - "添加备注"按钮
+  - "删除 KOL"按钮（带确认）
+
+#### FR-3.4：状态管理
+
+- **可用状态：**
+
+  1. **新添加** - 刚发现，未联系
+  2. **已联系** - 已发送初始消息
+  3. **已回复** - KOL 已响应
+  4. **洽谈中** - 讨论合作条款
+  5. **合作中** - 活跃合作中
+  6. **已合作** - 合作完成
+  7. **已拒绝** - KOL 拒绝
+
+- **状态工作流：**
+
+  - 记录联系时自动状态变更
+  - 可手动覆盖状态
+  - 状态历史被跟踪
+
+- **颜色编码：**
+  - 新添加：灰色
+  - 已联系：蓝色
+  - 已回复：绿色
+  - 洽谈中：橙色
+  - 合作中：青绿色
+  - 已合作：蓝色
+  - 已拒绝：红色
+
+#### FR-3.5：联系历史时间线
+
+- **条目类型：**
+
+  1. **消息发送：**
+
+     - 日期/时间
+     - 使用的模板
+     - 消息内容（截断，可展开）
+     - 平台（私信、回复、邮件）
+
+  2. **收到响应：**
+
+     - 日期/时间
+     - 响应内容
+     - 情绪（积极/中性/消极）- 可选
+
+  3. **状态变更：**
+
+     - 日期/时间
+     - 旧状态 → 新状态
+     - 备注
+
+  4. **添加备注：**
+     - 日期/时间
+     - 备注内容
+
+- **显示：**
+  - 时间倒序（最新在前）
+  - 每种条目类型有图标
+  - 可展开卡片
+
+#### FR-3.6：备注系统
+
+- **功能：**
+
+  - 富文本编辑器（粗体、斜体、列表）
+  - 每条备注有时间戳
+  - 编辑/删除备注
+  - 备注内搜索
+
+- **用例：**
+  - 记录电话详情
+  - 保存谈判要点
+  - 存储价格信息
+  - 对 KOL 的个人观察
+
+---
+
+### 5.4 模块 4：外联助手
+
+#### FR-4.1：消息准备
+
+- **工作流：**
+
+  1. 用户导航到 KOL 详情页
+  2. 点击"准备消息"
+  3. 弹窗打开，包含：
+     - 模板选择器（按分类下拉）
+     - 填充变量后的模板预览
+     - 可编辑文本区域
+     - 变量参考面板
+
+- **功能：**
+  - ✅ 从 KOL 数据自动填充变量
+  - ✅ 用户编辑时实时预览
+  - ✅ 字符计数器（Twitter 私信限制：10,000）
+  - ✅ "复制到剪贴板"按钮
+  - ✅ "保存为草稿"按钮
+
+#### FR-4.2：消息变量
+
+- **从 KOL 资料自动填充：**
+
   - {{username}}
   - {{display_name}}
   - {{follower_count}}
   - {{bio}}
 
-- **User-provided (prompt when preparing):**
-  - {{custom_note}} - specific point to mention
-  - {{my_name}} - saved in user settings
+- **用户提供（准备时提示）：**
 
-- **System-generated:**
+  - {{custom_note}} - 要提及的具体点
+  - {{my_name}} - 保存在用户设置中
+
+- **系统生成：**
   - {{today_date}}
   - {{exchange_name}}
 
-#### FR-4.3: Copy to Clipboard
-- **Description:** Copy prepared message to clipboard for manual pasting on Twitter
-- **Acceptance Criteria:**
-  - ✅ One-click copy
-  - ✅ Success notification
-  - ✅ Works across all browsers
-  - ✅ Preserves formatting (if applicable)
+#### FR-4.3：复制到剪贴板
 
-#### FR-4.4: Interaction Logging
-- **Description:** After sending message manually, user logs the interaction
-- **Process:**
-  1. User copies message and sends on Twitter
-  2. User returns to tool
-  3. Clicks "Log Contact"
-  4. System records:
-     - Date/time
-     - Message content
-     - Template used
-     - Platform (DM/Reply)
-  5. Automatically updates status to "Contacted"
+- **描述：** 将准备好的消息复制到剪贴板，用于在 Twitter 上手动粘贴
+- **验收标准：**
+  - ✅ 一键复制
+  - ✅ 成功通知
+  - ✅ 所有浏览器兼容
+  - ✅ 保留格式（如适用）
 
-- **Acceptance Criteria:**
-  - ✅ Quick logging (no excessive fields)
-  - ✅ Optional notes field
-  - ✅ Timestamp accurate
-  - ✅ Appears in contact history immediately
+#### FR-4.4：交互记录
 
-#### FR-4.5: Response Logging
-- **Description:** Log when KOL responds
-- **Fields:**
-  - Response date/time
-  - Response content (paste from Twitter)
-  - Sentiment (dropdown: Positive/Neutral/Negative)
-  - Next action needed (text field)
+- **描述：** 手动发送消息后，用户记录交互
+- **流程：**
 
-- **Automatic Actions:**
-  - Update status to "Replied"
-  - Calculate response time
-  - Update template effectiveness metrics
+  1. 用户复制消息并在 Twitter 发送
+  2. 用户返回工具
+  3. 点击"记录联系"
+  4. 系统记录：
+     - 日期/时间
+     - 消息内容
+     - 使用的模板
+     - 平台（私信/回复）
+  5. 自动更新状态为"已联系"
+
+- **验收标准：**
+  - ✅ 快速记录（无过多字段）
+  - ✅ 可选备注字段
+  - ✅ 时间戳准确
+  - ✅ 立即出现在联系历史中
 
 ---
 
-### 5.5 Module 5: Analytics Dashboard
+### 5.5 模块 5：数据分析仪表盘
 
-#### FR-5.1: Overview Statistics
-- **Metrics Displayed:**
-  - Total KOLs in database
-  - New KOLs this week
-  - Contacted this week
-  - Response rate (overall and this week)
-  - Active partnerships
-  - Pending follow-ups
+#### FR-5.1：概览统计
 
-- **Display:** Stat cards with icons and trend indicators
+- **显示的指标：**
 
-#### FR-5.2: KOL Distribution Charts
-1. **Follower Count Distribution**
-   - Bar chart: 1k-5k, 5k-10k, 10k-30k, 30k-50k
+  - 数据库中 KOL 总数
+  - 本周新增 KOL
+  - 本周联系数
+  - 响应率（总体和本周）
+  - 活跃合作数
+  - 待跟进数
 
-2. **Quality Score Distribution**
-   - Pie chart: Excellent, Good, Fair, Poor
+- **显示：** 带图标和趋势指示器的统计卡片
 
-3. **Content Category Distribution**
-   - Bar chart: Contract Trading, Crypto Trading, Web3
+#### FR-5.2：KOL 分布图表
 
-4. **Status Distribution**
-   - Donut chart: New, Contacted, Replied, etc.
+1. **粉丝数分布**
 
-#### FR-5.3: Template Effectiveness
-- **Table showing:**
-  - Template name
-  - Times used
-  - Response count
-  - Response rate (%)
-  - Average response time (hours)
+   - 柱状图：0-1k, 1k-10k, 10k-50k, 50k-100k, 100k-500k, 500k+
 
-- **Sort by:** Response rate (default)
+2. **质量评分分布**
 
-#### FR-5.4: Contact Timeline
-- **Line chart:** Contacts sent per day (last 30 days)
-- **Overlay:** Responses received per day
-- **Goal line:** 100 contacts/week
+   - 环形图：优秀、良好、一般、较差
 
-#### FR-5.5: Export Functionality
-- **Export options:**
-  1. Current filtered KOL list → CSV
-  2. Full database → CSV
-  3. Analytics summary → PDF (future)
+3. **内容分类分布**
 
-- **CSV columns:**
-  - Username, Display Name, Follower Count, Status, Quality Score, Last Contact, Tags, Notes
+   - 柱状图：合约交易、代币交易、Web3、未分类
 
----
+4. **状态分布**
 
-### 5.6 Module 6: Browser Extension
+   - 环形图：新添加、已联系、已回复等
 
-#### FR-6.1: Extension UI
-- **Popup (when clicking extension icon):**
-  - Logo and title
-  - Current KOL info (if on Twitter profile page)
-  - "Quick Add" button
-  - "View in Dashboard" button (opens web app)
-  - Settings link
+5. **语言分布**
+   - 折线图：各语言占比
 
-- **Badge:**
-  - Show count of KOLs captured today
+#### FR-5.3：模板效果
 
-#### FR-6.2: Content Script (Twitter Page)
-- **Injected elements:**
-  - Small badge next to KOL username showing quality score (if in database)
-  - Quick action buttons:
-    - "Add to Database"
-    - "Mark as Contacted"
-    - "View Details" (opens web app in new tab)
+- **表格显示：**
 
-#### FR-6.3: Background Service
-- **Functions:**
-  - Listen for messages from content script
-  - Send API requests to backend
-  - Manage authentication token
-  - Handle notifications
+  - 模板名称
+  - 使用次数
+  - 响应数
+  - 响应率 (%)
+  - 平均响应时间（小时）
 
-#### FR-6.4: Batch Import from Following List
-- **Process:**
-  1. User navigates to twitter.com/following
-  2. Opens extension popup
-  3. Clicks "Import Following List"
-  4. Extension:
-     - Scrolls page to load all accounts
-     - Extracts usernames, names, follower counts
-     - Sends batch to backend API
-     - Backend filters and scores
-     - Shows summary: "Added 50/120 accounts (70 filtered out)"
+- **排序：** 响应率（默认）
+
+#### FR-5.4：联系时间线
+
+- **折线图：** 每日联系数（最近 30 天）
+- **叠加：** 每日收到的响应
+- **目标线：** 100 联系/周
+
+#### FR-5.5：导出功能
+
+- **导出选项：**
+
+  1. 当前筛选的 KOL 列表 → CSV
+  2. 完整数据库 → CSV
+  3. 分析摘要 → PDF（未来）
+
+- **CSV 列：**
+  - 用户名、显示名称、粉丝数、状态、质量评分、最后联系、标签、备注
 
 ---
 
-## 6. Non-Functional Requirements
+### 5.6 模块 6：浏览器插件
 
-### 6.1 Performance
-- **Page Load Time:** <2 seconds for all pages
-- **API Response Time:** <500ms for CRUD operations
-- **Search/Filter:** <1 second for results
-- **Batch Import:** <10 seconds for 100 KOLs
-- **AI Template Generation:** <10 seconds
+#### FR-6.1：插件 UI
 
-### 6.2 Scalability
-- **Database:** Support 10,000+ KOLs without performance degradation
-- **Concurrent Users:** 5-10 BD team members simultaneously
-- **Data Retention:** Unlimited contact history
+- **弹窗（点击插件图标时）：**
 
-### 6.3 Usability
-- **Learning Curve:** New user productive within 30 minutes
-- **Mobile Responsive:** Core features accessible on tablet (optional for MVP)
-- **Accessibility:** WCAG 2.1 Level AA compliance (future)
+  - Logo 和标题
+  - 当前 KOL 信息（如在 Twitter 主页）
+  - "快速添加"按钮
+  - "在仪表盘中查看"按钮（打开 Web 应用）
+  - 设置链接
 
-### 6.4 Reliability
-- **Uptime:** 99% (excluding planned maintenance)
-- **Data Backup:** Daily automated backups
-- **Error Handling:** Graceful degradation, clear error messages
+- **徽章：**
+  - 显示今日捕获的 KOL 数量
 
-### 6.5 Maintainability
-- **Code Quality:** Linted, formatted, type-safe (TypeScript)
-- **Documentation:** Inline comments, API docs, README
-- **Testing:** Unit tests for critical functions (future)
+#### FR-6.2：内容脚本（Twitter 页面）
+
+- **注入元素：**
+  - KOL 用户名旁边显示质量评分小徽章（如在数据库中）
+  - 快捷操作按钮：
+    - "添加到数据库"
+    - "标记为已联系"
+    - "查看详情"（在新标签打开 Web 应用）
+
+#### FR-6.3：后台服务
+
+- **功能：**
+  - 监听来自内容脚本的消息
+  - 发送 API 请求到后端
+  - 管理认证令牌
+  - 处理通知
+  - 处理 AI 改写请求
+
+#### FR-6.4：模板复制功能
+
+- **流程：**
+  1. 用户在插件中选择"模板复制"标签
+  2. 搜索选择模板
+  3. 可选择择 KOL 进行变量替换
+  4. 可选 AI 改写（4 种风格）
+  5. 一键复制到剪贴板
 
 ---
 
-## 7. User Interface Requirements
+## 6. 非功能需求
 
-### 7.1 Layout
-- **Navigation:** Sidebar with icons and labels
-  - Dashboard
-  - KOLs (with count badge)
-  - Templates
-  - Analytics
-  - Settings
+### 6.1 性能
 
-- **Header:**
+- **页面加载时间：** 所有页面 <2 秒
+- **API 响应时间：** CRUD 操作 <500ms
+- **搜索/筛选：** 结果 <1 秒
+- **批量导入：** 100 个 KOL <10 秒
+- **AI 模板生成：** <120 秒
+
+### 6.2 可扩展性
+
+- **数据库：** 支持 10,000+ KOL 无性能下降
+- **并发用户：** 5-10 个 BD 团队成员同时使用
+- **数据保留：** 联系历史无限制
+
+### 6.3 可用性
+
+- **学习曲线：** 新用户 30 分钟内上手
+- **移动响应：** 平板可访问核心功能（MVP 可选）
+- **无障碍：** WCAG 2.1 AA 级合规（未来）
+
+### 6.4 可靠性
+
+- **正常运行时间：** 99%（不含计划维护）
+- **数据备份：** 每日自动备份
+- **错误处理：** 优雅降级，清晰错误消息
+
+### 6.5 可维护性
+
+- **代码质量：** Lint、格式化、类型安全（TypeScript）
+- **文档：** 行内注释、API 文档、README
+- **测试：** 关键功能单元测试（未来）
+
+---
+
+## 7. 用户界面需求
+
+### 7.1 布局
+
+- **导航：** 带图标和标签的侧边栏
+
+  - 首页
+  - KOL（带数量徽章）
+  - 模板
+  - 数据分析
+  - 插件配置
+
+- **头部：**
   - Logo
-  - Search bar (global)
-  - User menu (profile, logout)
+  - 搜索栏（全局）
+  - 用户菜单（资料、登出）
 
-### 7.2 Color Scheme
-- **Primary:** Blue (#1890ff) - professional, trustworthy
-- **Success:** Green (#52c41a)
-- **Warning:** Orange (#faad14)
-- **Danger:** Red (#f5222d)
-- **Neutral:** Grays (#f0f0f0, #d9d9d9, #8c8c8c)
+### 7.2 配色方案
 
-### 7.3 Typography
-- **Font Family:** Inter, system-ui, sans-serif
-- **Headings:** 24px, 20px, 16px (bold)
-- **Body:** 14px (regular)
-- **Small:** 12px
+- **主色：** 紫色渐变（#667eea → #764ba2）- Solana 风格
+- **成功：** 绿色 (#51cf66)
+- **警告：** 橙色 (#ffa94d)
+- **危险：** 红色 (#ff6b6b)
+- **中性：** 深灰色（#1e1e1e, #2a2a2a, #8c8c8c）
 
-### 7.4 Responsive Design
-- **Desktop:** Optimized for 1920x1080 and 1366x768
-- **Tablet:** Functional on iPad (optional MVP)
-- **Mobile:** Not required for MVP
+### 7.3 字体
 
-### 7.5 Components (Ant Design)
-- Tables with pagination
-- Modals for forms
-- Dropdowns for filters
-- Tags for labels
-- Cards for statistics
-- Tooltips for explanations
-- Notifications for feedback
+- **字体家族：** Inter, system-ui, sans-serif
+- **标题：** 24px, 20px, 16px（粗体）
+- **正文：** 14px（常规）
+- **小字：** 12px
 
----
+### 7.4 响应式设计
 
-## 8. Integration Requirements
+- **桌面：** 优化 1920x1080 和 1366x768
+- **平板：** iPad 可用（MVP 可选）
+- **移动：** MVP 不要求
 
-### 8.1 Twitter/X Data
-- **Method:** Browser extension scraping (no official API required for MVP)
-- **Data Points:**
-  - Profile: username, name, bio, follower count, verified status, avatar
-  - Tweets: content, date, likes, retweets, replies
+### 7.5 组件（Ant Design）
 
-- **Future:** Consider third-party APIs (Apify, ScrapFly) for advanced features
-
-### 8.2 AI APIs
-- **Providers:**
-  1. **OpenAI GPT-4** (primary)
-     - Endpoint: chat/completions
-     - Use: Template generation, content analysis
-
-  2. **Anthropic Claude** (backup)
-     - Endpoint: messages
-     - Use: Same as OpenAI
-
-- **Configuration:**
-  - API keys stored in environment variables
-  - User can switch providers in settings
-  - Fallback to no AI if both fail
-
-### 8.3 Authentication
-- **Method:** JWT (JSON Web Tokens)
-- **Flow:**
-  1. User logs in with email/password
-  2. Backend validates and returns JWT
-  3. Frontend stores in localStorage
-  4. Include in Authorization header for all API requests
-
-- **Token Expiry:** 7 days (refreshable)
+- 带分页的表格
+- 表单弹窗
+- 筛选下拉框
+- 标签标签
+- 统计卡片
+- 解释工具提示
+- 反馈通知
 
 ---
 
-## 9. Security Requirements
+## 8. 集成需求
 
-### 9.1 Account Safety
-- **Critical Rule:** NO automated DM sending
-- **Rationale:** Twitter aggressively bans accounts that automate DMs
-- **Implementation:**
-  - Copy-to-clipboard only
-  - Manual sending required
-  - Logging done after manual action
+### 8.1 Twitter/X 数据
 
-### 9.2 Data Protection
-- **Sensitive Data:**
-  - User passwords (hashed with bcrypt)
-  - API keys (encrypted in database)
-  - Contact notes (may contain negotiation details)
+- **方法：** 浏览器插件抓取（MVP 无需官方 API）
+- **数据点：**
 
-- **Access Control:**
-  - Users can only see their own KOLs and templates
-  - Admin role for team managers (future)
+  - 资料：用户名、名称、简介、粉丝数、认证状态、头像
+  - 推文：内容、日期、点赞、转推、回复
 
-### 9.3 Input Validation
-- **Backend:** Pydantic schemas validate all inputs
-- **Frontend:** Client-side validation with error messages
-- **Protection Against:**
-  - SQL injection (using ORM)
-  - XSS (sanitize user-generated content)
-  - CSRF (CORS configuration)
+- **未来：** 考虑第三方 API（Apify、ScrapFly）用于高级功能
 
-### 9.4 Rate Limiting
-- **API endpoints:**
-  - Authentication: 5 requests/minute
-  - CRUD operations: 100 requests/minute
-  - AI generation: 10 requests/minute
+### 8.2 AI API
 
-- **Purpose:** Prevent abuse and manage costs
+- **提供商：**
 
----
+  1. **智谱 GLM-4.5-airx**（主要）
 
-## 10. Future Enhancements
+     - 用于：模板改写、内容分析
+     - 超时：120 秒
 
-### 10.1 Advanced KOL Discovery
-- **Seed expansion** with Twitter API or scraping service
-- **Competitor analysis** (find KOLs working with other exchanges)
-- **Trend detection** (identify rising KOLs early)
+  2. **DeepL API**（翻译）
+     - 用于：中英文互译
 
-### 10.2 Collaboration Features
-- **Team workspace:** Multiple users sharing KOL database
-- **Assignment system:** Assign KOLs to specific team members
-- **Activity feed:** See what teammates are working on
+- **配置：**
+  - API 密钥存储在环境变量
+  - API 失败时优雅回退
 
-### 10.3 Advanced Analytics
-- **Predictive scoring:** ML model to predict partnership success
-- **A/B testing:** Compare template variants
-- **ROI tracking:** Cost per partnership vs. value generated
+### 8.3 认证
 
-### 10.4 Communication Integration
-- **Email integration:** Send outreach via email (not just Twitter DM)
-- **CRM sync:** Export to Salesforce, HubSpot, etc.
-- **Notifications:** Slack/Discord alerts for responses
+- **方法：** JWT（JSON Web Tokens）+ Extension Token
+- **流程：**
 
-### 10.5 Automation (with caution)
-- **Scheduled follow-ups:** Reminder to follow up after X days
-- **Auto-tagging:** AI suggests tags based on profile analysis
-- **Smart recommendations:** "You should contact these 5 KOLs today"
+  1. 用户用邮箱/密码登录
+  2. 后端验证并返回 JWT
+  3. 前端存储在 localStorage
+  4. 所有 API 请求包含 Authorization 头
+  5. 插件使用 Extension Token（SHA-256）
+
+- **Token 过期：** JWT 7 天（可刷新），Extension Token 2 小时
 
 ---
 
-## Appendix A: User Stories
+## 9. 安全需求
 
-### Epic 1: Template Management
-- **US-1.1:** As a BD intern, I want to create message templates so I can quickly compose outreach messages.
-- **US-1.2:** As a BD intern, I want to use variables in templates so each message is personalized.
-- **US-1.3:** As a BD intern, I want AI to generate template variations so I avoid repetitive messages.
+### 9.1 账号安全
 
-### Epic 2: KOL Discovery
-- **US-2.1:** As a BD intern, I want to import KOLs by username so I can quickly add prospects.
-- **US-2.2:** As a BD intern, I want the system to filter out irrelevant KOLs so I focus on quality leads.
-- **US-2.3:** As a BD intern, I want to see quality scores so I prioritize high-value KOLs.
+- **关键规则：** 不自动发送私信
+- **理由：** Twitter 积极封禁自动发私信的账号
+- **实现：**
+  - 仅复制到剪贴板
+  - 需要手动发送
+  - 手动操作后记录
 
-### Epic 3: CRM
-- **US-3.1:** As a BD intern, I want to view all KOLs in a list so I can manage my pipeline.
-- **US-3.2:** As a BD intern, I want to filter by status so I see who needs follow-up.
-- **US-3.3:** As a BD intern, I want to log contact history so I remember past conversations.
-- **US-3.4:** As a BD intern, I want to tag KOLs so I can organize by priority or category.
+### 9.2 数据保护
 
-### Epic 4: Outreach
-- **US-4.1:** As a BD intern, I want to select a template and preview the message so I ensure it's correct.
-- **US-4.2:** As a BD intern, I want to copy messages to clipboard so I can manually send on Twitter.
-- **US-4.3:** As a BD intern, I want to log sent messages so I track my outreach activity.
+- **敏感数据：**
 
-### Epic 5: Analytics
-- **US-5.1:** As a BD manager, I want to see weekly statistics so I monitor team performance.
-- **US-5.2:** As a BD manager, I want to export KOL data so I can report to leadership.
-- **US-5.3:** As a BD intern, I want to see which templates work best so I improve my approach.
+  - 用户密码（bcrypt 哈希）
+  - API 密钥（数据库中加密）
+  - 联系备注（可能包含谈判详情）
+
+- **访问控制：**
+  - 用户只能看到自己的 KOL 和模板
+  - 管理员角色（未来）
+
+### 9.3 输入验证
+
+- **后端：** Zod 模式验证所有输入
+- **前端：** 客户端验证带错误消息
+- **防护：**
+  - SQL 注入（使用 ORM）
+  - XSS（净化用户生成内容）
+  - CSRF（CORS 配置）
+
+### 9.4 速率限制
+
+- **API 端点：**
+
+  - 认证：5 请求/分钟
+  - CRUD 操作：100 请求/分钟
+  - AI 生成：10 请求/分钟
+
+- **目的：** 防止滥用和管理成本
 
 ---
 
-## Appendix B: Glossary
+## 10. 未来增强
 
-- **KOL:** Key Opinion Leader - Influencer with significant social media following
-- **BD:** Business Development - Team responsible for partnerships and growth
-- **CRM:** Customer Relationship Management - System for managing interactions
-- **DM:** Direct Message - Private message on Twitter
-- **MVP:** Minimum Viable Product - First version with core features
-- **CRUD:** Create, Read, Update, Delete - Basic database operations
-- **JWT:** JSON Web Token - Authentication standard
-- **API:** Application Programming Interface
-- **UI/UX:** User Interface / User Experience
+### 10.1 高级 KOL 发现
+
+- **种子扩展** - 使用 Twitter API 或抓取服务
+- **竞争对手分析** - 发现与其他交易所合作的 KOL
+- **趋势检测** - 早期识别崛起的 KOL
+
+### 10.2 协作功能
+
+- **团队工作区：** 多用户共享 KOL 数据库
+- **分配系统：** 将 KOL 分配给特定团队成员
+- **活动动态：** 查看队友正在做什么
+
+### 10.3 高级分析
+
+- **预测评分：** ML 模型预测合作成功率
+- **A/B 测试：** 比较模板变体
+- **ROI 跟踪：** 每次合作成本 vs 产生的价值
+
+### 10.4 通信集成
+
+- **邮件集成：** 通过邮件发送外联（不仅是 Twitter 私信）
+- **CRM 同步：** 导出到 Salesforce、HubSpot 等
+- **通知：** Slack/Discord 响应提醒
+
+### 10.5 自动化（谨慎使用）
+
+- **定时跟进：** X 天后跟进提醒
+- **自动标签：** AI 根据资料分析建议标签
+- **智能推荐：** "你今天应该联系这 5 个 KOL"
 
 ---
 
-**End of Requirements Document**
+## 附录 A：用户故事
 
-*This document will be updated as requirements evolve. All changes will be tracked in version history.*
+### 史诗 1：模板管理
+
+- **US-1.1：** 作为 BD 实习生，我想创建消息模板，以便快速撰写外联消息。
+- **US-1.2：** 作为 BD 实习生，我想在模板中使用变量，使每条消息个性化。
+- **US-1.3：** 作为 BD 实习生，我想让 AI 生成模板变体，以避免重复消息。
+
+### 史诗 2：KOL 发现
+
+- **US-2.1：** 作为 BD 实习生，我想通过用户名导入 KOL，以便快速添加潜在客户。
+- **US-2.2：** 作为 BD 实习生，我想让系统过滤掉不相关的 KOL，以便专注于优质线索。
+- **US-2.3：** 作为 BD 实习生，我想看到质量评分，以便优先联系高价值 KOL。
+
+### 史诗 3：CRM
+
+- **US-3.1：** 作为 BD 实习生，我想在列表中查看所有 KOL，以便管理我的管道。
+- **US-3.2：** 作为 BD 实习生，我想按状态筛选，以便看到谁需要跟进。
+- **US-3.3：** 作为 BD 实习生，我想记录联系历史，以便记住过去的对话。
+- **US-3.4：** 作为 BD 实习生，我想给 KOL 打标签，以便按优先级或类别组织。
+
+### 史诗 4：外联
+
+- **US-4.1：** 作为 BD 实习生，我想选择模板并预览消息，以确保正确。
+- **US-4.2：** 作为 BD 实习生，我想将消息复制到剪贴板，以便在 Twitter 手动发送。
+- **US-4.3：** 作为 BD 实习生，我想记录发送的消息，以跟踪我的外联活动。
+
+### 史诗 5：数据分析
+
+- **US-5.1：** 作为 BD 经理，我想看到每周统计，以监控团队绩效。
+- **US-5.2：** 作为 BD 经理，我想导出 KOL 数据，以便向领导汇报。
+- **US-5.3：** 作为 BD 实习生，我想看到哪些模板效果最好，以改进我的方法。
+
+---
+
+## 附录 B：术语表
+
+- **KOL：** 关键意见领袖 - 拥有大量社交媒体粉丝的意见领袖
+- **BD：** 商务拓展 - 负责合作和增长的团队
+- **CRM：** 客户关系管理 - 管理交互的系统
+- **DM：** 私信 - Twitter 上的私人消息
+- **MVP：** 最小可行产品 - 具有核心功能的第一版
+- **CRUD：** 创建、读取、更新、删除 - 基本数据库操作
+- **JWT：** JSON Web Token - 认证标准
+- **API：** 应用程序接口
+- **UI/UX：** 用户界面 / 用户体验
+
+---
+
+**文档结束**
+
+_本文档将随着需求演进而更新。所有更改将在版本历史中跟踪。_
