@@ -45,12 +45,13 @@ export interface TemplateEffectiveness {
 }
 
 /**
- * 联系时间线数据点接口
+ * 状态变更时间线数据点接口
  */
 export interface ContactTimelinePoint {
   date: string;                  // 日期 (YYYY-MM-DD)
-  contactsCount: number;         // 联系数
-  responsesCount: number;        // 响应数
+  newKols: number;               // 新增 KOL 数
+  statusChanges: number;         // 状态变更数
+  responses: number;             // 响应数（变为已回复/洽谈中/合作中/已合作/已拒绝）
 }
 
 /**
@@ -388,68 +389,100 @@ export class AnalyticsService {
   }
 
   /**
-   * 获取联系时间线数据
+   * 获取 KOL 状态变更时间线数据
    * @param userId - 用户 ID
    * @param days - 查询天数（默认 7 天）
    * @returns 时间线数据
    */
   async getContactTimeline(userId: number, days: number = 7): Promise<ContactTimelinePoint[]> {
-    logger.info(`用户 ${userId} 获取联系时间线（${days} 天）`);
+    logger.info(`用户 ${userId} 获取状态变更时间线（${days} 天）`);
 
-    const startDate = new Date();
-    startDate.setDate(startDate.getDate() - days);
-    startDate.setHours(0, 0, 0, 0);
+    // 使用 UTC 日期计算，确保跨时区一致性
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
 
-    // 获取时间范围内的所有联系记录
-    const contacts = await prisma.contactLog.findMany({
+    // 计算起始日期（days 天前，包含今天共 days 天）
+    const startDate = new Date(todayStr);
+    startDate.setUTCDate(startDate.getUTCDate() - (days - 1));
+
+    // 响应状态列表
+    const responseStatuses = ['replied', 'negotiating', 'cooperating', 'cooperated', 'rejected'];
+
+    // 从 KOLHistory 表获取状态变更记录
+    const historyRecords = await prisma.kOLHistory.findMany({
       where: {
         userId,
-        sentAt: { gte: startDate },
+        fieldName: 'status',
+        createdAt: { gte: startDate },
       },
       select: {
-        sentAt: true,
-        repliedAt: true,
+        oldValue: true,
+        newValue: true,
+        createdAt: true,
       },
-      orderBy: { sentAt: 'asc' },
+      orderBy: { createdAt: 'asc' },
     });
 
     // 按日期分组统计
-    const dateMap: Record<string, { contacts: number; responses: number }> = {};
+    const dateMap: Record<string, { newKols: number; statusChanges: number; responses: number }> = {};
 
-    // 初始化所有日期
+    // 初始化所有日期（从 startDate 到今天，共 days 天）
     for (let i = 0; i < days; i++) {
       const date = new Date(startDate);
-      date.setDate(startDate.getDate() + i);
+      date.setUTCDate(startDate.getUTCDate() + i);
       const dateStr = date.toISOString().split('T')[0];
-      dateMap[dateStr] = { contacts: 0, responses: 0 };
+      dateMap[dateStr] = { newKols: 0, statusChanges: 0, responses: 0 };
     }
 
-    // 统计联系数
-    contacts.forEach((contact) => {
-      const dateStr = new Date(contact.sentAt).toISOString().split('T')[0];
-      if (dateMap[dateStr]) {
-        dateMap[dateStr].contacts++;
-      }
-    });
+    // 统计各类数据
+    historyRecords.forEach((record) => {
+      const dateStr = new Date(record.createdAt).toISOString().split('T')[0];
+      if (!dateMap[dateStr]) return;
 
-    // 统计响应数
-    contacts.forEach((contact) => {
-      if (contact.repliedAt) {
-        const dateStr = new Date(contact.repliedAt).toISOString().split('T')[0];
-        if (dateMap[dateStr]) {
-          dateMap[dateStr].responses++;
+      // 新增 KOL（oldValue 为 null 表示新创建）
+      if (record.oldValue === null) {
+        dateMap[dateStr].newKols++;
+      }
+
+      // 状态变更（所有状态变化都计入）
+      dateMap[dateStr].statusChanges++;
+
+      // 响应数：从"已联系"状态变为其他响应状态（已回复/洽谈中/合作中/已合作/已拒绝）
+      // 解析 oldValue 和 newValue
+      let oldStatus: string | null = null;
+      let newStatus: string | null = null;
+
+      if (record.oldValue) {
+        try {
+          oldStatus = JSON.parse(record.oldValue);
+        } catch {
+          oldStatus = record.oldValue;
         }
+      }
+
+      if (record.newValue) {
+        try {
+          newStatus = JSON.parse(record.newValue);
+        } catch {
+          newStatus = record.newValue;
+        }
+      }
+
+      // 从"已联系"变为响应状态才计入响应数
+      if (oldStatus === 'contacted' && newStatus && responseStatuses.includes(newStatus)) {
+        dateMap[dateStr].responses++;
       }
     });
 
     // 转换为数组
     const timeline: ContactTimelinePoint[] = Object.entries(dateMap).map(([date, data]) => ({
       date,
-      contactsCount: data.contacts,
-      responsesCount: data.responses,
+      newKols: data.newKols,
+      statusChanges: data.statusChanges,
+      responses: data.responses,
     }));
 
-    logger.info(`用户 ${userId} 联系时间线获取成功，共 ${timeline.length} 个数据点`);
+    logger.info(`用户 ${userId} 状态变更时间线获取成功，共 ${timeline.length} 个数据点`);
     return timeline;
   }
 }

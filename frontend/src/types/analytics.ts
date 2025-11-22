@@ -82,12 +82,13 @@ export interface TemplateEffectiveness {
 }
 
 /**
- * 联系时间线数据点
+ * KOL 状态变更时间线数据点
  */
 export interface ContactTimelinePoint {
   date: string;          // 日期 (YYYY-MM-DD)
-  contactsCount: number; // 联系数
-  responsesCount: number;// 响应数
+  newKols: number;       // 新增 KOL 数
+  statusChanges: number; // 状态变更数
+  responses: number;     // 响应数（变为已回复/洽谈中/合作中/已合作/已拒绝）
 }
 
 /**
