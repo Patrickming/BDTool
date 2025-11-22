@@ -51,7 +51,7 @@ export const ContentCategoryChart: React.FC<ContentCategoryChartProps> = ({
       }}
     >
       <Spin spinning={loading}>
-        <div style={{ height: '300px' }}>
+        <div style={{ height: '350px' }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
