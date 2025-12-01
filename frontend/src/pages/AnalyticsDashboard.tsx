@@ -2,8 +2,10 @@
  * 分析仪表盘页面
  */
 
-import React, { useEffect, useMemo } from "react";
-import { Row, Col, Select, Space } from "antd";
+import React, { useEffect, useMemo, useState } from "react";
+import { Row, Col, Select, Space, DatePicker } from "antd";
+import type { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import {
   TeamOutlined,
   UserAddOutlined,
@@ -25,6 +27,7 @@ import { TemplateCategoryChart } from "../components/analytics/TemplateCategoryC
 import { ContactTimelineChart } from "../components/analytics/ContactTimelineChart";
 
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 export const AnalyticsDashboard: React.FC = () => {
   const {
@@ -42,11 +45,44 @@ export const AnalyticsDashboard: React.FC = () => {
     setTimelineDays,
   } = useAnalyticsStore();
 
+  // 自定义日期范围状态
+  const [customDateRange, setCustomDateRange] = useState<[Dayjs, Dayjs] | null>(null);
+  const [isCustomRange, setIsCustomRange] = useState(false);
+
   useEffect(() => {
     fetchAllAnalytics();
   }, [fetchAllAnalytics]);
 
-  const handleTimelineDaysChange = async (days: number) => {
+  const handleTimelineDaysChange = async (days: number | string) => {
+    if (days === 'custom') {
+      setIsCustomRange(true);
+      return;
+    }
+
+    setIsCustomRange(false);
+    setCustomDateRange(null);
+    setTimelineDays(days as number);
+    // 同时更新概览统计和时间线数据
+    await Promise.all([
+      useAnalyticsStore.getState().fetchOverviewStats(days as number),
+      fetchContactTimeline(days as number),
+    ]);
+  };
+
+  // 处理自定义日期范围选择
+  const handleCustomDateChange = async (dates: [Dayjs | null, Dayjs | null] | null) => {
+    if (!dates || !dates[0] || !dates[1]) {
+      setCustomDateRange(null);
+      return;
+    }
+
+    const validDates: [Dayjs, Dayjs] = [dates[0], dates[1]];
+    setCustomDateRange(validDates);
+
+    // 计算日期范围的天数
+    const [start, end] = validDates;
+    const days = end.diff(start, 'day') + 1; // +1 包含结束日期
+
     setTimelineDays(days);
     // 同时更新概览统计和时间线数据
     await Promise.all([
@@ -64,12 +100,6 @@ export const AnalyticsDashboard: React.FC = () => {
 
   // 计算时间范围显示
   const timeRangeDisplay = useMemo(() => {
-    const now = new Date();
-    const todayStr = now.toISOString().split('T')[0];
-    const startDate = new Date(todayStr);
-    startDate.setUTCDate(startDate.getUTCDate() - (timelineDays - 1));
-    const startStr = startDate.toISOString().split('T')[0];
-
     // 格式化为 MM/DD
     const formatDate = (dateStr: string) => {
       const [, month, day] = dateStr.split('-');
@@ -78,6 +108,7 @@ export const AnalyticsDashboard: React.FC = () => {
 
     // 获取 UTC 偏移量
     const getUTCOffset = () => {
+      const now = new Date();
       const offset = now.getTimezoneOffset();
       const hours = Math.abs(Math.floor(offset / 60));
       const minutes = Math.abs(offset % 60);
@@ -85,13 +116,30 @@ export const AnalyticsDashboard: React.FC = () => {
       return `UTC${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
     };
 
+    let startStr: string;
+    let endStr: string;
+
+    // 如果是自定义日期范围，使用自定义的日期
+    if (isCustomRange && customDateRange) {
+      startStr = customDateRange[0].format('YYYY-MM-DD');
+      endStr = customDateRange[1].format('YYYY-MM-DD');
+    } else {
+      // 使用默认的天数计算
+      const now = new Date();
+      const todayStr = now.toISOString().split('T')[0];
+      const startDate = new Date(todayStr);
+      startDate.setUTCDate(startDate.getUTCDate() - (timelineDays - 1));
+      startStr = startDate.toISOString().split('T')[0];
+      endStr = todayStr;
+    }
+
     return {
       start: formatDate(startStr),
-      end: formatDate(todayStr),
+      end: formatDate(endStr),
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       utcOffset: getUTCOffset(),
     };
-  }, [timelineDays]);
+  }, [timelineDays, isCustomRange, customDateRange]);
 
   return (
     <div style={{ padding: "24px", background: "#0a0a0f", minHeight: "100vh" }}>
@@ -110,7 +158,7 @@ export const AnalyticsDashboard: React.FC = () => {
             时间线范围：
           </span>
           <Select
-            value={timelineDays}
+            value={isCustomRange ? 'custom' : timelineDays}
             onChange={handleTimelineDaysChange}
             style={{ width: 120 }}
           >
@@ -118,7 +166,18 @@ export const AnalyticsDashboard: React.FC = () => {
             <Option value={30}>近 30 天</Option>
             <Option value={60}>近 60 天</Option>
             <Option value={90}>近 90 天</Option>
+            <Option value="custom">自定义</Option>
           </Select>
+          {isCustomRange && (
+            <RangePicker
+              value={customDateRange}
+              onChange={handleCustomDateChange}
+              format="YYYY-MM-DD"
+              disabledDate={(current) => current && current > dayjs().endOf('day')}
+              style={{ width: 240 }}
+              placeholder={['开始日期', '结束日期']}
+            />
+          )}
           <div
             style={{
               display: "flex",
