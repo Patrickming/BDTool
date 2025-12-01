@@ -443,9 +443,10 @@ export class AnalyticsService {
       // 新增 KOL（oldValue 为 null 表示新创建）
       if (record.oldValue === null) {
         dateMap[dateStr].newKols++;
+        return; // 新增的不计入状态变更和响应数
       }
 
-      // 状态变更（所有状态变化都计入）
+      // 状态变更（只计入状态发生变化的记录，不包括新增）
       dateMap[dateStr].statusChanges++;
 
       // 响应数：从"已联系"状态变为其他响应状态（已回复/洽谈中/合作中/已合作/已拒绝）
