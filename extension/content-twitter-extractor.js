@@ -131,10 +131,16 @@
       console.error("❌ 提取过程出错:", err);
     }
 
-    // 验证数据完整性
-    if (!profileData.username || !profileData.displayName) {
-      console.warn("⚠️ 缺少必要字段，数据可能不完整");
+    // 验证数据完整性 - username 是必需的，displayName 可以为空（会使用 username）
+    if (!profileData.username) {
+      console.warn("⚠️ 缺少用户名，数据不完整");
       return null;
+    }
+
+    // 如果 displayName 为空（包括只有空格或被过滤的情况），使用 username 作为 displayName
+    if (!profileData.displayName || profileData.displayName.trim() === '') {
+      console.log("ℹ️ displayName 为空，使用 username 作为 displayName");
+      profileData.displayName = profileData.username;
     }
 
     console.log("🎉 用户资料提取完成:", profileData);
