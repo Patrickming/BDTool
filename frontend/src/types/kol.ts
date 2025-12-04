@@ -59,6 +59,7 @@ export const ContentCategoryConfig: Record<
  */
 export enum KOLLanguage {
   EN = 'en',
+  ZH = 'zh',
   JA = 'ja',
   KO = 'ko',
   FR = 'fr',
@@ -67,6 +68,11 @@ export enum KOLLanguage {
   HI = 'hi',
   ES = 'es',
   PT = 'pt',
+  AR = 'ar',
+  VI = 'vi',
+  TH = 'th',
+  ID = 'id',
+  TR = 'tr',
 }
 
 /**
@@ -74,6 +80,7 @@ export enum KOLLanguage {
  */
 export const LanguageConfig: Record<KOLLanguage, { label: string; flag: string }> = {
   [KOLLanguage.EN]: { label: '英语', flag: '🇺🇸' },
+  [KOLLanguage.ZH]: { label: '中文', flag: '🇨🇳' },
   [KOLLanguage.JA]: { label: '日语', flag: '🇯🇵' },
   [KOLLanguage.KO]: { label: '韩语', flag: '🇰🇷' },
   [KOLLanguage.FR]: { label: '法语', flag: '🇫🇷' },
@@ -82,6 +89,11 @@ export const LanguageConfig: Record<KOLLanguage, { label: string; flag: string }
   [KOLLanguage.HI]: { label: '印地语', flag: '🇮🇳' },
   [KOLLanguage.ES]: { label: '西班牙语', flag: '🇪🇸' },
   [KOLLanguage.PT]: { label: '葡萄牙语', flag: '🇵🇹' },
+  [KOLLanguage.AR]: { label: '阿拉伯语', flag: '🇸🇦' },
+  [KOLLanguage.VI]: { label: '越南语', flag: '🇻🇳' },
+  [KOLLanguage.TH]: { label: '泰语', flag: '🇹🇭' },
+  [KOLLanguage.ID]: { label: '印尼语', flag: '🇮🇩' },
+  [KOLLanguage.TR]: { label: '土耳其语', flag: '🇹🇷' },
 };
 
 /**
