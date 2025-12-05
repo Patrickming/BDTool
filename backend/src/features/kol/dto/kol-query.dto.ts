@@ -9,11 +9,11 @@ import { ContentCategory, KOLStatus } from './create-kol.dto';
  * 排序字段枚举
  */
 export const SortField = z.enum([
-  'createdAt',      // 创建时间
-  'updatedAt',      // 更新时间
-  'followerCount',  // 粉丝数
-  'qualityScore',   // 质量分
-  'username',       // 用户名（字母序）
+  'createdAt', // 创建时间
+  'updatedAt', // 更新时间
+  'followerCount', // 粉丝数
+  'qualityScore', // 质量分
+  'username', // 用户名（字母序）
 ]);
 
 export type SortFieldType = z.infer<typeof SortField>;
@@ -42,7 +42,7 @@ export const kolQuerySchema = z.object({
     .optional()
     .default('10')
     .transform((val) => parseInt(val))
-    .refine((val) => val > 0 && val <= 100, '每页数量必须在 1-100 之间'),
+    .refine((val) => val > 0 && val <= 5000, '每页数量必须在 1-9999 之间'),
 
   // 搜索参数（模糊匹配 username 或 displayName）
   search: z.string().optional(),

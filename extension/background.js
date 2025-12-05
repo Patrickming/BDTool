@@ -16,30 +16,36 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.action === "getTemplates") {
-    getTemplates().then(sendResponse).catch(error => {
-      sendResponse({ success: false, error: error.message });
-    });
+    getTemplates()
+      .then(sendResponse)
+      .catch((error) => {
+        sendResponse({ success: false, error: error.message });
+      });
     return true;
   }
 
   if (message.action === "getTemplateDetail") {
-    getTemplateDetail(message.templateId).then(sendResponse).catch(error => {
-      sendResponse({ success: false, error: error.message });
-    });
+    getTemplateDetail(message.templateId)
+      .then(sendResponse)
+      .catch((error) => {
+        sendResponse({ success: false, error: error.message });
+      });
     return true;
   }
 
   if (message.action === "getKols") {
-    getKols().then(sendResponse).catch(error => {
-      sendResponse({ success: false, error: error.message });
-    });
+    getKols()
+      .then(sendResponse)
+      .catch((error) => {
+        sendResponse({ success: false, error: error.message });
+      });
     return true;
   }
 
   if (message.action === "previewTemplate") {
     previewTemplate(message.templateId, message.kolId, message.language)
       .then(sendResponse)
-      .catch(error => {
+      .catch((error) => {
         sendResponse({ success: false, error: error.message });
       });
     return true;
@@ -48,7 +54,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "rewriteText") {
     rewriteText(message.text, message.tone, message.language)
       .then(sendResponse)
-      .catch(error => {
+      .catch((error) => {
         sendResponse({ success: false, error: error.message });
       });
     return true;
@@ -117,7 +123,9 @@ async function uploadKOLs(kols) {
         try {
           error = await response.json();
         } catch (e) {
-          error = { message: `HTTP ${response.status}: ${response.statusText}` };
+          error = {
+            message: `HTTP ${response.status}: ${response.statusText}`,
+          };
         }
         console.error(`❌ 上传失败 @${kol.username}:`, error);
 
@@ -141,7 +149,8 @@ async function uploadKOLs(kols) {
           duplicates.push(`@${kol.username}`);
         } else {
           failedCount++;
-          const errorMsg = error.message || error.error || `HTTP ${response.status}`;
+          const errorMsg =
+            error.message || error.error || `HTTP ${response.status}`;
           errors.push(`@${kol.username}: ${errorMsg}`);
         }
       }
@@ -153,7 +162,9 @@ async function uploadKOLs(kols) {
     }
   }
 
-  console.log(`✅ 上传完成: 成功 ${successCount}, 重复 ${duplicateCount}, 失败 ${failedCount}`);
+  console.log(
+    `✅ 上传完成: 成功 ${successCount}, 重复 ${duplicateCount}, 失败 ${failedCount}`
+  );
 
   // 构建详细的消息
   let message = "";
@@ -162,7 +173,7 @@ async function uploadKOLs(kols) {
   }
   if (duplicateCount > 0) {
     if (message) message += ", ";
-    message += `${duplicateCount} 个已存在 (${duplicates.join(', ')})`;
+    message += `${duplicateCount} 个已存在 (${duplicates.join(", ")})`;
   }
   if (failedCount > 0) {
     if (message) message += ", ";
@@ -201,7 +212,7 @@ async function getTemplates() {
     throw new Error("未配置 Extension Token");
   }
 
-  const response = await fetch(`${API_BASE_URL}/templates?page=1&limit=100`, {
+  const response = await fetch(`${API_BASE_URL}/templates?page=1&limit=2000`, {
     method: "GET",
     headers: {
       "X-Extension-Token": extensionToken,
@@ -350,7 +361,7 @@ async function rewriteText(text, tone, language) {
     return await response.json();
   } catch (error) {
     clearTimeout(timeoutId);
-    if (error.name === 'AbortError') {
+    if (error.name === "AbortError") {
       throw new Error("AI 改写超时，请稍后重试");
     }
     throw error;
