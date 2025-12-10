@@ -26,6 +26,13 @@ export const SortOrder = z.enum(['asc', 'desc']);
 export type SortOrderType = z.infer<typeof SortOrder>;
 
 /**
+ * 质量等级枚举
+ */
+export const QualityLevel = z.enum(['高质量', '优秀', '良好', '一般', '较差']);
+
+export type QualityLevelType = z.infer<typeof QualityLevel>;
+
+/**
  * KOL 列表查询参数验证 schema
  */
 export const kolQuerySchema = z.object({
@@ -51,6 +58,16 @@ export const kolQuerySchema = z.object({
   status: KOLStatus.optional(),
 
   contentCategory: ContentCategory.optional(),
+
+  // 质量等级多选筛选（数组）
+  qualityLevels: z
+    .union([z.string(), z.array(z.string())])
+    .optional()
+    .transform((val) => {
+      if (!val) return undefined;
+      const arr = Array.isArray(val) ? val : [val];
+      return arr.length > 0 ? arr : undefined;
+    }),
 
   // 质量分范围筛选
   minQualityScore: z

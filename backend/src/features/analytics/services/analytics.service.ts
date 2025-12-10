@@ -259,6 +259,7 @@ export class AnalyticsService {
     // 质量分分布统计
     const qualityLevels = {
       '高质量': 0,
+      '优秀': 0,
       '良好': 0,
       '一般': 0,
       '较差': 0,
@@ -294,6 +295,8 @@ export class AnalyticsService {
       const score = kol.qualityScore || 0;
       if (score >= 85) {
         qualityLevels['高质量']++;
+      } else if (score >= 80) {
+        qualityLevels['优秀']++;
       } else if (score >= 75) {
         qualityLevels['良好']++;
       } else if (score >= 65) {

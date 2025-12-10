@@ -249,8 +249,44 @@ export class KOLService {
       where.contentCategory = query.contentCategory;
     }
 
-    // 质量分范围筛选
-    if (query.minQualityScore !== undefined || query.maxQualityScore !== undefined) {
+    // 质量等级筛选（多选）
+    if (query.qualityLevels && query.qualityLevels.length > 0) {
+      // 根据质量等级转换为质量分范围
+      const qualityRanges: { gte?: number; lte?: number }[] = [];
+
+      query.qualityLevels.forEach((level: string) => {
+        switch (level) {
+          case '高质量':
+            qualityRanges.push({ gte: 85 });
+            break;
+          case '优秀':
+            qualityRanges.push({ gte: 80, lte: 84 });
+            break;
+          case '良好':
+            qualityRanges.push({ gte: 75, lte: 79 });
+            break;
+          case '一般':
+            qualityRanges.push({ gte: 65, lte: 74 });
+            break;
+          case '较差':
+            qualityRanges.push({ lte: 64 });
+            break;
+        }
+      });
+
+      // 使用 OR 条件组合多个质量等级
+      if (qualityRanges.length > 0) {
+        where.OR = where.OR || [];
+        qualityRanges.forEach(range => {
+          const condition: any = { qualityScore: {} };
+          if (range.gte !== undefined) condition.qualityScore.gte = range.gte;
+          if (range.lte !== undefined) condition.qualityScore.lte = range.lte;
+          where.OR.push(condition);
+        });
+      }
+    }
+    // 质量分范围筛选（如果没有质量等级筛选，才使用范围筛选）
+    else if (query.minQualityScore !== undefined || query.maxQualityScore !== undefined) {
       where.qualityScore = {};
       if (query.minQualityScore !== undefined) {
         where.qualityScore.gte = query.minQualityScore;

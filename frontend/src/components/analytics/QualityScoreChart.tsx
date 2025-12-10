@@ -13,7 +13,8 @@ interface QualityScoreChartProps {
 }
 
 const COLORS = {
-  '高质量': '#14F195',
+  '高质量': '#10B981',
+  '优秀': '#14F195',
   '良好': '#9945FF',
   '一般': '#FFA500',
   '较差': '#FF4D4F',

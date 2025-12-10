@@ -24,6 +24,7 @@ import {
   KOLStatusConfig,
   ContentCategoryConfig,
   LanguageConfig,
+  QualityLevelConfig,
   SortByOptions,
   SortOrderOptions,
 } from '../../types/kol';
@@ -54,6 +55,7 @@ const KOLList: React.FC = () => {
       search: values.search || undefined,
       status: values.status || undefined,
       contentCategory: values.contentCategory || undefined,
+      qualityLevels: values.qualityLevels && values.qualityLevels.length > 0 ? values.qualityLevels : undefined,
       minQualityScore: values.minQualityScore || undefined,
       maxQualityScore: values.maxQualityScore || undefined,
       minFollowerCount: values.minFollowerCount || undefined,
@@ -313,6 +315,39 @@ const KOLList: React.FC = () => {
                     {Object.entries(ContentCategoryConfig).map(([value, config]) => (
                       <Select.Option key={value} value={value}>
                         {config.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Row gutter={12} style={{ marginTop: 12 }}>
+              <Col span={24}>
+                <Form.Item name="qualityLevels" label="⭐ 质量等级" style={{ marginBottom: 0 }}>
+                  <Select
+                    mode="multiple"
+                    placeholder="全部等级（可多选）"
+                    allowClear
+                    size="middle"
+                    maxTagCount="responsive"
+                  >
+                    {Object.entries(QualityLevelConfig).map(([value, config]) => (
+                      <Select.Option key={value} value={value}>
+                        <span style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 8
+                        }}>
+                          <span style={{
+                            width: 12,
+                            height: 12,
+                            borderRadius: '50%',
+                            backgroundColor: config.color,
+                            display: 'inline-block'
+                          }} />
+                          {config.label} (≥{config.minScore}分)
+                        </span>
                       </Select.Option>
                     ))}
                   </Select>

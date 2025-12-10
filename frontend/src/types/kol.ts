@@ -97,6 +97,28 @@ export const LanguageConfig: Record<KOLLanguage, { label: string; flag: string }
 };
 
 /**
+ * 质量等级枚举
+ */
+export enum QualityLevel {
+  HIGH = '高质量',
+  EXCELLENT = '优秀',
+  GOOD = '良好',
+  AVERAGE = '一般',
+  POOR = '较差',
+}
+
+/**
+ * 质量等级配置
+ */
+export const QualityLevelConfig: Record<QualityLevel, { label: string; color: string; minScore: number }> = {
+  [QualityLevel.HIGH]: { label: '高质量', color: '#10B981', minScore: 85 },
+  [QualityLevel.EXCELLENT]: { label: '优秀', color: '#14F195', minScore: 80 },
+  [QualityLevel.GOOD]: { label: '良好', color: '#9945FF', minScore: 75 },
+  [QualityLevel.AVERAGE]: { label: '一般', color: '#FFA500', minScore: 65 },
+  [QualityLevel.POOR]: { label: '较差', color: '#FF4D4F', minScore: 0 },
+};
+
+/**
  * KOL 接口
  */
 export interface KOL {
@@ -195,6 +217,7 @@ export interface KOLQueryParams {
   search?: string;
   status?: KOLStatus;
   contentCategory?: ContentCategory;
+  qualityLevels?: QualityLevel[]; // 质量等级多选筛选
   minQualityScore?: number;
   maxQualityScore?: number;
   minFollowerCount?: number;
