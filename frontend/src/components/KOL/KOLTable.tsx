@@ -200,7 +200,17 @@ const KOLTable: React.FC<KOLTableProps> = ({ loading = false, onChange }) => {
 
       {/* 编辑模态框 */}
       <Modal
-        title="编辑 KOL"
+        title={
+          <div style={{
+            fontSize: '18px',
+            fontWeight: 600,
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
+            ✏️ 编辑 KOL 信息
+          </div>
+        }
         open={editModalOpen}
         onOk={handleSaveEdit}
         onCancel={() => {
@@ -208,79 +218,205 @@ const KOLTable: React.FC<KOLTableProps> = ({ loading = false, onChange }) => {
           setEditingKOL(null);
           form.resetFields();
         }}
-        width={600}
+        width={750}
+        okText="保存"
+        cancelText="取消"
+        centered
+        styles={{
+          body: {
+            paddingTop: 24,
+            maxHeight: '70vh',
+            overflowY: 'auto',
+          }
+        }}
       >
         <Form form={form} layout="vertical">
-          <Form.Item
-            name="username"
-            label="用户ID"
-            rules={[
-              { required: true, message: '请输入用户ID' },
-              { pattern: /^@?[a-zA-Z0-9_]{1,15}$/, message: '用户ID只能包含字母、数字和下划线，1-15个字符' }
-            ]}
-          >
-            <Input placeholder="输入 Twitter 用户ID（可带 @）" />
-          </Form.Item>
+          {/* 第一行：基本信息 */}
+          <div style={{
+            marginBottom: 16,
+            padding: 16,
+            background: 'rgba(102, 126, 234, 0.05)',
+            borderRadius: 8,
+            border: '1px solid rgba(102, 126, 234, 0.15)'
+          }}>
+            <div style={{
+              fontSize: '14px',
+              fontWeight: 600,
+              marginBottom: 12,
+              color: '#667eea'
+            }}>
+              📋 基本信息
+            </div>
+            <Space direction="vertical" size={0} style={{ width: '100%' }}>
+              <Space size={16} style={{ width: '100%' }}>
+                <Form.Item
+                  name="username"
+                  label="用户ID"
+                  rules={[
+                    { required: true, message: '请输入用户ID' },
+                    { pattern: /^@?[a-zA-Z0-9_]{1,15}$/, message: '用户ID只能包含字母、数字和下划线，1-15个字符' }
+                  ]}
+                  style={{ flex: 1, marginBottom: 0 }}
+                >
+                  <Input placeholder="Twitter 用户ID" prefix="@" />
+                </Form.Item>
 
-          <Form.Item
-            name="displayName"
-            label="用户名称"
-            rules={[{ required: true, message: '请输入用户名称' }]}
-          >
-            <Input placeholder="KOL 的用户名称" />
-          </Form.Item>
+                <Form.Item
+                  name="displayName"
+                  label="显示名称"
+                  rules={[{ required: true, message: '请输入显示名称' }]}
+                  style={{ flex: 1, marginBottom: 0 }}
+                >
+                  <Input placeholder="KOL 显示名称" />
+                </Form.Item>
+              </Space>
+            </Space>
+          </div>
 
-          <Form.Item name="followerCount" label="粉丝数">
-            <InputNumber min={0} style={{ width: '100%' }} placeholder="粉丝数量" />
-          </Form.Item>
+          {/* 第二行：数据指标 */}
+          <div style={{
+            marginBottom: 16,
+            padding: 16,
+            background: 'rgba(20, 241, 149, 0.05)',
+            borderRadius: 8,
+            border: '1px solid rgba(20, 241, 149, 0.15)'
+          }}>
+            <div style={{
+              fontSize: '14px',
+              fontWeight: 600,
+              marginBottom: 12,
+              color: '#14F195'
+            }}>
+              📊 数据指标
+            </div>
+            <Space size={16} style={{ width: '100%' }}>
+              <Form.Item
+                name="followerCount"
+                label="粉丝数"
+                style={{ flex: 1, marginBottom: 0 }}
+              >
+                <InputNumber
+                  min={0}
+                  style={{ width: '100%' }}
+                  placeholder="0"
+                  formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                />
+              </Form.Item>
 
-          <Form.Item name="verified" label="认证状态">
-            <Select>
-              <Select.Option value={true}>已认证 ✓</Select.Option>
-              <Select.Option value={false}>未认证</Select.Option>
-            </Select>
-          </Form.Item>
+              <Form.Item
+                name="qualityScore"
+                label="质量分"
+                style={{ flex: 1, marginBottom: 0 }}
+              >
+                <InputNumber
+                  min={0}
+                  max={100}
+                  style={{ width: '100%' }}
+                  placeholder="0-100"
+                  formatter={(value) => `${value}分`}
+                  parser={(value) => value?.replace('分', '') as any}
+                />
+              </Form.Item>
 
-          <Form.Item name="status" label="状态">
-            <Select>
-              {Object.entries(KOLStatusConfig).map(([value, config]) => (
-                <Select.Option key={value} value={value}>
-                  {config.label}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
+              <Form.Item
+                name="verified"
+                label="认证状态"
+                style={{ flex: 1, marginBottom: 0 }}
+              >
+                <Select placeholder="选择认证状态">
+                  <Select.Option value={true}>✓ 已认证</Select.Option>
+                  <Select.Option value={false}>未认证</Select.Option>
+                </Select>
+              </Form.Item>
+            </Space>
+          </div>
 
-          <Form.Item name="contentCategory" label="内容分类">
-            <Select>
-              {Object.entries(ContentCategoryConfig).map(([value, config]) => (
-                <Select.Option key={value} value={value}>
-                  {config.label}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
+          {/* 第三行：分类信息 */}
+          <div style={{
+            marginBottom: 16,
+            padding: 16,
+            background: 'rgba(255, 107, 107, 0.05)',
+            borderRadius: 8,
+            border: '1px solid rgba(255, 107, 107, 0.15)'
+          }}>
+            <div style={{
+              fontSize: '14px',
+              fontWeight: 600,
+              marginBottom: 12,
+              color: '#ff6b6b'
+            }}>
+              🏷️ 分类信息
+            </div>
+            <Space size={16} style={{ width: '100%' }}>
+              <Form.Item
+                name="status"
+                label="状态"
+                style={{ flex: 1, marginBottom: 0 }}
+              >
+                <Select placeholder="选择状态">
+                  {Object.entries(KOLStatusConfig).map(([value, config]) => (
+                    <Select.Option key={value} value={value}>
+                      {config.label}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
 
-          <Form.Item name="language" label="语言">
-            <Select>
-              {Object.entries(LanguageConfig).map(([value, config]) => (
-                <Select.Option key={value} value={value}>
-                  {config.flag} {config.label}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
+              <Form.Item
+                name="contentCategory"
+                label="内容分类"
+                style={{ flex: 1, marginBottom: 0 }}
+              >
+                <Select placeholder="选择分类">
+                  {Object.entries(ContentCategoryConfig).map(([value, config]) => (
+                    <Select.Option key={value} value={value}>
+                      {config.label}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
 
-          <Form.Item
-            name="qualityScore"
-            label="质量分"
-          >
-            <InputNumber min={0} max={100} style={{ width: '100%' }} />
-          </Form.Item>
+              <Form.Item
+                name="language"
+                label="语言"
+                style={{ flex: 1, marginBottom: 0 }}
+              >
+                <Select placeholder="选择语言">
+                  {Object.entries(LanguageConfig).map(([value, config]) => (
+                    <Select.Option key={value} value={value}>
+                      {config.flag} {config.label}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Space>
+          </div>
 
-          <Form.Item name="customNotes" label="备注">
-            <Input.TextArea rows={3} maxLength={1000} showCount placeholder="添加自定义备注" />
-          </Form.Item>
+          {/* 第四行：备注 */}
+          <div style={{
+            padding: 16,
+            background: 'rgba(158, 158, 158, 0.05)',
+            borderRadius: 8,
+            border: '1px solid rgba(158, 158, 158, 0.15)'
+          }}>
+            <div style={{
+              fontSize: '14px',
+              fontWeight: 600,
+              marginBottom: 12,
+              color: '#9e9e9e'
+            }}>
+              📝 备注信息
+            </div>
+            <Form.Item name="customNotes" style={{ marginBottom: 0 }}>
+              <Input.TextArea
+                rows={3}
+                maxLength={1000}
+                showCount
+                placeholder="添加自定义备注..."
+                style={{ resize: 'none' }}
+              />
+            </Form.Item>
+          </div>
         </Form>
       </Modal>
     </>
