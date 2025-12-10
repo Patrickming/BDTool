@@ -289,6 +289,15 @@ const KOLDetail: React.FC = () => {
           </Descriptions>
         </Card>
 
+        {/* 个人简介卡片 */}
+        {kol.bio && (
+          <Card title="个人简介" style={{ marginBottom: 24 }}>
+            <p style={{ margin: 0, lineHeight: '1.6', whiteSpace: 'pre-wrap' }}>
+              {kol.bio}
+            </p>
+          </Card>
+        )}
+
         {/* 修改历史卡片 */}
         <Card
           title={

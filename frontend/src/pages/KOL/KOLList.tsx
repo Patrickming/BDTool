@@ -29,6 +29,7 @@ import {
 } from '../../types/kol';
 import type { KOLQueryParams, CreateKOLDto, UpdateKOLDto } from '../../types/kol';
 import { exportKOLsToCSV } from '../../utils/export';
+import { kolService } from '../../services/kol.service';
 
 const KOLList: React.FC = () => {
   const navigate = useNavigate();
@@ -79,20 +80,48 @@ const KOLList: React.FC = () => {
     fetchKOLs(params);
   };
 
-  // 导出 KOL 列表
-  const handleExport = () => {
-    if (kols.length === 0) {
+  // 导出 KOL 列表 - 导出所有筛选结果
+  const handleExport = async () => {
+    const totalCount = pagination?.total || 0;
+
+    if (totalCount === 0) {
       message.warning('当前没有可导出的 KOL 数据');
       return;
     }
 
-    try {
-      exportKOLsToCSV(kols);
-      message.success(`成功导出 ${kols.length} 个 KOL 数据`);
-    } catch (error: any) {
-      console.error('导出失败:', error);
-      message.error('导出失败，请重试');
-    }
+    // 显示确认对话框
+    Modal.confirm({
+      title: '确认导出',
+      content: `即将导出 ${totalCount} 个 KOL 数据，确认继续？`,
+      okText: '确认导出',
+      cancelText: '取消',
+      onOk: async () => {
+        try {
+          // 使用当前筛选条件，但获取所有数据（设置一个很大的 limit）
+          const exportParams = {
+            ...queryParams,
+            page: 1,
+            limit: 5000, // 后端最大限制为5000
+          };
+
+          // 获取所有筛选的 KOL 数据
+          const response = await kolService.getKOLList(exportParams);
+          const allKols = response.kols;
+
+          if (allKols.length === 0) {
+            message.warning('没有可导出的数据');
+            return;
+          }
+
+          // 导出所有筛选的 KOL
+          exportKOLsToCSV(allKols);
+          message.success(`成功导出 ${allKols.length} 个 KOL 数据`);
+        } catch (error: any) {
+          console.error('导出失败:', error);
+          message.error('导出失败，请重试');
+        }
+      },
+    });
   };
 
   // 创建 KOL

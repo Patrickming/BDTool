@@ -16,12 +16,12 @@ const QualityScoreBar: React.FC<QualityScoreBarProps> = ({
   size = 'default',
   showInfo = true,
 }) => {
-  // 根据分数确定颜色
+  // 根据分数确定颜色 - 匹配数据统计页面的4种颜色和后端区间
   const getColor = (score: number): string => {
-    if (score >= 80) return '#52c41a'; // 绿色 - 优秀
-    if (score >= 60) return '#1890ff'; // 蓝色 - 良好
-    if (score >= 40) return '#faad14'; // 橙色 - 一般
-    return '#ff4d4f'; // 红色 - 较差
+    if (score >= 85) return '#14F195'; // 高质量 (绿色)
+    if (score >= 75) return '#9945FF'; // 良好 (紫色)
+    if (score >= 65) return '#FFA500'; // 一般 (橙色)
+    return '#FF4D4F'; // 较差 (红色)
   };
 
   return (

@@ -10,7 +10,9 @@ import { KOL, KOLStatusConfig, ContentCategoryConfig } from '@/types/kol';
  */
 export const exportKOLsToCSV = (kols: KOL[], filename?: string) => {
   // 转换 KOL 数据为表格格式
-  const excelData = kols.map((kol) => ({
+  const excelData = kols.map((kol, index) => ({
+    '序号': index + 1,
+    'ID': kol.id,
     '用户名': kol.username,
     '显示名称': kol.displayName,
     '粉丝数': kol.followerCount,
@@ -19,11 +21,7 @@ export const exportKOLsToCSV = (kols: KOL[], filename?: string) => {
     '内容分类': ContentCategoryConfig[kol.contentCategory].label,
     '质量分': kol.qualityScore,
     '语言': kol.language || '',
-    '个人简介': kol.bio || '',
-    'Twitter ID': kol.twitterId || '',
     '头像 URL': kol.profileImgUrl || '',
-    '最后推文日期': kol.lastTweetDate || '',
-    '账号创建日期': kol.accountCreated || '',
     '备注': kol.customNotes || '',
     '创建时间': new Date(kol.createdAt).toLocaleString('zh-CN'),
     '更新时间': new Date(kol.updatedAt).toLocaleString('zh-CN'),
@@ -34,6 +32,8 @@ export const exportKOLsToCSV = (kols: KOL[], filename?: string) => {
 
   // 设置列宽
   const colWidths = [
+    { wch: 8 },  // 序号
+    { wch: 10 }, // ID
     { wch: 15 }, // 用户名
     { wch: 20 }, // 显示名称
     { wch: 12 }, // 粉丝数
@@ -42,16 +42,21 @@ export const exportKOLsToCSV = (kols: KOL[], filename?: string) => {
     { wch: 15 }, // 内容分类
     { wch: 10 }, // 质量分
     { wch: 10 }, // 语言
-    { wch: 30 }, // 个人简介
-    { wch: 15 }, // Twitter ID
     { wch: 50 }, // 头像 URL
-    { wch: 15 }, // 最后推文日期
-    { wch: 15 }, // 账号创建日期
     { wch: 30 }, // 备注
     { wch: 20 }, // 创建时间
     { wch: 20 }, // 更新时间
   ];
   worksheet['!cols'] = colWidths;
+
+  // 添加自动筛选功能（第一行的下拉箭头）
+  // 获取数据范围：从A1到最后一列和最后一行
+  const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
+  worksheet['!autofilter'] = { ref: XLSX.utils.encode_range(range) };
+
+  // 冻结首行（freeze panes）- 让第一行在滚动时始终显示在顶部
+  // 冻结位置设置为A2，表示冻结第1行
+  worksheet['!freeze'] = { xSplit: 0, ySplit: 1, topLeftCell: 'A2', activePane: 'bottomLeft', state: 'frozen' };
 
   // 创建工作簿
   const workbook = XLSX.utils.book_new();
