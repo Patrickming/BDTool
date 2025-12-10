@@ -226,137 +226,197 @@ const KOLList: React.FC = () => {
       </Row>
 
       {/* 搜索和筛选 */}
-      <Card style={{ marginBottom: '24px' }}>
+      <Card
+        style={{
+          marginBottom: '24px',
+          background: 'rgba(153, 69, 255, 0.03)',
+          border: '1px solid rgba(153, 69, 255, 0.15)',
+        }}
+      >
+        <div style={{
+          fontSize: '14px',
+          fontWeight: 600,
+          marginBottom: 16,
+          color: '#667eea',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8
+        }}>
+          🔍 筛选条件
+        </div>
+
         <Form form={form} onFinish={handleSearch} layout="vertical">
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item name="search" label="搜索">
-                <Input
-                  placeholder="用户名或显示名"
-                  prefix={<SearchOutlined />}
-                  allowClear
-                />
-              </Form.Item>
-            </Col>
+          {/* 第一行：基础筛选 */}
+          <div style={{
+            marginBottom: 12,
+            padding: 16,
+            background: 'rgba(102, 126, 234, 0.05)',
+            borderRadius: 8,
+            border: '1px solid rgba(102, 126, 234, 0.1)'
+          }}>
+            <Row gutter={12}>
+              <Col span={8}>
+                <Form.Item name="search" label="🔎 搜索" style={{ marginBottom: 0 }}>
+                  <Input
+                    placeholder="输入用户名或显示名..."
+                    prefix={<SearchOutlined />}
+                    allowClear
+                    size="middle"
+                  />
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item name="status" label="状态">
-                <Select placeholder="选择状态" allowClear>
-                  {Object.entries(KOLStatusConfig).map(([value, config]) => (
-                    <Select.Option key={value} value={value}>
-                      {config.label}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item name="status" label="📊 状态" style={{ marginBottom: 0 }}>
+                  <Select placeholder="全部状态" allowClear size="middle">
+                    {Object.entries(KOLStatusConfig).map(([value, config]) => (
+                      <Select.Option key={value} value={value}>
+                        {config.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item name="contentCategory" label="内容分类">
-                <Select placeholder="选择分类" allowClear>
-                  {Object.entries(ContentCategoryConfig).map(([value, config]) => (
-                    <Select.Option key={value} value={value}>
-                      {config.label}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
+              <Col span={8}>
+                <Form.Item name="contentCategory" label="🏷️ 内容分类" style={{ marginBottom: 0 }}>
+                  <Select placeholder="全部分类" allowClear size="middle">
+                    {Object.entries(ContentCategoryConfig).map(([value, config]) => (
+                      <Select.Option key={value} value={value}>
+                        {config.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+          </div>
 
-          <Row gutter={16}>
-            <Col span={6}>
-              <Form.Item name="minFollowerCount" label="最小粉丝数">
-                <InputNumber
-                  style={{ width: '100%' }}
-                  min={0}
-                  placeholder="0"
-                  formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                />
-              </Form.Item>
-            </Col>
+          {/* 第二行：粉丝数和质量分范围 */}
+          <div style={{
+            marginBottom: 12,
+            padding: 16,
+            background: 'rgba(20, 241, 149, 0.05)',
+            borderRadius: 8,
+            border: '1px solid rgba(20, 241, 149, 0.1)'
+          }}>
+            <Row gutter={12}>
+              <Col span={6}>
+                <Form.Item name="minFollowerCount" label="👥 最小粉丝数" style={{ marginBottom: 0 }}>
+                  <InputNumber
+                    style={{ width: '100%' }}
+                    min={0}
+                    placeholder="0"
+                    size="middle"
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  />
+                </Form.Item>
+              </Col>
 
-            <Col span={6}>
-              <Form.Item name="maxFollowerCount" label="最大粉丝数">
-                <InputNumber
-                  style={{ width: '100%' }}
-                  min={0}
-                  placeholder="无限制"
-                  formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                />
-              </Form.Item>
-            </Col>
+              <Col span={6}>
+                <Form.Item name="maxFollowerCount" label="👥 最大粉丝数" style={{ marginBottom: 0 }}>
+                  <InputNumber
+                    style={{ width: '100%' }}
+                    min={0}
+                    placeholder="无限制"
+                    size="middle"
+                    formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  />
+                </Form.Item>
+              </Col>
 
-            <Col span={6}>
-              <Form.Item name="minQualityScore" label="最小质量分">
-                <InputNumber
-                  style={{ width: '100%' }}
-                  min={0}
-                  max={100}
-                  placeholder="0"
-                />
-              </Form.Item>
-            </Col>
+              <Col span={6}>
+                <Form.Item name="minQualityScore" label="⭐ 最小质量分" style={{ marginBottom: 0 }}>
+                  <InputNumber
+                    style={{ width: '100%' }}
+                    min={0}
+                    max={100}
+                    placeholder="0"
+                    size="middle"
+                  />
+                </Form.Item>
+              </Col>
 
-            <Col span={6}>
-              <Form.Item name="maxQualityScore" label="最大质量分">
-                <InputNumber
-                  style={{ width: '100%' }}
-                  min={0}
-                  max={100}
-                  placeholder="100"
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+              <Col span={6}>
+                <Form.Item name="maxQualityScore" label="⭐ 最大质量分" style={{ marginBottom: 0 }}>
+                  <InputNumber
+                    style={{ width: '100%' }}
+                    min={0}
+                    max={100}
+                    placeholder="100"
+                    size="middle"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </div>
 
-          <Row gutter={16}>
-            <Col span={6}>
-              <Form.Item name="verified" label="认证状态">
-                <Select placeholder="全部" allowClear>
-                  <Select.Option value={true}>已认证</Select.Option>
-                  <Select.Option value={false}>未认证</Select.Option>
-                </Select>
-              </Form.Item>
-            </Col>
+          {/* 第三行：排序和操作 */}
+          <div style={{
+            padding: 16,
+            background: 'rgba(255, 107, 107, 0.05)',
+            borderRadius: 8,
+            border: '1px solid rgba(255, 107, 107, 0.1)'
+          }}>
+            <Row gutter={12} align="bottom">
+              <Col span={6}>
+                <Form.Item name="verified" label="✓ 认证状态" style={{ marginBottom: 0 }}>
+                  <Select placeholder="全部" allowClear size="middle">
+                    <Select.Option value={true}>✓ 已认证</Select.Option>
+                    <Select.Option value={false}>未认证</Select.Option>
+                  </Select>
+                </Form.Item>
+              </Col>
 
-            <Col span={6}>
-              <Form.Item name="sortBy" label="排序字段" initialValue="createdAt">
-                <Select>
-                  {SortByOptions.map((option) => (
-                    <Select.Option key={option.value} value={option.value}>
-                      {option.label}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
+              <Col span={6}>
+                <Form.Item name="sortBy" label="📈 排序字段" initialValue="createdAt" style={{ marginBottom: 0 }}>
+                  <Select size="middle">
+                    {SortByOptions.map((option) => (
+                      <Select.Option key={option.value} value={option.value}>
+                        {option.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
 
-            <Col span={6}>
-              <Form.Item name="sortOrder" label="排序方向" initialValue="desc">
-                <Select>
-                  {SortOrderOptions.map((option) => (
-                    <Select.Option key={option.value} value={option.value}>
-                      {option.label}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
+              <Col span={6}>
+                <Form.Item name="sortOrder" label="↕️ 排序方向" initialValue="desc" style={{ marginBottom: 0 }}>
+                  <Select size="middle">
+                    {SortOrderOptions.map((option) => (
+                      <Select.Option key={option.value} value={option.value}>
+                        {option.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
 
-            <Col span={6} style={{ display: 'flex', alignItems: 'flex-end' }}>
-              <Form.Item style={{ marginBottom: 0, width: '100%' }}>
+              <Col span={6}>
                 <Space style={{ width: '100%' }}>
-                  <Button type="primary" htmlType="submit" icon={<SearchOutlined />}>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    icon={<SearchOutlined />}
+                    size="middle"
+                    style={{
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      border: 'none',
+                    }}
+                  >
                     搜索
                   </Button>
-                  <Button onClick={handleReset} icon={<ReloadOutlined />}>
+                  <Button
+                    onClick={handleReset}
+                    icon={<ReloadOutlined />}
+                    size="middle"
+                  >
                     重置
                   </Button>
                 </Space>
-              </Form.Item>
-            </Col>
-          </Row>
+              </Col>
+            </Row>
+          </div>
         </Form>
       </Card>
 
