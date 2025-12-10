@@ -16,9 +16,11 @@ import { useKOLStore } from '../../store/kol.store';
 interface KOLTableProps {
   loading?: boolean;
   onChange?: (page: number, pageSize: number) => void;
+  selectedRowKeys?: React.Key[];
+  onSelectionChange?: (selectedRowKeys: React.Key[]) => void;
 }
 
-const KOLTable: React.FC<KOLTableProps> = ({ loading = false, onChange }) => {
+const KOLTable: React.FC<KOLTableProps> = ({ loading = false, onChange, selectedRowKeys = [], onSelectionChange }) => {
   const navigate = useNavigate();
   const { kols, pagination, updateKOL, deleteKOL } = useKOLStore();
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -182,6 +184,19 @@ const KOLTable: React.FC<KOLTableProps> = ({ loading = false, onChange }) => {
         dataSource={kols}
         loading={loading}
         rowKey="id"
+        rowSelection={
+          onSelectionChange
+            ? {
+                selectedRowKeys,
+                onChange: onSelectionChange,
+                selections: [
+                  Table.SELECTION_ALL,
+                  Table.SELECTION_INVERT,
+                  Table.SELECTION_NONE,
+                ],
+              }
+            : undefined
+        }
         pagination={
           pagination
             ? {
