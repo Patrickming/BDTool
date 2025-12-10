@@ -422,6 +422,52 @@ const KOLList: React.FC = () => {
 
       {/* KOL 表格 */}
       <Card>
+        {/* 批量操作工具栏 */}
+        {selectedRowKeys.length > 0 && (
+          <div style={{
+            marginBottom: 16,
+            padding: 16,
+            background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)',
+            borderRadius: 8,
+            border: '2px solid #667eea',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#667eea'
+              }}>
+                ✓ 已选择 <span style={{ color: '#14F195', fontSize: '18px' }}>{selectedRowKeys.length}</span> 个 KOL
+              </div>
+              <Button
+                size="small"
+                onClick={() => setSelectedRowKeys([])}
+                style={{ color: '#999' }}
+              >
+                取消选择
+              </Button>
+            </div>
+            <Space>
+              <Button
+                type="primary"
+                icon={<EditOutlined />}
+                onClick={() => setBatchEditModalOpen(true)}
+                size="large"
+                style={{
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  border: 'none',
+                  boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)',
+                }}
+              >
+                批量修改
+              </Button>
+            </Space>
+          </div>
+        )}
+
         <KOLTable
           loading={loading}
           onChange={handleTableChange}
