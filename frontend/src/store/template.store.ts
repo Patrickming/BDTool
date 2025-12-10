@@ -148,7 +148,12 @@ export const useTemplateStore = create<TemplateState>((set, get) => ({
   // 设置查询参数
   setQueryParams: (params: Partial<TemplateQueryParams>) => {
     set((state) => ({
-      queryParams: { ...state.queryParams, ...params, page: 1 },
+      queryParams: {
+        ...state.queryParams,
+        ...params,
+        // 只有在不是 page 参数变化时，才重置 page 为 1
+        page: params.page !== undefined ? params.page : (Object.keys(params).length > 0 && !params.limit ? 1 : state.queryParams.page),
+      },
     }));
   },
 
