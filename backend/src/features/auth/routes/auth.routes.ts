@@ -4,6 +4,8 @@
 
 import { Router } from 'express';
 import { authController } from '../controllers/auth.controller';
+import { uploadAvatar } from '@common/utils/file-upload';
+import { requireAuth } from '@middleware/auth.middleware';
 
 const router = Router();
 
@@ -22,9 +24,25 @@ router.post('/login', authController.login);
 /**
  * GET /api/v1/auth/me
  * 获取当前用户信息（需要认证）
- * 注意: 认证中间件将在后续任务中添加
  */
-// router.get('/me', authMiddleware, authController.getCurrentUser);
-router.get('/me', authController.getCurrentUser); // 暂时不需要认证中间件
+router.get('/me', requireAuth, authController.getCurrentUser);
+
+/**
+ * PUT /api/v1/auth/profile
+ * 更新用户资料（需要认证）
+ */
+router.put('/profile', requireAuth, authController.updateProfile);
+
+/**
+ * POST /api/v1/auth/avatar
+ * 上传用户头像（需要认证）
+ */
+router.post('/avatar', requireAuth, uploadAvatar.single('avatar'), authController.uploadAvatar);
+
+/**
+ * PUT /api/v1/auth/password
+ * 修改密码（需要认证）
+ */
+router.put('/password', requireAuth, authController.changePassword);
 
 export default router;

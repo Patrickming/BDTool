@@ -5,6 +5,7 @@
 import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import path from 'path';
 import { corsOptions } from '@config/cors.config';
 import { requestLogger } from '@common/middleware/request-logger.middleware';
 import { errorHandler, notFoundHandler } from '@common/middleware/error-handler.middleware';
@@ -14,8 +15,20 @@ import routes from './routes';
 export const createApp = (): Application => {
   const app = express();
 
-  // 安全中间件
-  app.use(helmet());
+  // 安全中间件 - 自定义配置以允许跨域图片加载
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          imgSrc: ["'self'", 'data:', 'http://localhost:3000', 'http://localhost:5173'],
+          styleSrc: ["'self'", "'unsafe-inline'", 'https:'],
+          scriptSrc: ["'self'"],
+        },
+      },
+    })
+  );
 
   // CORS
   app.use(cors(corsOptions));
@@ -26,6 +39,9 @@ export const createApp = (): Application => {
 
   // 请求日志
   app.use(requestLogger);
+
+  // 静态文件服务 - 上传文件
+  app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
   // 健康检查
   app.get('/health', (req, res) => {

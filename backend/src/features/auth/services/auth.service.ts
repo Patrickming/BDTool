@@ -7,8 +7,12 @@ import { logger } from '@config/logger.config';
 import { BadRequestError, UnauthorizedError } from '@common/errors/app-error';
 import { RegisterDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
+import { UpdateProfileDto } from '../dto/update-profile.dto';
+import { ChangePasswordDto } from '../dto/change-password.dto';
 import { passwordService } from './password.service';
 import { jwtService, JwtPayload } from './jwt.service';
+import fs from 'fs/promises';
+import path from 'path';
 
 /**
  * 认证响应接口
@@ -19,6 +23,8 @@ export interface AuthResponse {
     email: string;
     fullName: string;
     role: string;
+    company?: string | null;
+    avatar?: string | null;
   };
   token: string;
 }
@@ -80,6 +86,8 @@ export class AuthService {
         email: user.email,
         fullName: user.fullName,
         role: user.role,
+        company: user.company,
+        avatar: user.avatar,
       },
       token,
     };
@@ -138,6 +146,8 @@ export class AuthService {
         email: user.email,
         fullName: user.fullName,
         role: user.role,
+        company: user.company,
+        avatar: user.avatar,
       },
       token,
     };
@@ -159,6 +169,8 @@ export class AuthService {
         email: true,
         fullName: true,
         role: true,
+        company: true,
+        avatar: true,
         isActive: true,
         createdAt: true,
         updatedAt: true,
@@ -176,6 +188,141 @@ export class AuthService {
     }
 
     return user;
+  }
+
+  /**
+   * 更新用户资料
+   * @param userId - 用户 ID
+   * @param updateData - 更新数据
+   * @returns 更新后的用户信息
+   */
+  async updateProfile(userId: number, updateData: UpdateProfileDto) {
+    logger.info(`更新用户资料: ID=${userId}`);
+
+    // 如果要更新邮箱，检查邮箱是否已被其他用户使用
+    if (updateData.email) {
+      const existingUser = await prisma.user.findFirst({
+        where: {
+          email: updateData.email,
+          NOT: { id: userId },
+        },
+      });
+
+      if (existingUser) {
+        logger.warn(`更新失败: 邮箱 ${updateData.email} 已被使用`);
+        throw new BadRequestError('该邮箱已被其他用户使用');
+      }
+    }
+
+    // 更新用户信息
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        ...(updateData.fullName && { fullName: updateData.fullName }),
+        ...(updateData.email && { email: updateData.email }),
+        ...(updateData.company !== undefined && { company: updateData.company }),
+      },
+      select: {
+        id: true,
+        email: true,
+        fullName: true,
+        role: true,
+        company: true,
+        avatar: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    logger.info(`用户资料更新成功: ID=${userId}`);
+    return user;
+  }
+
+  /**
+   * 上传用户头像
+   * @param userId - 用户 ID
+   * @param filename - 文件名
+   * @returns 更新后的用户信息
+   */
+  async uploadAvatar(userId: number, filename: string) {
+    logger.info(`上传用户头像: ID=${userId}, File=${filename}`);
+
+    // 获取用户当前头像
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { avatar: true },
+    });
+
+    // 删除旧头像文件（如果存在）
+    if (user?.avatar) {
+      const oldAvatarPath = path.join(process.cwd(), 'uploads', 'avatars', user.avatar);
+      try {
+        await fs.unlink(oldAvatarPath);
+        logger.debug(`删除旧头像: ${oldAvatarPath}`);
+      } catch (error) {
+        logger.warn(`删除旧头像失败（文件可能不存在）: ${oldAvatarPath}`);
+      }
+    }
+
+    // 更新数据库中的头像字段
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { avatar: filename },
+      select: {
+        id: true,
+        email: true,
+        fullName: true,
+        role: true,
+        company: true,
+        avatar: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    logger.info(`用户头像更新成功: ID=${userId}`);
+    return updatedUser;
+  }
+
+  /**
+   * 修改密码
+   * @param userId - 用户 ID
+   * @param changePasswordData - 修改密码数据
+   */
+  async changePassword(userId: number, changePasswordData: ChangePasswordDto) {
+    logger.info(`修改密码: ID=${userId}`);
+
+    // 获取用户当前密码
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { hashedPassword: true },
+    });
+
+    if (!user) {
+      throw new UnauthorizedError('用户不存在');
+    }
+
+    // 验证当前密码
+    const isPasswordValid = await passwordService.verifyPassword(
+      changePasswordData.currentPassword,
+      user.hashedPassword
+    );
+
+    if (!isPasswordValid) {
+      logger.warn(`修改密码失败: 当前密码错误 ID=${userId}`);
+      throw new BadRequestError('当前密码错误');
+    }
+
+    // 加密新密码
+    const newHashedPassword = await passwordService.hashPassword(changePasswordData.newPassword);
+
+    // 更新密码
+    await prisma.user.update({
+      where: { id: userId },
+      data: { hashedPassword: newHashedPassword },
+    });
+
+    logger.info(`密码修改成功: ID=${userId}`);
   }
 }
 

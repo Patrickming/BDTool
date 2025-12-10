@@ -8,6 +8,7 @@ import zhCN from 'antd/locale/zh_CN';
 import Home from '@/pages/Home';
 import Login from '@/pages/Login';
 import Register from '@/pages/Register';
+import Profile from '@/pages/Profile';
 import KOLList from '@/pages/KOL/KOLList';
 import KOLImport from '@/pages/KOL/KOLImport';
 import KOLDetail from '@/pages/KOL/KOLDetail';
@@ -44,6 +45,8 @@ function App() {
           {/* 认证路由（使用 AppLayout） */}
           <Route element={<AppLayout />}>
             <Route path="/" element={<Home />} />
+            {/* 个人资料路由 */}
+            <Route path="/profile" element={<Profile />} />
             {/* KOL 管理路由 */}
             <Route path="/kols" element={<KOLList />} />
             <Route path="/kols/import" element={<KOLImport />} />

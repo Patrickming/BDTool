@@ -17,6 +17,8 @@ model User {
   hashedPassword String
   fullName       String
   role           String       @default("member") // 'admin' 或 'member'
+  company        String?      // 所在公司（可选）
+  avatar         String?      // 头像文件路径（可选）
   isActive       Boolean      @default(true)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt

@@ -18,21 +18,33 @@ interface AuthState {
   loadUser: () => Promise<void>;
 }
 
+// 从 localStorage 恢复用户信息
+const getStoredUser = (): User | null => {
+  try {
+    const userStr = localStorage.getItem('auth_user');
+    return userStr ? JSON.parse(userStr) : null;
+  } catch {
+    return null;
+  }
+};
+
 export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
+  user: getStoredUser(),
   token: localStorage.getItem('auth_token'),
-  isAuthenticated: false,
+  isAuthenticated: !!localStorage.getItem('auth_token') && !!getStoredUser(),
   isLoading: false,
 
   // 设置用户信息和 Token
   setUser: (user, token) => {
     localStorage.setItem('auth_token', token);
+    localStorage.setItem('auth_user', JSON.stringify(user));
     set({ user, token, isAuthenticated: true });
   },
 
   // 清除认证信息
   clearAuth: () => {
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_user');
     set({ user: null, token: null, isAuthenticated: false });
   },
 
@@ -47,10 +59,12 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       set({ isLoading: true });
       const user = await authService.getCurrentUser();
+      localStorage.setItem('auth_user', JSON.stringify(user));
       set({ user, isAuthenticated: true, isLoading: false });
     } catch (error) {
       // Token 无效，清除认证信息
       localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user');
       set({ user: null, token: null, isAuthenticated: false, isLoading: false });
     }
   },

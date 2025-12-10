@@ -5,9 +5,11 @@
 import { Request, Response } from 'express';
 import { asyncHandler } from '@common/utils/async-handler';
 import { successResponse } from '@common/utils/api-response';
-import { ValidationError } from '@common/errors/app-error';
+import { ValidationError, AppError } from '@common/errors/app-error';
 import { registerSchema } from '../dto/register.dto';
 import { loginSchema } from '../dto/login.dto';
+import { updateProfileSchema } from '../dto/update-profile.dto';
+import { changePasswordSchema } from '../dto/change-password.dto';
 import { authService } from '../services/auth.service';
 import { logger } from '@config/logger.config';
 
@@ -67,7 +69,7 @@ export class AuthController {
   getCurrentUser = asyncHandler(async (req: Request, res: Response) => {
     // 注意: userId 会在认证中间件中设置到 req.user
     // 这里暂时使用 any 类型，后续会创建类型定义
-    const userId = (req as any).user?.userId;
+    const userId = (req as any).user?.id;
 
     if (!userId) {
       logger.error('获取当前用户信息失败: userId 未找到');
@@ -81,6 +83,97 @@ export class AuthController {
 
     // 返回成功响应
     return successResponse(res, user, '获取用户信息成功');
+  });
+
+  /**
+   * 更新用户资料
+   * PUT /api/v1/auth/profile
+   * 需要认证
+   */
+  updateProfile = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      throw new AppError('用户信息不存在', 401);
+    }
+
+    // 验证请求数据
+    const validationResult = updateProfileSchema.safeParse(req.body);
+
+    if (!validationResult.success) {
+      logger.warn('更新资料数据验证失败', validationResult.error.errors);
+      throw new ValidationError('数据验证失败', validationResult.error.errors);
+    }
+
+    logger.info(`更新用户资料: userId=${userId}`);
+
+    // 调用服务层更新用户资料
+    const user = await authService.updateProfile(userId, validationResult.data);
+
+    // 返回成功响应
+    return successResponse(res, user, '资料更新成功');
+  });
+
+  /**
+   * 上传用户头像
+   * POST /api/v1/auth/avatar
+   * 需要认证
+   */
+  uploadAvatar = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      throw new AppError('用户信息不存在', 401);
+    }
+
+    // 检查是否上传了文件
+    if (!req.file) {
+      throw new AppError('请上传头像文件', 400);
+    }
+
+    logger.info(`上传用户头像: userId=${userId}, file=${req.file.filename}`);
+
+    // 调用服务层更新头像
+    const user = await authService.uploadAvatar(userId, req.file.filename);
+
+    // 返回成功响应（包含头像 URL）
+    return successResponse(
+      res,
+      {
+        ...user,
+        avatarUrl: `/uploads/avatars/${req.file.filename}`,
+      },
+      '头像上传成功'
+    );
+  });
+
+  /**
+   * 修改密码
+   * PUT /api/v1/auth/password
+   * 需要认证
+   */
+  changePassword = asyncHandler(async (req: Request, res: Response) => {
+    const userId = (req as any).user?.id;
+
+    if (!userId) {
+      throw new AppError('用户信息不存在', 401);
+    }
+
+    // 验证请求数据
+    const validationResult = changePasswordSchema.safeParse(req.body);
+
+    if (!validationResult.success) {
+      logger.warn('修改密码数据验证失败', validationResult.error.errors);
+      throw new ValidationError('数据验证失败', validationResult.error.errors);
+    }
+
+    logger.info(`修改密码: userId=${userId}`);
+
+    // 调用服务层修改密码
+    await authService.changePassword(userId, validationResult.data);
+
+    // 返回成功响应
+    return successResponse(res, null, '密码修改成功');
   });
 }
 

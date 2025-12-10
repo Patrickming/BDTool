@@ -1,14 +1,16 @@
 /**
- * 用户登录页面 - Web3 简约高级风格
+ * 用户登录页面 - Web3 简约高级风格 + 动效
  */
 
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Form, Input, Button, message, Typography, Checkbox } from 'antd';
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
+import { motion } from 'framer-motion';
 import { useAuthStore } from '@/store/auth.store';
 import * as authService from '@/services/auth.service';
 import type { LoginForm } from '@/types/auth';
+import { AnimatedBackground } from '@/components/home/AnimatedBackground';
 
 const { Title, Text } = Typography;
 
@@ -47,30 +49,47 @@ export default function Login() {
       position: 'relative',
       overflow: 'hidden',
     }}>
-      {/* 背景装饰 */}
-      <div style={{
-        position: 'absolute',
-        top: '-10%',
-        right: '-5%',
-        width: '500px',
-        height: '500px',
-        background: 'radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)',
-        borderRadius: '50%',
-        filter: 'blur(60px)',
-      }} />
-      <div style={{
-        position: 'absolute',
-        bottom: '-10%',
-        left: '-5%',
-        width: '600px',
-        height: '600px',
-        background: 'radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%)',
-        borderRadius: '50%',
-        filter: 'blur(80px)',
-      }} />
+      {/* 粒子背景 */}
+      <AnimatedBackground />
 
-      {/* 主卡片 */}
-      <div style={{
+      {/* 背景装饰 - 添加动画 */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1.5, repeat: Infinity, repeatType: 'reverse' }}
+        style={{
+          position: 'absolute',
+          top: '-10%',
+          right: '-5%',
+          width: '500px',
+          height: '500px',
+          background: 'radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(60px)',
+        }}
+      />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 2, delay: 0.5, repeat: Infinity, repeatType: 'reverse' }}
+        style={{
+          position: 'absolute',
+          bottom: '-10%',
+          left: '-5%',
+          width: '600px',
+          height: '600px',
+          background: 'radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%)',
+          borderRadius: '50%',
+          filter: 'blur(80px)',
+        }}
+      />
+
+      {/* 主卡片 - 添加进入动画 */}
+      <motion.div
+        initial={{ opacity: 0, y: 50, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6, type: 'spring', stiffness: 100 }}
+        style={{
         width: '450px',
         padding: '48px',
         background: 'var(--bg-secondary)',
@@ -82,8 +101,13 @@ export default function Login() {
         position: 'relative',
         zIndex: 1,
       }}>
-        {/* 标题 */}
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+        {/* 标题 - 添加淡入动画 */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          style={{ textAlign: 'center', marginBottom: 40 }}
+        >
           <Title level={1} style={{
             fontSize: '32px',
             fontWeight: 700,
@@ -98,9 +122,14 @@ export default function Login() {
           <Text style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>
             登录到 KOL BD Tool
           </Text>
-        </div>
+        </motion.div>
 
-        {/* 表单 */}
+        {/* 表单 - 添加淡入动画 */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
         <Form
           form={form}
           name="login"
@@ -192,7 +221,8 @@ export default function Login() {
             </Text>
           </div>
         </Form>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }

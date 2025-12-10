@@ -8,6 +8,8 @@ export interface User {
   email: string;
   fullName: string;
   role: string;
+  company?: string; // 所在公司
+  avatar?: string; // 头像 URL
 }
 
 // 注册表单

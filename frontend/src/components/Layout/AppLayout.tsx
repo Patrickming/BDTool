@@ -21,6 +21,17 @@ import type { MenuProps } from 'antd';
 
 const { Header, Content } = Layout;
 
+// 获取完整的头像 URL
+const getAvatarUrl = (avatar?: string) => {
+  if (!avatar) return undefined;
+  // 如果已经是完整 URL，直接返回
+  if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
+    return avatar;
+  }
+  // 否则拼接后端服务器地址
+  return `${import.meta.env.VITE_API_BASE_URL.replace('/api/v1', '')}/uploads/avatars/${avatar}`;
+};
+
 /**
  * 应用主布局组件 - 顶部导航栏
  */
@@ -75,7 +86,7 @@ export default function AppLayout() {
       key: 'profile',
       icon: <UserOutlined />,
       label: '个人资料',
-      disabled: true, // 待开发功能
+      onClick: () => navigate('/profile'),
     },
     {
       type: 'divider',
@@ -338,15 +349,19 @@ export default function AppLayout() {
           >
             <Avatar
               size={30}
+              src={getAvatarUrl(user?.avatar)}
+              icon={!user?.avatar && <UserOutlined />}
               style={{
-                background: 'linear-gradient(135deg, #9945FF 0%, #14F195 100%)',
+                background: user?.avatar
+                  ? '#fff'
+                  : 'linear-gradient(135deg, #9945FF 0%, #14F195 100%)',
                 fontWeight: 700,
                 fontSize: 13,
                 boxShadow: '0 2px 8px rgba(153, 69, 255, 0.25)',
                 flexShrink: 0,
               }}
             >
-              {user?.fullName?.[0]?.toUpperCase()}
+              {!user?.avatar && user?.fullName?.[0]?.toUpperCase()}
             </Avatar>
             <span
               style={{

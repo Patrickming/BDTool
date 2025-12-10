@@ -88,6 +88,7 @@ logs/
 tmp/
 temp/
 *.tmp
+uploads/
 
 # API Keys and Secrets
 secrets.json
