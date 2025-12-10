@@ -106,13 +106,6 @@ const KOLTable: React.FC<KOLTableProps> = ({ loading = false, onChange }) => {
       render: (count: number) => count.toLocaleString(),
     },
     {
-      title: '认证',
-      dataIndex: 'verified',
-      key: 'verified',
-      width: 80,
-      render: (verified: boolean) => (verified ? '✓' : '-'),
-    },
-    {
       title: '语言',
       dataIndex: 'language',
       key: 'language',

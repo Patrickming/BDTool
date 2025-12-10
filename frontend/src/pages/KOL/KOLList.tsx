@@ -150,7 +150,7 @@ const KOLList: React.FC = () => {
               onClick={handleExport}
               disabled={kols.length === 0}
             >
-              导出 CSV ({pagination?.total || 0})
+              导出 Excel ({pagination?.total || 0})
             </Button>
             <Button
               type="default"
