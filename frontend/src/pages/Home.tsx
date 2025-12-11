@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Typography, Row, Col, Spin, message } from 'antd';
+import { Typography, Row, Col, Spin, message, Avatar } from 'antd';
 import {
   UserOutlined,
   DatabaseOutlined,
@@ -22,8 +22,24 @@ import { getOverviewStats } from '@/services/analytics.service';
 import type { OverviewStats } from '@/types/analytics';
 import { AnimatedBackground } from '@/components/home/AnimatedBackground';
 import { AnimatedStatistic } from '@/components/home/AnimatedStatistic';
+import IntroSection from '@/components/home/IntroSection';
+import FeaturesSection from '@/components/home/FeaturesSection';
+import TechnologySection from '@/components/home/TechnologySection';
+import EcosystemSection from '@/components/home/EcosystemSection';
+import ComparisonSection from '@/components/home/ComparisonSection';
 
 const { Title, Text } = Typography;
+
+// 获取完整的头像 URL
+const getAvatarUrl = (avatar?: string) => {
+  if (!avatar) return undefined;
+  // 如果已经是完整 URL，直接返回
+  if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
+    return avatar;
+  }
+  // 否则拼接后端服务器地址
+  return `${import.meta.env.VITE_API_BASE_URL.replace('/api/v1', '')}/uploads/avatars/${avatar}`;
+};
 
 export default function Home() {
   const navigate = useNavigate();
@@ -172,19 +188,21 @@ export default function Home() {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-          <div
+          <Avatar
+            size={64}
+            src={getAvatarUrl(user.avatar)}
+            icon={!user.avatar && <UserOutlined />}
             style={{
-              width: 64,
-              height: 64,
+              background: user.avatar
+                ? '#fff'
+                : 'linear-gradient(135deg, #9945FF 0%, #14F195 100%)',
+              boxShadow: '0 4px 16px rgba(153, 69, 255, 0.3)',
+              fontSize: 32,
               borderRadius: '12px',
-              background: 'linear-gradient(135deg, #9945FF 0%, #14F195 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
             }}
           >
-            <UserOutlined style={{ fontSize: 32, color: 'white' }} />
-          </div>
+            {!user.avatar && user.fullName?.[0]?.toUpperCase()}
+          </Avatar>
           <div>
             <h1 style={{ margin: 0, marginBottom: 8, color: '#ffffff', fontSize: 32, fontWeight: 600 }}>
               {getGreeting()}，{user.fullName} 👋
@@ -609,6 +627,21 @@ export default function Home() {
           </Col>
         </Row>
       </motion.div>
+
+      {/* 新增区块 - 介绍 */}
+      <IntroSection />
+
+      {/* 新增区块 - 功能特性 */}
+      <FeaturesSection />
+
+      {/* 新增区块 - 生态系统 */}
+      <EcosystemSection />
+
+      {/* 新增区块 - 技术栈 */}
+      <TechnologySection />
+
+      {/* 新增区块 - 产品对比 */}
+      <ComparisonSection />
       </div>
     </div>
   );

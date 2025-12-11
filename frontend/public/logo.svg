@@ -1,0 +1,15 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景：深色六边形，代表Web3/区块 -->
+  <path d="M256 20 L480 140 V372 L256 492 L32 372 V140 Z" fill="#0B1120" stroke="#1E293B" stroke-width="10"/>
+  <!-- 装饰：内部微光边框 -->
+  <path d="M256 45 L450 150 V362 L256 467 L62 362 V150 Z" fill="none" stroke="#334155" stroke-width="2" opacity="0.5"/>
+  <!-- 核心元素：KOL (左侧圆点代表头部，弧线代表肩膀) -->
+  <circle cx="190" cy="220" r="50" fill="#38BDF8"/> <!-- 头部 -->
+  <path d="M140 300 Q190 380 240 300" fill="none" stroke="#38BDF8" stroke-width="30" stroke-linecap="round"/> <!-- 抽象身体 -->
+  <!-- 核心元素：数据增长 (右侧上升的柱状图，代表收益/统计) -->
+  <rect x="280" y="280" width="40" height="80" rx="5" fill="#4ADE80" opacity="0.6"/>
+  <rect x="335" y="220" width="40" height="140" rx="5" fill="#4ADE80" opacity="0.8"/>
+  <rect x="390" y="160" width="40" height="200" rx="5" fill="#22C55E"/> <!-- 最高的一根 -->
+  <!-- 连接线：代表链接/管理 -->
+  <line x1="220" y1="220" x2="335" y2="220" stroke="#CBD5E1" stroke-width="4" stroke-dasharray="10 10" opacity="0.5"/>
+</svg>

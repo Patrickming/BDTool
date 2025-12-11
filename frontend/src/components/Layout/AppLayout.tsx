@@ -270,24 +270,16 @@ export default function AppLayout() {
             e.currentTarget.style.transform = 'translateY(0)';
           }}
         >
-          <div
+          <img
+            src="/logo.svg"
+            alt="KOL BD Tool Logo"
             style={{
               width: 36,
               height: 36,
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #9945FF 0%, #14F195 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 18,
-              fontWeight: 700,
-              color: 'white',
-              boxShadow: '0 4px 16px rgba(153, 69, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
               flexShrink: 0,
+              filter: 'drop-shadow(0 2px 8px rgba(56, 189, 248, 0.4))',
             }}
-          >
-            K
-          </div>
+          />
           <span
             style={{
               fontSize: 17,
