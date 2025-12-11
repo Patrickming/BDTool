@@ -751,6 +751,33 @@ a:hover {
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
 }
 
+/* 修复导航菜单显示问题 */
+.ant-menu-horizontal {
+  line-height: 72px !important;
+  border-bottom: none !important;
+}
+
+.ant-menu-horizontal > .ant-menu-item,
+.ant-menu-horizontal > .ant-menu-submenu {
+  top: 0 !important;
+  border-bottom: none !important;
+}
+
+.ant-menu-horizontal > .ant-menu-item-selected,
+.ant-menu-horizontal > .ant-menu-item:hover,
+.ant-menu-horizontal > .ant-menu-submenu-selected,
+.ant-menu-horizontal > .ant-menu-submenu:hover {
+  border-bottom: 2px solid #9945FF !important;
+}
+
+.ant-menu-horizontal .ant-menu-item,
+.ant-menu-horizontal .ant-menu-submenu-title {
+  padding: 0 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  height: 72px !important;
+}
+
 /* 响应式媒体查询 */
 @media (prefers-reduced-motion: reduce) {
   *,

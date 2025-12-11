@@ -308,6 +308,8 @@ export default function AppLayout() {
             justifyContent: 'center',
             maxWidth: 800,
             minWidth: 0,
+            overflow: 'visible',
+            lineHeight: '72px',
           }}
           theme="dark"
         />
