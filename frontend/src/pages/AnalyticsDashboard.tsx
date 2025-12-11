@@ -258,7 +258,7 @@ export const AnalyticsDashboard: React.FC = () => {
   }, [timelineDays, isCustomRange, customDateRange]);
 
   return (
-    <div style={{ padding: "24px", background: "#0a0a0f", minHeight: "100vh" }}>
+    <div>
       {/* 页面标题和操作 */}
       <div
         style={{
