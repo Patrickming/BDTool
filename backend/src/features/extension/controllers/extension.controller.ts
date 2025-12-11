@@ -96,12 +96,20 @@ export async function generateExtensionToken(req: Request, res: Response) {
 }
 
 /**
- * 激活 Token（复制后开始 2 小时倒计时）
+ * 激活 Token（复制后开始倒计时）
  * POST /api/v1/extension/token/activate
+ * Body: { hours: number } - 可选，默认 2 小时，可选值：2, 8, 24 或自定义小时数
  */
 export async function activateExtensionToken(req: Request, res: Response) {
   try {
     const userId = req.user!.id;
+    const { hours = 2 } = req.body; // 默认 2 小时
+
+    // 验证 hours 参数
+    if (typeof hours !== 'number' || hours <= 0 || hours > 8760) {
+      // 最大 365 天（8760 小时）
+      return res.status(400).json({ message: '无效的小时数，必须在 1-8760 之间' });
+    }
 
     const extensionToken = await prisma.extensionToken.findUnique({
       where: { userId },
@@ -111,9 +119,9 @@ export async function activateExtensionToken(req: Request, res: Response) {
       return res.status(404).json({ message: '未找到 Token，请先生成' });
     }
 
-    // 设置 2 小时后过期
+    // 设置指定小时数后过期
     const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 2);
+    expiresAt.setHours(expiresAt.getHours() + hours);
 
     const updated = await prisma.extensionToken.update({
       where: { userId },
@@ -123,12 +131,13 @@ export async function activateExtensionToken(req: Request, res: Response) {
       },
     });
 
-    logger.info(`用户 ${userId} 激活了 Extension Token，有效期至 ${expiresAt.toISOString()}`);
+    logger.info(`用户 ${userId} 激活了 Extension Token，有效期 ${hours} 小时，至 ${expiresAt.toISOString()}`);
 
     return res.json({
       token: updated.token,
       expiresAt: updated.expiresAt,
       isActive: updated.isActive,
+      hours, // 返回设置的小时数
     });
   } catch (error) {
     logger.error('激活 Extension Token 失败:', error);

@@ -18,6 +18,8 @@ import {
   Space,
   Row,
   Col,
+  Radio,
+  InputNumber,
 } from "antd";
 import {
   RocketOutlined,
@@ -43,6 +45,11 @@ export default function Extension() {
   const [extensionToken, setExtensionToken] = useState<string | null>(null);
   const [tokenExpiry, setTokenExpiry] = useState<Date | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+
+  // Token 时长选择状态
+  const [durationType, setDurationType] = useState<'preset' | 'custom'>('preset');
+  const [presetHours, setPresetHours] = useState<number>(2);
+  const [customHours, setCustomHours] = useState<number>(2);
 
   // 加载现有 Token
   useEffect(() => {
@@ -78,22 +85,14 @@ export default function Extension() {
       return;
     }
 
+    // 获取当前选择的时长
+    const hours = durationType === 'preset' ? presetHours : customHours;
+
     Modal.confirm({
-      title: "确认复制/刷新 Token？",
-      content: (
-        <div>
-          <p style={{ marginBottom: 8 }}>
-            复制 Token 后，有效期将重新计算为 2 小时。
-          </p>
-          <p style={{ color: "#faad14", marginBottom: 0 }}>
-            每次点击此按钮都会刷新倒计时，无需重新生成新的 Token。
-          </p>
-        </div>
-      ),
-      okText: "确认",
+      title: "确认复制 Token",
+      content: `复制 Token 后，有效期将设置为 ${hours} 小时，倒计时将重新开始计算。`,
+      okText: "确认并复制",
       cancelText: "取消",
-      width: 480,
-      centered: true,
       onOk: async () => {
         try {
           await navigator.clipboard.writeText(extensionToken);
@@ -104,18 +103,23 @@ export default function Extension() {
             {
               method: "POST",
               headers: {
-                Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+                "Authorization": `Bearer ${localStorage.getItem("auth_token")}`,
+                "Content-Type": "application/json",
               },
+              body: JSON.stringify({ hours }),
             }
           );
 
           if (response.ok) {
             const data = await response.json();
             setTokenExpiry(new Date(data.expiresAt));
-            message.success("Token 已复制到剪贴板，倒计时已刷新");
+            message.success(`Token 已复制到剪贴板，有效期 ${hours} 小时`);
+          } else {
+            const errorData = await response.json();
+            message.error(errorData.message || "激活失败");
           }
         } catch (error) {
-          message.error("复制失败，请手动复制");
+          message.error("操作失败，请重试");
         }
       },
     });
@@ -159,10 +163,14 @@ export default function Extension() {
 
     if (diff <= 0) return "已过期";
 
-    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
+    if (days > 0) {
+      return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
     return `${hours}h ${minutes}m ${seconds}s`;
   };
 
@@ -221,11 +229,91 @@ export default function Extension() {
 
         <Alert
           message="插件认证说明"
-          description="插件使用独立的 Token 进行身份验证。点击「复制/刷新 Token」后，Token 有效期将重新计算为 2 小时。如果 Token 已过期或想更换新的 Token，请点击「重新生成」。"
+          description="插件使用独立的 Token 进行身份验证。点击「复制/刷新 Token」后，Token 有效期将根据您选择的时长重新计算。如果 Token 已过期或想更换新的 Token，请点击「重新生成」。"
           type="info"
           showIcon
           style={{ marginBottom: 24 }}
         />
+
+        {/* Token 有效期选择器 */}
+        <Card
+          bordered={false}
+          style={{
+            background: "rgba(153, 69, 255, 0.05)",
+            border: "1px solid rgba(153, 69, 255, 0.2)",
+            marginBottom: 24,
+          }}
+        >
+          <div style={{ marginBottom: 16 }}>
+            <Text
+              strong
+              style={{
+                color: "#fff",
+                fontSize: 16,
+                display: "block",
+                marginBottom: 12,
+              }}
+            >
+              <ClockCircleOutlined style={{ marginRight: 8, color: "#9945FF" }} />
+              Token 有效期设置
+            </Text>
+            <Text style={{ color: "rgba(255, 255, 255, 0.6)", fontSize: 14 }}>
+              在复制 Token 前，选择有效期时长
+            </Text>
+          </div>
+
+          <Radio.Group
+            value={durationType}
+            onChange={(e) => setDurationType(e.target.value)}
+            style={{ marginBottom: 16, width: '100%' }}
+          >
+            <Space direction="vertical" style={{ width: '100%' }}>
+              <Radio value="preset">
+                <span style={{ color: 'rgba(255, 255, 255, 0.85)' }}>预设时长</span>
+              </Radio>
+              {durationType === 'preset' && (
+                <div style={{ marginLeft: 24, marginTop: 8 }}>
+                  <Radio.Group
+                    value={presetHours}
+                    onChange={(e) => setPresetHours(e.target.value)}
+                    buttonStyle="solid"
+                  >
+                    <Radio.Button value={2}>2 小时</Radio.Button>
+                    <Radio.Button value={8}>8 小时</Radio.Button>
+                    <Radio.Button value={24}>24 小时</Radio.Button>
+                  </Radio.Group>
+                </div>
+              )}
+
+              <Radio value="custom">
+                <span style={{ color: 'rgba(255, 255, 255, 0.85)' }}>自定义时长</span>
+              </Radio>
+              {durationType === 'custom' && (
+                <div style={{ marginLeft: 24, marginTop: 8 }}>
+                  <InputNumber
+                    min={1}
+                    max={8760}
+                    value={customHours}
+                    onChange={(value) => setCustomHours(value || 2)}
+                    addonAfter="小时"
+                    style={{ width: 180 }}
+                    placeholder="输入小时数"
+                  />
+                  <div style={{ color: 'rgba(255, 255, 255, 0.45)', fontSize: 12, marginTop: 8 }}>
+                    范围：1-8760 小时（最多 365 天）
+                  </div>
+                </div>
+              )}
+            </Space>
+          </Radio.Group>
+
+          <Alert
+            message={`当前选择：${durationType === 'preset' ? presetHours : customHours} 小时`}
+            type="success"
+            showIcon
+            style={{ marginTop: 16 }}
+          />
+        </Card>
 
         <Row gutter={[24, 24]}>
           <Col xs={24} lg={12}>
