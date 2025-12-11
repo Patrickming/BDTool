@@ -83,6 +83,100 @@ export class AnalyticsController {
     // 返回成功响应
     return successResponse(res, timeline, '联系时间线获取成功');
   });
+
+  /**
+   * 获取响应的 KOL 列表
+   * GET /api/v1/analytics/responded-kols?days=7
+   */
+  getRespondedKols = asyncHandler(async (req: Request, res: Response) => {
+    logger.info(`用户 ${req.user?.id} 请求响应 KOL 列表`);
+
+    // 获取查询参数（天数）
+    const days = parseInt(req.query.days as string) || 7;
+
+    // 验证天数范围（1-365天）
+    if (days < 1 || days > 365) {
+      return successResponse(res, null, '天数参数必须在 1-365 之间', 400);
+    }
+
+    // 调用服务层获取响应的 KOL 列表
+    const kols = await analyticsService.getRespondedKols(req.user!.id, days);
+
+    // 返回成功响应
+    return successResponse(res, kols, '响应 KOL 列表获取成功');
+  });
+
+  /**
+   * 获取新增的 KOL 列表
+   * GET /api/v1/analytics/new-kols?days=7
+   */
+  getNewKols = asyncHandler(async (req: Request, res: Response) => {
+    logger.info(`用户 ${req.user?.id} 请求新增 KOL 列表`);
+
+    const days = parseInt(req.query.days as string) || 7;
+
+    if (days < 1 || days > 365) {
+      return successResponse(res, null, '天数参数必须在 1-365 之间', 400);
+    }
+
+    const kols = await analyticsService.getNewKols(req.user!.id, days);
+
+    return successResponse(res, kols, '新增 KOL 列表获取成功');
+  });
+
+  /**
+   * 获取联系的 KOL 列表
+   * GET /api/v1/analytics/contacted-kols?days=7
+   */
+  getContactedKols = asyncHandler(async (req: Request, res: Response) => {
+    logger.info(`用户 ${req.user?.id} 请求联系 KOL 列表`);
+
+    const days = parseInt(req.query.days as string) || 7;
+
+    if (days < 1 || days > 365) {
+      return successResponse(res, null, '天数参数必须在 1-365 之间', 400);
+    }
+
+    const kols = await analyticsService.getContactedKols(req.user!.id, days);
+
+    return successResponse(res, kols, '联系 KOL 列表获取成功');
+  });
+
+  /**
+   * 获取活跃合作的 KOL 列表
+   * GET /api/v1/analytics/active-partnerships
+   */
+  getActivePartnershipKols = asyncHandler(async (req: Request, res: Response) => {
+    logger.info(`用户 ${req.user?.id} 请求活跃合作 KOL 列表`);
+
+    const kols = await analyticsService.getActivePartnershipKols(req.user!.id);
+
+    return successResponse(res, kols, '活跃合作 KOL 列表获取成功');
+  });
+
+  /**
+   * 获取待跟进的 KOL 列表
+   * GET /api/v1/analytics/pending-followups
+   */
+  getPendingFollowupKols = asyncHandler(async (req: Request, res: Response) => {
+    logger.info(`用户 ${req.user?.id} 请求待跟进 KOL 列表`);
+
+    const kols = await analyticsService.getPendingFollowupKols(req.user!.id);
+
+    return successResponse(res, kols, '待跟进 KOL 列表获取成功');
+  });
+
+  /**
+   * 获取总体响应的 KOL 列表
+   * GET /api/v1/analytics/all-responded-kols
+   */
+  getAllRespondedKols = asyncHandler(async (req: Request, res: Response) => {
+    logger.info(`用户 ${req.user?.id} 请求总体响应 KOL 列表`);
+
+    const kols = await analyticsService.getAllRespondedKols(req.user!.id);
+
+    return successResponse(res, kols, '总体响应 KOL 列表获取成功');
+  });
 }
 
 // 导出控制器实例

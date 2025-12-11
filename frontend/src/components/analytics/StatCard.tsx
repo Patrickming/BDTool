@@ -3,8 +3,8 @@
  */
 
 import React from 'react';
-import { Card, Statistic, Spin } from 'antd';
-import { ArrowUpOutlined, ArrowDownOutlined } from '@ant-design/icons';
+import { Card, Statistic, Spin, Button } from 'antd';
+import { ArrowUpOutlined, ArrowDownOutlined, EyeOutlined } from '@ant-design/icons';
 
 interface StatCardProps {
   title: string;
@@ -17,6 +17,7 @@ interface StatCardProps {
   trendValue?: number;
   valueStyle?: React.CSSProperties;
   description?: string; // 计算说明
+  onViewDetails?: () => void; // 查看详情回调
 }
 
 export const StatCard: React.FC<StatCardProps> = ({
@@ -30,6 +31,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   trendValue,
   valueStyle,
   description,
+  onViewDetails,
 }) => {
   return (
     <Card
@@ -54,22 +56,37 @@ export const StatCard: React.FC<StatCardProps> = ({
             </div>
           )}
           <div style={{ flex: 1 }}>
-            <Statistic
-              title={
-                <span style={{ color: '#8a8a8a', fontSize: '14px' }}>
-                  {title}
-                </span>
-              }
-              value={value}
-              suffix={suffix}
-              prefix={prefix}
-              valueStyle={{
-                color: '#fff',
-                fontSize: '24px',
-                fontWeight: 600,
-                ...valueStyle,
-              }}
-            />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Statistic
+                title={
+                  <span style={{ color: '#8a8a8a', fontSize: '14px' }}>
+                    {title}
+                  </span>
+                }
+                value={value}
+                suffix={suffix}
+                prefix={prefix}
+                valueStyle={{
+                  color: '#fff',
+                  fontSize: '24px',
+                  fontWeight: 600,
+                  ...valueStyle,
+                }}
+              />
+              {onViewDetails && (
+                <Button
+                  type="link"
+                  size="small"
+                  icon={<EyeOutlined />}
+                  onClick={onViewDetails}
+                  style={{
+                    color: '#9945FF',
+                    fontSize: '18px',
+                    padding: '4px 8px',
+                  }}
+                />
+              )}
+            </div>
             {trend && trendValue !== undefined && (
               <div
                 style={{

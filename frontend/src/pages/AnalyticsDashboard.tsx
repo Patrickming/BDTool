@@ -3,9 +3,10 @@
  */
 
 import React, { useEffect, useMemo, useState } from "react";
-import { Row, Col, Select, Space, DatePicker } from "antd";
+import { Row, Col, Select, Space, DatePicker, Modal, Table, Tag, message, Input } from "antd";
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
+import { SearchOutlined } from "@ant-design/icons";
 import {
   TeamOutlined,
   UserAddOutlined,
@@ -29,6 +30,25 @@ import { ContactTimelineChart } from "../components/analytics/ContactTimelineCha
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
+// KOL 状态映射
+const STATUS_MAP: Record<string, { label: string; color: string }> = {
+  new: { label: '新添加', color: 'default' },
+  contacted: { label: '已联系', color: 'blue' },
+  replied: { label: '已回复', color: 'green' },
+  negotiating: { label: '洽谈中', color: 'orange' },
+  cooperating: { label: '合作中', color: 'cyan' },
+  cooperated: { label: '已合作', color: 'blue' },
+  rejected: { label: '已拒绝', color: 'red' },
+};
+
+interface RespondedKol {
+  id: number;
+  username: string;
+  displayName: string;
+  qualityScore: number;
+  status: string;
+}
+
 export const AnalyticsDashboard: React.FC = () => {
   const {
     overviewStats,
@@ -49,9 +69,105 @@ export const AnalyticsDashboard: React.FC = () => {
   const [customDateRange, setCustomDateRange] = useState<[Dayjs, Dayjs] | null>(null);
   const [isCustomRange, setIsCustomRange] = useState(false);
 
+  // KOL 详情弹窗状态（通用）
+  const [kolModalVisible, setKolModalVisible] = useState(false);
+  const [kolModalTitle, setKolModalTitle] = useState('');
+  const [kolsData, setKolsData] = useState<RespondedKol[]>([]);
+  const [loadingKols, setLoadingKols] = useState(false);
+  const [searchText, setSearchText] = useState('');
+
   useEffect(() => {
     fetchAllAnalytics();
   }, [fetchAllAnalytics]);
+
+  // 通用的 KOL 列表获取函数
+  const fetchKolList = async (endpoint: string, title: string) => {
+    setLoadingKols(true);
+    setSearchText(''); // 重置搜索框
+    try {
+      const response = await fetch(endpoint, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("获取失败");
+      }
+
+      const data = await response.json();
+      setKolsData(data.data || []);
+      setKolModalTitle(title);
+      setKolModalVisible(true);
+    } catch (error) {
+      message.error(`获取 KOL 列表失败`);
+      console.error(error);
+    } finally {
+      setLoadingKols(false);
+    }
+  };
+
+  // 过滤 KOL 数据（根据搜索文本）
+  const filteredKolsData = useMemo(() => {
+    if (!searchText.trim()) {
+      return kolsData;
+    }
+    const lowerSearch = searchText.toLowerCase();
+    return kolsData.filter(
+      (kol) =>
+        kol.username.toLowerCase().includes(lowerSearch) ||
+        kol.displayName?.toLowerCase().includes(lowerSearch) ||
+        kol.id.toString().includes(lowerSearch)
+    );
+  }, [kolsData, searchText]);
+
+  // 获取新增 KOL 列表
+  const fetchNewKols = async () => {
+    await fetchKolList(
+      `/api/v1/analytics/new-kols?days=${timelineDays}`,
+      `${getTimeRangeLabel()}新增的 KOL 列表`
+    );
+  };
+
+  // 获取联系 KOL 列表
+  const fetchContactedKols = async () => {
+    await fetchKolList(
+      `/api/v1/analytics/contacted-kols?days=${timelineDays}`,
+      `${getTimeRangeLabel()}联系的 KOL 列表`
+    );
+  };
+
+  // 获取响应 KOL 列表
+  const fetchRespondedKols = async () => {
+    await fetchKolList(
+      `/api/v1/analytics/responded-kols?days=${timelineDays}`,
+      `${getTimeRangeLabel()}响应的 KOL 列表`
+    );
+  };
+
+  // 获取总体响应 KOL 列表
+  const fetchAllRespondedKols = async () => {
+    await fetchKolList(
+      `/api/v1/analytics/all-responded-kols`,
+      `总体响应的 KOL 列表`
+    );
+  };
+
+  // 获取活跃合作 KOL 列表
+  const fetchActivePartnershipKols = async () => {
+    await fetchKolList(
+      `/api/v1/analytics/active-partnerships`,
+      `活跃合作的 KOL 列表`
+    );
+  };
+
+  // 获取待跟进 KOL 列表
+  const fetchPendingFollowupKols = async () => {
+    await fetchKolList(
+      `/api/v1/analytics/pending-followups`,
+      `待跟进的 KOL 列表`
+    );
+  };
 
   const handleTimelineDaysChange = async (days: number | string) => {
     if (days === 'custom') {
@@ -230,6 +346,7 @@ export const AnalyticsDashboard: React.FC = () => {
             icon={<UserAddOutlined />}
             loading={loadingOverview}
             description={`过去 ${timelineDays} 天内创建的 KOL 数量`}
+            onViewDetails={fetchNewKols}
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
@@ -239,6 +356,7 @@ export const AnalyticsDashboard: React.FC = () => {
             icon={<PhoneOutlined />}
             loading={loadingOverview}
             description={`过去 ${timelineDays} 天除新增外的所有 KOL`}
+            onViewDetails={fetchContactedKols}
           />
         </Col>
       </Row>
@@ -259,6 +377,7 @@ export const AnalyticsDashboard: React.FC = () => {
                   : "#FFA500",
             }}
             description="除(新增外+已联系)KOL ÷ 除新增外KOL"
+            onViewDetails={fetchAllRespondedKols}
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
@@ -275,6 +394,7 @@ export const AnalyticsDashboard: React.FC = () => {
                   : "#FFA500",
             }}
             description={`过去 ${timelineDays} 天的响应率`}
+            onViewDetails={fetchRespondedKols}
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
@@ -284,6 +404,7 @@ export const AnalyticsDashboard: React.FC = () => {
             icon={<StarOutlined />}
             loading={loadingOverview}
             description="状态为「合作中」的 KOL 数量"
+            onViewDetails={fetchActivePartnershipKols}
           />
         </Col>
         <Col xs={24} sm={12} lg={6}>
@@ -299,6 +420,7 @@ export const AnalyticsDashboard: React.FC = () => {
                   : "#14F195",
             }}
             description="状态为「已回复」需要跟进的 KOL"
+            onViewDetails={fetchPendingFollowupKols}
           />
         </Col>
       </Row>
@@ -359,6 +481,101 @@ export const AnalyticsDashboard: React.FC = () => {
           />
         </Col>
       </Row>
+
+      {/* KOL 详情弹窗（通用） */}
+      <Modal
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingRight: '24px' }}>
+            <span>{kolModalTitle}</span>
+            <Input
+              placeholder="搜索 ID、用户名或显示名称"
+              prefix={<SearchOutlined style={{ color: '#9945FF' }} />}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              allowClear
+              style={{ width: 280 }}
+            />
+          </div>
+        }
+        open={kolModalVisible}
+        onCancel={() => {
+          setKolModalVisible(false);
+          setSearchText('');
+        }}
+        footer={null}
+        width={900}
+        styles={{
+          body: {
+            maxHeight: '600px',
+            overflowY: 'auto',
+          },
+        }}
+      >
+        <Table
+          dataSource={filteredKolsData}
+          loading={loadingKols}
+          rowKey="id"
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: true,
+            showTotal: (total) => `共 ${total} 个 KOL${searchText ? ` (筛选自 ${kolsData.length} 个)` : ''}`,
+          }}
+          columns={[
+            {
+              title: 'ID',
+              dataIndex: 'id',
+              key: 'id',
+              width: 80,
+              sorter: (a, b) => a.id - b.id,
+            },
+            {
+              title: '用户名',
+              dataIndex: 'username',
+              key: 'username',
+              render: (username: string) => (
+                <a
+                  href={`https://x.com/${username}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#9945FF' }}
+                >
+                  @{username}
+                </a>
+              ),
+            },
+            {
+              title: '显示名称',
+              dataIndex: 'displayName',
+              key: 'displayName',
+            },
+            {
+              title: '质量分',
+              dataIndex: 'qualityScore',
+              key: 'qualityScore',
+              width: 100,
+              sorter: (a, b) => a.qualityScore - b.qualityScore,
+              render: (score: number) => (
+                <span style={{
+                  color: score >= 80 ? '#14F195' : score >= 60 ? '#FFA500' : '#fff',
+                  fontWeight: 600
+                }}>
+                  {score}
+                </span>
+              ),
+            },
+            {
+              title: '当前状态',
+              dataIndex: 'status',
+              key: 'status',
+              width: 120,
+              render: (status: string) => {
+                const statusInfo = STATUS_MAP[status] || { label: status, color: 'default' };
+                return <Tag color={statusInfo.color}>{statusInfo.label}</Tag>;
+              },
+            },
+          ]}
+        />
+      </Modal>
     </div>
   );
 };

@@ -59,6 +59,330 @@ export interface ContactTimelinePoint {
  */
 export class AnalyticsService {
   /**
+   * 获取时间范围内响应的 KOL 列表
+   * @param userId - 用户 ID
+   * @param days - 查询天数（默认 7）
+   * @returns KOL 列表（包含 ID、用户名、质量分）
+   */
+  async getRespondedKols(userId: number, days: number = 7) {
+    logger.info(`用户 ${userId} 获取响应 KOL 列表 (近${days}天)`);
+
+    let timeStart: Date | undefined;
+
+    // 计算时间范围起点
+    if (days > 0) {
+      const now = new Date();
+      const todayStr = now.toISOString().split('T')[0];
+      timeStart = new Date(todayStr);
+      timeStart.setUTCDate(timeStart.getUTCDate() - (days - 1));
+    }
+
+    const responseStatuses = ['replied', 'negotiating', 'cooperating', 'cooperated', 'rejected'];
+
+    // 从历史记录中查询时间范围内状态变为响应状态的 KOL ID
+    const historyRecords = await prisma.kOLHistory.findMany({
+      where: {
+        userId,
+        fieldName: 'status',
+        newValue: { in: responseStatuses.map(s => JSON.stringify(s)) },
+        createdAt: { gte: timeStart },
+      },
+      select: {
+        kolId: true,
+      },
+      distinct: ['kolId'],
+    });
+
+    // 如果历史记录有数据，使用历史记录中的 KOL ID
+    if (historyRecords.length > 0) {
+      const kolIds = historyRecords.map(h => h.kolId);
+
+      const kols = await prisma.kOL.findMany({
+        where: {
+          id: { in: kolIds },
+          userId,
+        },
+        select: {
+          id: true,
+          username: true,
+          displayName: true,
+          qualityScore: true,
+          status: true,
+        },
+        orderBy: {
+          qualityScore: 'desc',
+        },
+      });
+
+      return kols;
+    }
+
+    // 回退到原有逻辑（根据 updatedAt）
+    const kols = await prisma.kOL.findMany({
+      where: {
+        userId,
+        status: { in: responseStatuses },
+        updatedAt: { gte: timeStart },
+      },
+      select: {
+        id: true,
+        username: true,
+        displayName: true,
+        qualityScore: true,
+        status: true,
+      },
+      orderBy: {
+        qualityScore: 'desc',
+      },
+    });
+
+    return kols;
+  }
+
+  /**
+   * 获取时间范围内新增的 KOL 列表
+   * @param userId - 用户 ID
+   * @param days - 查询天数（默认 7）
+   * @returns KOL 列表
+   */
+  async getNewKols(userId: number, days: number = 7) {
+    logger.info(`用户 ${userId} 获取新增 KOL 列表 (近${days}天)`);
+
+    let timeStart: Date | undefined;
+
+    if (days > 0) {
+      const now = new Date();
+      const todayStr = now.toISOString().split('T')[0];
+      timeStart = new Date(todayStr);
+      timeStart.setUTCDate(timeStart.getUTCDate() - (days - 1));
+    }
+
+    // 从历史记录中查询新创建的 KOL ID
+    const historyRecords = await prisma.kOLHistory.findMany({
+      where: {
+        userId,
+        fieldName: 'status',
+        oldValue: null, // null 表示新创建
+        createdAt: { gte: timeStart },
+      },
+      select: {
+        kolId: true,
+      },
+      distinct: ['kolId'],
+    });
+
+    if (historyRecords.length > 0) {
+      const kolIds = historyRecords.map(h => h.kolId);
+
+      const kols = await prisma.kOL.findMany({
+        where: {
+          id: { in: kolIds },
+          userId,
+        },
+        select: {
+          id: true,
+          username: true,
+          displayName: true,
+          qualityScore: true,
+          status: true,
+          createdAt: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      return kols;
+    }
+
+    // 回退逻辑
+    const kols = await prisma.kOL.findMany({
+      where: {
+        userId,
+        createdAt: { gte: timeStart },
+      },
+      select: {
+        id: true,
+        username: true,
+        displayName: true,
+        qualityScore: true,
+        status: true,
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return kols;
+  }
+
+  /**
+   * 获取时间范围内联系的 KOL 列表
+   * @param userId - 用户 ID
+   * @param days - 查询天数（默认 7）
+   * @returns KOL 列表
+   */
+  async getContactedKols(userId: number, days: number = 7) {
+    logger.info(`用户 ${userId} 获取联系 KOL 列表 (近${days}天)`);
+
+    let timeStart: Date | undefined;
+
+    if (days > 0) {
+      const now = new Date();
+      const todayStr = now.toISOString().split('T')[0];
+      timeStart = new Date(todayStr);
+      timeStart.setUTCDate(timeStart.getUTCDate() - (days - 1));
+    }
+
+    const nonNewStatuses = ['contacted', 'replied', 'negotiating', 'cooperating', 'cooperated', 'rejected'];
+
+    // 从历史记录中查询状态变更
+    const historyRecords = await prisma.kOLHistory.findMany({
+      where: {
+        userId,
+        fieldName: 'status',
+        newValue: { in: nonNewStatuses.map(s => JSON.stringify(s)) },
+        createdAt: { gte: timeStart },
+      },
+      select: {
+        kolId: true,
+      },
+      distinct: ['kolId'],
+    });
+
+    if (historyRecords.length > 0) {
+      const kolIds = historyRecords.map(h => h.kolId);
+
+      const kols = await prisma.kOL.findMany({
+        where: {
+          id: { in: kolIds },
+          userId,
+        },
+        select: {
+          id: true,
+          username: true,
+          displayName: true,
+          qualityScore: true,
+          status: true,
+        },
+        orderBy: {
+          qualityScore: 'desc',
+        },
+      });
+
+      return kols;
+    }
+
+    // 回退逻辑
+    const kols = await prisma.kOL.findMany({
+      where: {
+        userId,
+        status: { in: nonNewStatuses },
+        updatedAt: { gte: timeStart },
+      },
+      select: {
+        id: true,
+        username: true,
+        displayName: true,
+        qualityScore: true,
+        status: true,
+      },
+      orderBy: {
+        qualityScore: 'desc',
+      },
+    });
+
+    return kols;
+  }
+
+  /**
+   * 获取活跃合作的 KOL 列表
+   * @param userId - 用户 ID
+   * @returns KOL 列表
+   */
+  async getActivePartnershipKols(userId: number) {
+    logger.info(`用户 ${userId} 获取活跃合作 KOL 列表`);
+
+    const kols = await prisma.kOL.findMany({
+      where: {
+        userId,
+        status: 'cooperating',
+      },
+      select: {
+        id: true,
+        username: true,
+        displayName: true,
+        qualityScore: true,
+        status: true,
+      },
+      orderBy: {
+        qualityScore: 'desc',
+      },
+    });
+
+    return kols;
+  }
+
+  /**
+   * 获取待跟进的 KOL 列表
+   * @param userId - 用户 ID
+   * @returns KOL 列表
+   */
+  async getPendingFollowupKols(userId: number) {
+    logger.info(`用户 ${userId} 获取待跟进 KOL 列表`);
+
+    const kols = await prisma.kOL.findMany({
+      where: {
+        userId,
+        status: 'replied',
+      },
+      select: {
+        id: true,
+        username: true,
+        displayName: true,
+        qualityScore: true,
+        status: true,
+      },
+      orderBy: {
+        qualityScore: 'desc',
+      },
+    });
+
+    return kols;
+  }
+
+  /**
+   * 获取总体响应的 KOL 列表（所有时间）
+   * @param userId - 用户 ID
+   * @returns KOL 列表
+   */
+  async getAllRespondedKols(userId: number) {
+    logger.info(`用户 ${userId} 获取总体响应 KOL 列表`);
+
+    const responseStatuses = ['replied', 'negotiating', 'cooperating', 'cooperated', 'rejected'];
+
+    const kols = await prisma.kOL.findMany({
+      where: {
+        userId,
+        status: { in: responseStatuses },
+      },
+      select: {
+        id: true,
+        username: true,
+        displayName: true,
+        qualityScore: true,
+        status: true,
+      },
+      orderBy: {
+        qualityScore: 'desc',
+      },
+    });
+
+    return kols;
+  }
+
+  /**
    * 获取概览统计数据
    * @param userId - 用户 ID
    * @param days - 查询天数（0 表示所有时间，默认 7）
