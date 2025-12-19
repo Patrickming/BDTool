@@ -42,7 +42,7 @@ export const templateQuerySchema = z.object({
     .optional()
     .default('20')
     .transform((val) => parseInt(val))
-    .refine((val) => val > 0 && val <= 100, '每页数量必须在 1-100 之间'),
+    .refine((val) => val > 0 && val <= 5000, '每页数量必须在 1-5000 之间'),
 
   // 搜索参数（模糊匹配模板名称或内容）
   search: z.string().optional(),
